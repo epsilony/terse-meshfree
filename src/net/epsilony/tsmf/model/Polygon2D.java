@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  *
- * @author epsilon
+ * @author Man YUAN <epsilonyuan@gmail.com>
  */
 public class Polygon2D {
 
@@ -19,7 +19,7 @@ public class Polygon2D {
         if (nodeChains.isEmpty()) {
             throw new IllegalArgumentException("There is at least 1 chain in a Polygon");
         }
-        chains.ensureCapacity(nodeChains.size());
+        chains=new ArrayList<>(nodeChains.size());
         for (List< ? extends Node> nds : nodeChains) {
             if (nds.size() < 3) {
                 throw new IllegalArgumentException(String.format("Each chain in a polygon must contain at least 3 nodes as vertes!%n nodesChain[%d] has only %d nodes", nodeChains.indexOf(nds), nds.size()));
@@ -52,8 +52,9 @@ public class Polygon2D {
     }
 
     /**
-     *  Originate from:<\br>
-     *       Joseph O'Rourke, Computational Geometry in C,2ed. Page 244, Code 7.13
+     * Originate from:<\br> Joseph O'Rourke, Computational Geometry in C,2ed.
+     * Page 244, Code 7.13
+     *
      * @param x
      * @param y
      * @return 'i' : inside , 'o' : outside, 'e' on an edge, 'v' on a vertex
@@ -104,5 +105,26 @@ public class Polygon2D {
         } else {
             return 'o';
         }
+    }
+
+    public double distanceFunc(double x, double y) {
+        char rayCrs = rayCrossing(x, y);
+
+        if (rayCrs == 'e' || rayCrs == 'v') {
+            return 0;
+        }
+
+        double inf = Double.POSITIVE_INFINITY;
+        for (Segment2D cHead : chains) {
+            Segment2D seg = cHead;
+            do {
+                double dst = seg.distanceTo(x, y);
+                if (dst < inf) {
+                    inf = dst;
+                }
+                seg = (Segment2D) seg.succ;
+            } while (seg != cHead);
+        }
+        return rayCrs == 'i' ? inf : -inf;
     }
 }
