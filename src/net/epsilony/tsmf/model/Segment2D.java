@@ -52,4 +52,20 @@ public class Segment2D extends Boundary2D {
             return Math.abs(Math2D.cross(d12_x, d12_y, d1p_x, d1p_y)) / len12;
         }
     }
+
+    public double length() {
+        double[] start = getHead().coord;
+        double[] end = getRear().coord;
+        double dx = start[0] - end[0];
+        double dy = start[1] - end[1];
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    public double[] midPoint() {
+        double[] start = getHead().coord;
+        double[] end = getRear().coord;
+        double x = (start[0] + end[0]) / 2;
+        double y = (start[1] + end[1]) / 2;
+        return new double[]{x, y};
+    }
 }

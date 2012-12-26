@@ -5,8 +5,13 @@
 package net.epsilony.tsmf.model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import net.epsilony.tsmf.util.DoubleArrayComparator;
+import net.epsilony.tsmf.util.rangesearch.LayeredRangeTree;
+import net.epsilony.tsmf.util.rangesearch.PairPack;
 
 /**
  *
@@ -14,7 +19,10 @@ import java.util.List;
  */
 public class Polygon2D implements Iterable<Segment2D> {
 
+    public static final int DIM = 2;
     ArrayList<Segment2D> chains;
+    LayeredRangeTree<PairPack<double[], Segment2D>> lrTree;
+    double maxSegLen;
 
     public Polygon2D(List<? extends List<? extends Node>> nodeChains) {
         if (nodeChains.isEmpty()) {
@@ -38,6 +46,26 @@ public class Polygon2D implements Iterable<Segment2D> {
             chainHead.pred.succ = chainHead;
             chains.add(chainHead);
         }
+        prepareLRTree();
+    }
+
+    private void prepareLRTree() {
+        double maxLen = 0;
+        LinkedList<PairPack<double[], Segment2D>> midSegPairs = new LinkedList<>();
+        for (Segment2D seg : this) {
+            PairPack<double[], Segment2D> midSegPair = new PairPack<>(seg.midPoint(), seg);
+            double len = seg.length();
+            if (len > maxLen) {
+                maxLen = len;
+            }
+            midSegPairs.add(midSegPair);
+        }
+        ArrayList<Comparator<PairPack<double[], Segment2D>>> comps = new ArrayList<>(2);
+        for (int i = 0; i < DIM; i++) {
+            comps.add(PairPack.packComparator(new DoubleArrayComparator(i), Segment2D.class));
+        }
+        lrTree = new LayeredRangeTree<>(midSegPairs, comps);
+        maxSegLen = maxLen;
     }
 
     public static Polygon2D byCoordChains(double[][][] coordChains) {
@@ -121,6 +149,30 @@ public class Polygon2D implements Iterable<Segment2D> {
         return rayCrs == 'i' ? inf : -inf;
     }
 
+    public List<Segment2D> segmentsIntersectingDisc(double[] center, double radius, List<Segment2D> output) {
+        if (null == output) {
+            output = new LinkedList<>();
+        } else {
+            output.clear();
+        }
+        if (radius < 0) {
+            throw new IllegalArgumentException("Radius is negative!");
+        }
+        double[] from = new double[]{center[0] - radius - maxSegLen / 2, center[1] - radius - maxSegLen / 2};
+        double[] to = new double[]{center[0] + radius + maxSegLen / 2, center[1] + radius + maxSegLen / 2};
+        PairPack<double[], Segment2D> fromP = new PairPack<>(from, null);
+        PairPack<double[], Segment2D> toP = new PairPack<>(to, null);
+        LinkedList<PairPack<double[], Segment2D>> pairs = new LinkedList<>();
+        lrTree.rangeSearch(pairs, fromP, toP);
+        for (PairPack<double[], Segment2D> pair : pairs) {
+            Segment2D seg = pair.attach;
+            if (seg.distanceTo(center[0], center[1]) <= radius) {
+                output.add(seg);
+            }
+        }
+        return output;
+    }
+
     @Override
     public Iterator<Segment2D> iterator() {
         return new SegmentIterator();
@@ -153,7 +205,7 @@ public class Polygon2D implements Iterable<Segment2D> {
 
         @Override
         public void remove() {
-            if(last.pred.pred==last.succ){
+            if (last.pred.pred == last.succ) {
                 throw new IllegalStateException("The chain is only a triangle, and no segments can be removed!");
             }
             last.pred.succ = last.succ;
