@@ -93,6 +93,7 @@ public class LayeredRangeTreeTest {
                 DictComparator<double[]> dComp = new DictComparator<>(comps, false, 0);
                 Collections.sort(exps, dComp);
                 lrTree.rangeSearch(acts, from, to);
+                throw t;
             }
         }
     }
