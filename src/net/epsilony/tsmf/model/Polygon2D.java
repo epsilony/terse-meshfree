@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tsmf.util.DoubleArrayComparator;
 import net.epsilony.tsmf.util.rangesearch.LayeredRangeTree;
-import net.epsilony.tsmf.util.rangesearch.PairPack;
+import net.epsilony.tsmf.util.PairPack;
 
 /**
  *

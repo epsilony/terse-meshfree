@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.epsilony.tsmf.util.rangesearch;
+package net.epsilony.tsmf.util;
 
 import java.util.Comparator;
 
