@@ -58,7 +58,7 @@ public class LayeredRangeTreeTest {
             comps.add(new DoubleArrayComparator(i));
         }
 
-        LayeredRangeTree<double[]> lrTree = new LayeredRangeTree(samples, comps);
+        LayeredRangeTree<double[], double[]> lrTree = LayeredRangeTree.factory(samples, comps);
 
         double[] from = new double[]{-0.1, 0.1};
         double[] to = new double[]{0.45, 0.54};
@@ -86,7 +86,7 @@ public class LayeredRangeTreeTest {
                 to = fromTo[1];
                 if (i % testShakeGap == 0) {
                     samples = shakeSamples(shakeRaius, samples);
-                    lrTree = new LayeredRangeTree<>(samples, comps);
+                    lrTree = LayeredRangeTree.factory(samples, comps);
                 }
             } catch (Throwable t) { // just for debug
                 LinkedList<double[]> exps = rangeSearch(samples, from, to);
@@ -135,7 +135,7 @@ public class LayeredRangeTreeTest {
             comps.add(new DoubleArrayComparator(i));
         }
 
-        LayeredRangeTree<double[]> lrTree = new LayeredRangeTree(samples, comps);
+        LayeredRangeTree<double[], double[]> lrTree = LayeredRangeTree.factory(samples, comps);
 
         double[] from = new double[]{-0.1, -1.1, 0.0};
         double[] to = new double[]{0.5, 0.5, 0.6};
@@ -157,7 +157,7 @@ public class LayeredRangeTreeTest {
             to = fromTo[1];
             if (i > 0 && i % testShakeGap == 0) {
                 samples = shakeSamples(shakeRaius, samples);
-                lrTree = new LayeredRangeTree<>(samples, comps);
+                lrTree = LayeredRangeTree.factory(samples, comps);
             }
         }
     }
