@@ -10,7 +10,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tsmf.util.DoubleArrayComparator;
-import net.epsilony.tsmf.util.PairPack;
+import net.epsilony.tsmf.util.pair.PairPack;
+import net.epsilony.tsmf.util.pair.WithPair;
+import net.epsilony.tsmf.util.pair.WithPairComparator;
 import net.epsilony.tsmf.util.rangesearch.LayeredRangeTree;
 
 /**
@@ -21,7 +23,7 @@ public class Polygon2D implements Iterable<Segment2D> {
 
     public static final int DIM = 2;
     ArrayList<Segment2D> chains;
-    LayeredRangeTree<PairPack<double[], Segment2D>> lrTree;
+    LayeredRangeTree<WithPair<double[], Segment2D>> lrTree;
     double maxSegLen;
 
     public Polygon2D(List<? extends List<? extends Node>> nodeChains) {
@@ -51,7 +53,7 @@ public class Polygon2D implements Iterable<Segment2D> {
 
     private void prepareLRTree() {
         double maxLen = 0;
-        LinkedList<PairPack<double[], Segment2D>> midSegPairs = new LinkedList<>();
+        LinkedList<WithPair<double[], Segment2D>> midSegPairs = new LinkedList<>();
         for (Segment2D seg : this) {
             PairPack<double[], Segment2D> midSegPair = new PairPack<>(seg.midPoint(), seg);
             double len = seg.length();
@@ -60,9 +62,9 @@ public class Polygon2D implements Iterable<Segment2D> {
             }
             midSegPairs.add(midSegPair);
         }
-        ArrayList<Comparator<PairPack<double[], Segment2D>>> comps = new ArrayList<>(2);
+        ArrayList<Comparator<WithPair<double[], Segment2D>>> comps = new ArrayList<>(2);
         for (int i = 0; i < DIM; i++) {
-            comps.add(PairPack.packComparator(new DoubleArrayComparator(i), Segment2D.class));
+            comps.add(new WithPairComparator(new DoubleArrayComparator(i)));
         }
         lrTree = new LayeredRangeTree<>(midSegPairs, comps);
         maxSegLen = maxLen;
@@ -162,10 +164,10 @@ public class Polygon2D implements Iterable<Segment2D> {
         double[] to = new double[]{center[0] + radius + maxSegLen / 2, center[1] + radius + maxSegLen / 2};
         PairPack<double[], Segment2D> fromP = new PairPack<>(from, null);
         PairPack<double[], Segment2D> toP = new PairPack<>(to, null);
-        LinkedList<PairPack<double[], Segment2D>> pairs = new LinkedList<>();
+        LinkedList<WithPair<double[], Segment2D>> pairs = new LinkedList<>();
         lrTree.rangeSearch(pairs, fromP, toP);
-        for (PairPack<double[], Segment2D> pair : pairs) {
-            Segment2D seg = pair.value;
+        for (WithPair<double[], Segment2D> pair : pairs) {
+            Segment2D seg = pair.getValue();
             if (seg.distanceTo(center[0], center[1]) <= radius) {
                 output.add(seg);
             }

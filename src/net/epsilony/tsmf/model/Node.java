@@ -6,7 +6,7 @@ package net.epsilony.tsmf.model;
 
 import java.util.Arrays;
 import net.epsilony.tsmf.util.IntIdentity;
-import net.epsilony.tsmf.util.WithPair;
+import net.epsilony.tsmf.util.pair.WithPair;
 
 /**
  *
