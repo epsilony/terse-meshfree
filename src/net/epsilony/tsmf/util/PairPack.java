@@ -10,13 +10,13 @@ import java.util.Comparator;
  *
  * @author Man YUAN <epsilonyuan@gmail.com>
  */
-public class PairPack<V,A> {
-    public V value;
-    public A attach;
+public class PairPack<K,A> implements WithPair{
+    public K key;
+    public A value;
 
-    public PairPack(V value, A attach) {
-        this.value = value;
-        this.attach = attach;
+    public PairPack(K value, A attach) {
+        this.key = value;
+        this.value = attach;
     }
     
     public static <T,V> Comparator<PairPack<T,V>> packComparator(final Comparator<T> comp,Class<V> cls){
@@ -24,9 +24,19 @@ public class PairPack<V,A> {
 
             @Override
             public int compare(PairPack<T, V> o1, PairPack<T, V> o2) {
-                return comp.compare(o1.value, o2.value);
+                return comp.compare(o1.key, o2.key);
             }
         };
+    }
+
+    @Override
+    public K getKey() {
+        return key;
+    }
+
+    @Override
+    public A getValue() {
+        return value;
     }
     
 }

@@ -6,12 +6,13 @@ package net.epsilony.tsmf.model;
 
 import java.util.Arrays;
 import net.epsilony.tsmf.util.IntIdentity;
+import net.epsilony.tsmf.util.WithPair;
 
 /**
  *
  * @author epsilon
  */
-public class Node implements IntIdentity {
+public class Node implements IntIdentity,WithPair<double[],Node> {
 
     public double[] coord;
     public int id;
@@ -44,5 +45,15 @@ public class Node implements IntIdentity {
 
     public Node() {
         this.coord = new double[2];
+    }
+
+    @Override
+    public double[] getKey() {
+        return coord;
+    }
+
+    @Override
+    public Node getValue() {
+        return this;
     }
 }

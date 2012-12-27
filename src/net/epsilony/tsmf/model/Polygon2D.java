@@ -10,8 +10,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tsmf.util.DoubleArrayComparator;
-import net.epsilony.tsmf.util.rangesearch.LayeredRangeTree;
 import net.epsilony.tsmf.util.PairPack;
+import net.epsilony.tsmf.util.rangesearch.LayeredRangeTree;
 
 /**
  *
@@ -165,7 +165,7 @@ public class Polygon2D implements Iterable<Segment2D> {
         LinkedList<PairPack<double[], Segment2D>> pairs = new LinkedList<>();
         lrTree.rangeSearch(pairs, fromP, toP);
         for (PairPack<double[], Segment2D> pair : pairs) {
-            Segment2D seg = pair.attach;
+            Segment2D seg = pair.value;
             if (seg.distanceTo(center[0], center[1]) <= radius) {
                 output.add(seg);
             }
