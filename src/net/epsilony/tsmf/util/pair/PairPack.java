@@ -8,7 +8,7 @@ package net.epsilony.tsmf.util.pair;
  *
  * @author Man YUAN <epsilonyuan@gmail.com>
  */
-public class PairPack<K, V> implements WithPair {
+public class PairPack<K, V> implements WithPair<K,V> {
 
     public K key;
     public V value;

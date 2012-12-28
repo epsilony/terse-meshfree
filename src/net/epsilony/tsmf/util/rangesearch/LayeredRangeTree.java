@@ -246,7 +246,7 @@ public class LayeredRangeTree<K, V> {
         }
 
         void checkTo(K from, K to, Collection<? super V> results) {
-            List<? extends Comparator> comparators = dictComparator().getComparators();
+            List<? extends Comparator<K>> comparators = dictComparator().getComparators();
             boolean b = true;
             for (int i = mainKeyIndex; i < comparators.size(); i++) {
                 if (comparators.get(i).compare(from, key) > 0 || comparators.get(i).compare(key, to) > 0) {
