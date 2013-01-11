@@ -12,32 +12,29 @@ import net.epsilony.tsmf.util.WithDiffOrderUtil;
  *
  * @author Man YUAN <epsilonyuan@gmail.com>
  */
-public class MonomialBasis2D implements WithDiffOrder {
+public class MonomialBasis2D implements BasisFunction {
 
-    private int basisOrder;
+    private int monomialOrder;
     private int diffOrder;
-    private int basisLength;
 
-    public void setBasisOrder(int basisOrder) {
-        this.basisOrder = basisOrder;
-        this.basisLength = basisLength(basisOrder);
+    public void setMonomialOrder(int monomialOrder) {
+        this.monomialOrder = monomialOrder;
     }
 
-    public MonomialBasis2D(int basisOrder) {
-        initMonomialBasis2D(basisOrder);
+    public MonomialBasis2D(int monomialOrder) {
+        initMonomialBasis2D(monomialOrder);
     }
 
     public MonomialBasis2D() {
         initMonomialBasis2D(2);
     }
 
-    public int getBasisOrder() {
-        return basisOrder;
+    public int getMonomialOrder() {
+        return monomialOrder;
     }
 
     private void initMonomialBasis2D(int basisOrder) {
-        this.basisOrder = basisOrder;
-        basisLength = basisLength(basisOrder);
+        this.monomialOrder = basisOrder;
         diffOrder = 0;
     }
 
@@ -48,22 +45,23 @@ public class MonomialBasis2D implements WithDiffOrder {
 
     @Override
     public void setDiffOrder(int diffOrder) {
-        if(diffOrder<0 ||diffOrder >1){
-            throw new IllegalArgumentException("only support diffOrder that is 0 or 1, not "+diffOrder);
+        if (diffOrder < 0 || diffOrder > 1) {
+            throw new IllegalArgumentException("only support diffOrder that is 0 or 1, not " + diffOrder);
         }
         this.diffOrder = diffOrder;
     }
 
-    public static int basisLength(int order) {
-        if (order == -1) {
+    public static int basisLength(int monomialOrder) {
+        if (monomialOrder == -1) {
             return 0;
         }
-        return WithDiffOrderUtil.outputLength2D(order);
+        return WithDiffOrderUtil.outputLength2D(monomialOrder);
     }
 
+    @Override
     public TDoubleArrayList[] values(double[] xy, TDoubleArrayList[] output) {
         TDoubleArrayList[] results = initOutput(output);
-        if (basisOrder >= 0) {
+        if (monomialOrder >= 0) {
             results[0].add(1);
             if (diffOrder > 0) {
                 results[1].add(0);
@@ -71,7 +69,7 @@ public class MonomialBasis2D implements WithDiffOrder {
             }
         }
         double x = xy[0], y = xy[1];
-        if (basisOrder >= 1) {
+        if (monomialOrder >= 1) {
             results[0].add(x);
             results[0].add(y);
             if (diffOrder > 0) {
@@ -81,7 +79,7 @@ public class MonomialBasis2D implements WithDiffOrder {
                 results[2].add(1);
             }
         }
-        for (int n = 2; n <= basisOrder; n++) {
+        for (int n = 2; n <= monomialOrder; n++) {
             int i1 = basisLength(n - 2);
 
             if (diffOrder > 0) {
@@ -103,6 +101,11 @@ public class MonomialBasis2D implements WithDiffOrder {
     }
 
     public TDoubleArrayList[] initOutput(TDoubleArrayList[] output) {
-        return WithDiffOrderUtil.initOutput(output, basisLength, 2, diffOrder);
+        return WithDiffOrderUtil.initOutput(output, basisLength(), 2, diffOrder);
+    }
+
+    @Override
+    public int basisLength() {
+        return basisLength(getMonomialOrder());
     }
 }
