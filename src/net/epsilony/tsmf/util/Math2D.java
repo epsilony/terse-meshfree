@@ -6,7 +6,7 @@ package net.epsilony.tsmf.util;
 
 /**
  *
- * @author Man YUAN <epsilonyuan@gmail.com>
+ * @author <a href="mailto:epsionyuan@gmail.com">Man YUAN</a>
  */
 public class Math2D {
 
@@ -64,5 +64,9 @@ public class Math2D {
             results[1] = v1[1] - v2[1];
         }
         return results;
+    }
+
+    public static double triangleArea(double x1, double y1, double x2, double y2, double x3, double y3) {
+        return 0.5 * cross(x2 - x1, y2 - y1, x3 - x1, y3 - y1);
     }
 }
