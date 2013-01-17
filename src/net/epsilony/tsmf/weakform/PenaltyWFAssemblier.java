@@ -21,8 +21,8 @@ public class PenaltyWFAssemblier implements WFAssemblier {
     Matrix mainMatrix;
     DenseVector mainVector;
     DenseMatrix constitutiveLaw;
-    private double neumannPenalty;
-    private final boolean upperSymmetricMainMatrix;
+    double neumannPenalty;
+    final boolean upperSymmetricMainMatrix;
 
     public PenaltyWFAssemblier(DenseMatrix constitutiveLaw, int nodesSize, double neumannPenalty, boolean denseMainMatrix, boolean upperSymmetricMainMatrix) {
         if (denseMainMatrix) {
