@@ -19,7 +19,7 @@ public class TestTool {
         double[] result = new double[numPt];
         double numD = numPt - 1;
         for (int i = 0; i < numPt; i++) {
-            result[i] = start + (end - start) * (i / numD);
+            result[i] = start + d * (i / numD);
         }
         result[result.length - 1] = end;
         return result;
