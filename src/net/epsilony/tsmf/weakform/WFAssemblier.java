@@ -11,7 +11,7 @@ import no.uib.cipr.matrix.Matrix;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public interface WFAssemblier {
 

@@ -6,7 +6,7 @@ package net.epsilony.tsmf.util.pair;
 
 /**
  *
- * @author Man YUAN <epsilonyuan@gmail.com>
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public interface WithKey<K> {
 

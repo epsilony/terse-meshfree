@@ -6,8 +6,9 @@ package net.epsilony.tsmf.util.pair;
 
 /**
  *
- * @author Man YUAN <epsilonyuan@gmail.com>
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface KeyExtractor<T,K> {
+public interface KeyExtractor<T, K> {
+
     K extractKey(T t);
 }

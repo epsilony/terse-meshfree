@@ -14,7 +14,7 @@ import no.uib.cipr.matrix.sparse.FlexCompRowMatrix;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class PenaltyWFAssemblier implements WFAssemblier {
 
@@ -150,16 +150,16 @@ public class PenaltyWFAssemblier implements WFAssemblier {
             if (vb2) {
                 vec.add(mat_i + 1, vi * dirichletVal[1] * factor);
             }
-            int jStart=0;
-            if(upperSymmetricMainMatrix){
-                jStart=i;
+            int jStart = 0;
+            if (upperSymmetricMainMatrix) {
+                jStart = i;
             }
             for (int j = jStart; j < nodesIds.size(); j++) {
                 int mat_j = nodesIds.getQuick(j) * 2;
                 double vij = factor * vi * vs.getQuick(j);
                 int indexI;
                 int indexJ;
-                if (upperSymmetricMainMatrix&&mat_j <= mat_i) {
+                if (upperSymmetricMainMatrix && mat_j <= mat_i) {
                     indexI = mat_j;
                     indexJ = mat_i;
                 } else {

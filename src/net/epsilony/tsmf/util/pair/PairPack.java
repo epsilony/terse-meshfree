@@ -6,9 +6,9 @@ package net.epsilony.tsmf.util.pair;
 
 /**
  *
- * @author Man YUAN <epsilonyuan@gmail.com>
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class PairPack<K, V> implements WithPair<K,V> {
+public class PairPack<K, V> implements WithPair<K, V> {
 
     public K key;
     public V value;

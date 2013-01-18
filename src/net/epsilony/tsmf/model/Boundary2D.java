@@ -6,7 +6,7 @@ package net.epsilony.tsmf.model;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public abstract class Boundary2D {
 
@@ -17,14 +17,12 @@ public abstract class Boundary2D {
     public Boundary2D() {
     }
 
-
-
     public Boundary2D(Boundary2D pred, Boundary2D succ) {
         this.pred = pred;
         this.succ = succ;
     }
 
-    public Node getRear(){
+    public Node getRear() {
         return succ.getHead();
     }
 }

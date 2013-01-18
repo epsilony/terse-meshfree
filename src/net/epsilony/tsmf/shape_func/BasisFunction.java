@@ -9,7 +9,7 @@ import net.epsilony.tsmf.util.WithDiffOrder;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public interface BasisFunction extends WithDiffOrder {
 

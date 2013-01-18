@@ -27,7 +27,7 @@ import net.epsilony.tsmf.util.pair.WithPairComparator;
  * out that the input keys should not contain duplicate objects.
  *
  * @param E
- * @author Man YUAN <epsilonyuan@gmail.com>
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class LayeredRangeTree<K, V> {
 

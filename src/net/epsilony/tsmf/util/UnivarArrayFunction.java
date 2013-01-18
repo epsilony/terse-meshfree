@@ -6,8 +6,9 @@ package net.epsilony.tsmf.util;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface UnivarArrayFunction extends WithDiffOrder{
-    double[] values(double x,double[] results);
+public interface UnivarArrayFunction extends WithDiffOrder {
+
+    double[] values(double x, double[] results);
 }

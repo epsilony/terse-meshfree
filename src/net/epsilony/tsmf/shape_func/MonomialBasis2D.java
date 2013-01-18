@@ -10,7 +10,7 @@ import net.epsilony.tsmf.util.WithDiffOrderUtil;
 
 /**
  *
- * @author Man YUAN <epsilonyuan@gmail.com>
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class MonomialBasis2D implements BasisFunction {
 

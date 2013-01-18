@@ -14,7 +14,7 @@ import org.junit.Test;
 
 /**
  *
- * @author Man YUAN <epsilonyuan@gmail.com>
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class Polygon2DTest {
 

@@ -17,7 +17,7 @@ import org.ejml.ops.CommonOps;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class MLS implements ShapeFunction {
 
@@ -130,7 +130,7 @@ public class MLS implements ShapeFunction {
         double[] tds = new double[2];
         int crd_index = 0;
         for (double[] crd : coords) {
-            basisFunc.values(Math2D.subs(crd,xy, tds), basisCache);
+            basisFunc.values(Math2D.subs(crd, xy, tds), basisCache);
             TDoubleArrayList basis = basisCache[0];
             for (int i = 0; i < matAs.length; i++) {
                 DenseMatrix64F A_d = matAs[i];

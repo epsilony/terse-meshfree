@@ -8,7 +8,7 @@ import java.util.Comparator;
 
 /**
  *
- * @author Man YUAN <epsilonyuan@gmail.com>
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class DoubleArrayComparator implements Comparator<double[]> {
 

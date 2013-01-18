@@ -16,7 +16,7 @@ import net.epsilony.tsmf.util.rangesearch.LayeredRangeTree;
 
 /**
  *
- * @author Man YUAN <epsilonyuan@gmail.com>
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class Polygon2D implements Iterable<Segment2D> {
 

@@ -10,9 +10,9 @@ import net.epsilony.tsmf.util.pair.WithPair;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class Node implements IntIdentity,WithPair<double[],Node> {
+public class Node implements IntIdentity, WithPair<double[], Node> {
 
     public double[] coord;
     public int id;
@@ -34,9 +34,9 @@ public class Node implements IntIdentity,WithPair<double[],Node> {
             this.coord = coord;
         }
     }
-    
-    public Node(double[] coord){
-        this.coord=coord;
+
+    public Node(double[] coord) {
+        this.coord = coord;
     }
 
     public Node(double x, double y) {

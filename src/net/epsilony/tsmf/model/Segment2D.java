@@ -8,7 +8,7 @@ import net.epsilony.tsmf.util.Math2D;
 
 /**
  *
- * @author epsilonyuan+mb@gmail.com
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>yuan+mb@gmail.com
  */
 public class Segment2D extends Boundary2D {
 

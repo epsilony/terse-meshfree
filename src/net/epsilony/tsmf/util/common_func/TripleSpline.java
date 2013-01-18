@@ -9,7 +9,7 @@ import net.epsilony.tsmf.util.UnivarArrayFunction;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class TripleSpline implements UnivarArrayFunction {
 

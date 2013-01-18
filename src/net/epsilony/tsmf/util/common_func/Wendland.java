@@ -10,7 +10,7 @@ import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class Wendland implements UnivarArrayFunction {
 

@@ -19,7 +19,7 @@ import org.junit.Test;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class MLSTest {
 

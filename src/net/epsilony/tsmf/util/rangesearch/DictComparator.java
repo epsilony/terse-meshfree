@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  *
- * @author Man YUAN <epsilonyuan@gmail.com>
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class DictComparator<T> implements Comparator<T> {
 

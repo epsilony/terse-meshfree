@@ -10,7 +10,7 @@ import net.epsilony.tsmf.model.Polygon2D;
 
 /**
  *
- * @author Man YUAN <epsilonyuan@gmail.com>
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class TestTool {
 

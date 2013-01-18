@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class PenaltyWFAssemblierTest {
 
@@ -136,7 +136,7 @@ public class PenaltyWFAssemblierTest {
         for (boolean upperSym : new boolean[]{true, false}) {
             PenaltyWFAssemblier asm = sampleAsm(nodesSize, penalty, upperSym);
             for (int test = 1; test <= 2; test++) {
-                asm.asmDirichlet(weight, nodesIds, shapeFuncVals, volumnForce,new boolean[]{true,true});
+                asm.asmDirichlet(weight, nodesIds, shapeFuncVals, volumnForce, new boolean[]{true, true});
                 Matrix acts = asm.getMainMatrix();
                 for (int i = 0; i < acts.numRows(); i++) {
                     for (int j = 0; j < acts.numColumns(); j++) {
