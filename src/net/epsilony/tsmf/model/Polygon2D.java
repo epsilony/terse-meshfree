@@ -12,7 +12,6 @@ import java.util.List;
 import net.epsilony.tsmf.util.DoubleArrayComparator;
 import net.epsilony.tsmf.util.pair.PairPack;
 import net.epsilony.tsmf.util.pair.WithPair;
-import net.epsilony.tsmf.util.pair.WithPairComparator;
 import net.epsilony.tsmf.util.rangesearch.LayeredRangeTree;
 
 /**
@@ -22,7 +21,7 @@ import net.epsilony.tsmf.util.rangesearch.LayeredRangeTree;
 public class Polygon2D implements Iterable<Segment2D> {
 
     public static final int DIM = 2;
-    ArrayList<Segment2D> chains;
+    ArrayList<Segment2D> chainsHeads;
     LayeredRangeTree<double[], Segment2D> lrTree;
     double maxSegLen;
 
@@ -30,7 +29,7 @@ public class Polygon2D implements Iterable<Segment2D> {
         if (nodeChains.isEmpty()) {
             throw new IllegalArgumentException("There is at least 1 chain in a Polygon");
         }
-        chains = new ArrayList<>(nodeChains.size());
+        chainsHeads = new ArrayList<>(nodeChains.size());
         for (List< ? extends Node> nds : nodeChains) {
             if (nds.size() < 3) {
                 throw new IllegalArgumentException(String.format("Each chain in a polygon must contain at least 3 nodes as vertes!%n nodesChain[%d] has only %d nodes", nodeChains.indexOf(nds), nds.size()));
@@ -46,7 +45,7 @@ public class Polygon2D implements Iterable<Segment2D> {
             }
             chainHead.pred = seg.pred;
             chainHead.pred.succ = chainHead;
-            chains.add(chainHead);
+            chainsHeads.add(chainHead);
         }
         prepareLRTree();
     }
@@ -181,22 +180,22 @@ public class Polygon2D implements Iterable<Segment2D> {
     class SegmentIterator implements Iterator<Segment2D> {
 
         int chainId = 0;
-        Segment2D seg = chains.isEmpty() ? null : chains.get(0);
+        Segment2D seg = chainsHeads.isEmpty() ? null : chainsHeads.get(0);
         Segment2D last;
 
         @Override
         public boolean hasNext() {
-            return chainId < chains.size();
+            return chainId < chainsHeads.size();
         }
 
         @Override
         public Segment2D next() {
             Segment2D res = seg;
             seg = (Segment2D) seg.succ;
-            if (seg == chains.get(chainId)) {
+            if (seg == chainsHeads.get(chainId)) {
                 chainId++;
-                if (chainId < chains.size()) {
-                    seg = chains.get(chainId);
+                if (chainId < chainsHeads.size()) {
+                    seg = chainsHeads.get(chainId);
                 }
             }
             last = res;
