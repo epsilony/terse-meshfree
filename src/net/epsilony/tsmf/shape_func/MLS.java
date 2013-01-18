@@ -19,7 +19,7 @@ import org.ejml.ops.CommonOps;
  *
  * @author epsilon
  */
-public class MLS implements WithDiffOrder {
+public class MLS implements ShapeFunction {
 
     RadialFunction2D weightFunc;
     BasisFunction basisFunc;
@@ -115,6 +115,7 @@ public class MLS implements WithDiffOrder {
         buildCaches();
     }
 
+    @Override
     public TDoubleArrayList[] values(double[] xy, List<double[]> coords, TDoubleArrayList influcenceRads, TDoubleArrayList[] dists, TDoubleArrayList[] output) {
         resetCaches(coords.size());
         TDoubleArrayList[] results = WithDiffOrderUtil.initOutput(output, coords.size(), 2, getDiffOrder());
