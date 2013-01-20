@@ -78,8 +78,10 @@ public class TestTool {
                 {6.5, 6},
                 {7.5, 6}}
         };
-        coordChainsOut.clear();
-        coordChainsOut.add(coordChains);
+        if (null != coordChainsOut) {
+            coordChainsOut.clear();
+            coordChainsOut.add(coordChains);
+        }
         return Polygon2D.byCoordChains(coordChains);
     }
 }
