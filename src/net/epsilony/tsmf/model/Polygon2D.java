@@ -5,6 +5,7 @@
 package net.epsilony.tsmf.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -150,6 +151,10 @@ public class Polygon2D implements Iterable<Segment2D> {
         return rayCrs == 'i' ? inf : -inf;
     }
 
+    public void rangeSearch(Collection<? super Segment2D> results, double[] from, double[] to) {
+        lrTree.rangeSearch(results, from, to);
+    }
+
     public List<Segment2D> segmentsIntersectingDisc(double[] center, double radius, List<Segment2D> output) {
         if (null == output) {
             output = new LinkedList<>();
@@ -163,7 +168,7 @@ public class Polygon2D implements Iterable<Segment2D> {
         double[] to = new double[]{center[0] + radius + maxSegLen / 2, center[1] + radius + maxSegLen / 2};
 
         LinkedList<Segment2D> segs = new LinkedList<>();
-        lrTree.rangeSearch(segs, from, to);
+        rangeSearch(segs, from, to);
         for (Segment2D seg : segs) {
             if (seg.distanceTo(center[0], center[1]) <= radius) {
                 output.add(seg);
