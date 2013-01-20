@@ -157,6 +157,39 @@ public class Polygon2DTest {
         }
     }
 
+    @Test
+    public void testFractionize() {
+        double[][][] coordChains = new double[][][]{
+            {{-1, -1}, {1, -1}, {1, 1}, {-1, 1}},
+            {{-0.5, -0.5}, {-0.5, 0.5}, {0.5, 0.5}, {0.5, -0.5}}
+        };
+
+        Polygon2D pg = Polygon2D.byCoordChains(coordChains);
+        Polygon2D fPg = pg.fractionize(0.67);
+        ArrayList<LinkedList<Node>> pVertes = fPg.getVertes();
+        double[][][] exps = new double[][][]{
+            {{-1, -1}, {-0.5, -1}, {0, -1}, {0.5, -1},
+                {1, -1}, {1, -0.5}, {1, 0}, {1, 0.5},
+                {1, 1}, {0.5, 1}, {0, 1}, {-0.5, 1},
+                {-1, 1}, {-1, 0.5}, {-1, 0}, {-1, -0.5},},
+            {{-0.5, -0.5}, {-0.5, 0},
+                {-0.5, 0.5}, {0, 0.5},
+                {0.5, 0.5}, {0.5, 0},
+                {0.5, -0.5}, {0, -0.5}}
+        };
+        int i = 0;
+        for (LinkedList<Node> cs : pVertes) {
+            int j = 0;
+            for (Node nd : cs) {
+                double[] act = nd.coord;
+                double[] exp = exps[i][j];
+                assertArrayEquals(exp, act, 1e-12);
+                j++;
+            }
+            i++;
+        }
+    }
+
     public Polygon2D samplePolygon() {
         double[][][] coordChains = new double[][][]{{{0, 0}, {1, 0}, {1, 1}, {0.5, 0.5}, {0, 1}}};
         return Polygon2D.byCoordChains(coordChains);

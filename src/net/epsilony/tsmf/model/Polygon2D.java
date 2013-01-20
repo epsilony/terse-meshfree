@@ -211,7 +211,38 @@ public class Polygon2D implements Iterable<Segment2D> {
             last.succ.pred = last.pred;
         }
     }
-
+    
+    public Polygon2D fractionize(double maxLength){
+        Polygon2D res=copy(false);
+        for(Segment2D cHead:res.chainsHeads){
+            Segment2D seg=cHead;
+            do{
+                while(seg.length()>maxLength){
+                    seg.subdivide();
+                }
+                seg=(Segment2D) seg.succ;
+            }while(seg!=cHead);
+        }
+        return res;
+    }
+    
+    public Polygon2D copy(boolean deep){
+        ArrayList<LinkedList<Node>> vertes = getVertes();
+        if(deep){
+            ArrayList<LinkedList<Node>> vertesCopy=new ArrayList<>(vertes.size());
+            for(LinkedList<Node> chain:vertes){
+                LinkedList<Node> cs=new LinkedList<>();
+                vertesCopy.add(cs);
+                for(Node nd:chain){
+                    cs.add(new Node(nd.coord,true));
+                }
+            }
+            return new Polygon2D(vertesCopy);
+        }else{
+            return new Polygon2D(vertes);
+        }
+    }
+    
     public ArrayList<LinkedList<Node>> getVertes(){
         ArrayList<LinkedList<Node>> res=new ArrayList<>(chainsHeads.size());
         for(Segment2D cHead:chainsHeads){
