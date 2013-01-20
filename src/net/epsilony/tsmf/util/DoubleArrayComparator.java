@@ -4,6 +4,7 @@
  */
 package net.epsilony.tsmf.util;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 
 /**
@@ -29,5 +30,13 @@ public class DoubleArrayComparator implements Comparator<double[]> {
         } else {
             return 1;
         }
+    }
+
+    public static ArrayList<DoubleArrayComparator> comparatorsForAll(int size) {
+        ArrayList<DoubleArrayComparator> result = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            result.add(new DoubleArrayComparator(i));
+        }
+        return result;
     }
 }
