@@ -5,8 +5,10 @@
 package net.epsilony.tsmf.model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Random;
 import net.epsilony.tsmf.util.TestTool;
 import static org.junit.Assert.*;
@@ -131,6 +133,27 @@ public class Polygon2DTest {
                 acts = pg.segmentsIntersectingDisc(center, radius, null);
                 throw e;
             }
+        }
+    }
+
+    @Test
+    public void testPolygonSegmentPredLink() {
+        Polygon2D pg = TestTool.samplePolygon(null);
+        ArrayList<LinkedList<Node>> vertes = pg.getVertes();
+        Iterator<LinkedList<Node>> vIter = vertes.iterator();
+        for (Segment2D cHead : pg.chainsHeads) {
+            Segment2D seg = cHead;
+            LinkedList<Node> cs = vIter.next();
+            ListIterator<Node> csIter = cs.listIterator(cs.size());
+            boolean getHere = false;
+            do {
+                Node actNd = seg.pred.getHead();
+                Node expNd = csIter.previous();
+                assertArrayEquals(expNd.coord, actNd.coord, 1e-14);
+                seg = (Segment2D) seg.pred;
+                getHere = true;
+            } while (seg != cHead);
+            assertTrue(getHere);
         }
     }
 

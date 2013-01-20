@@ -211,4 +211,18 @@ public class Polygon2D implements Iterable<Segment2D> {
             last.succ.pred = last.pred;
         }
     }
+
+    public ArrayList<LinkedList<Node>> getVertes(){
+        ArrayList<LinkedList<Node>> res=new ArrayList<>(chainsHeads.size());
+        for(Segment2D cHead:chainsHeads){
+            LinkedList<Node> vs=new LinkedList<>();
+            res.add(vs);
+            Segment2D seg=cHead;
+            do{
+                vs.add(seg.getHead());
+                seg=(Segment2D) seg.succ;
+            }while(seg!=cHead);
+        }
+        return res;
+    }
 }
