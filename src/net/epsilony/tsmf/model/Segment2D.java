@@ -61,11 +61,30 @@ public class Segment2D extends Boundary2D {
         return Math.sqrt(dx * dx + dy * dy);
     }
 
-    public double[] midPoint() {
+    public double[] midPoint(double[] result) {
         double[] start = getHead().coord;
         double[] end = getRear().coord;
         double x = (start[0] + end[0]) / 2;
         double y = (start[1] + end[1]) / 2;
-        return new double[]{x, y};
+        if (null == result) {
+            return new double[]{x, y};
+        } else {
+            result[0] = x;
+            result[1] = y;
+            return result;
+        }
+    }
+    
+    public double[] midPoint(){
+        return midPoint(null);
+    }
+
+    public Segment2D subdivide() {
+        Segment2D seg=new Segment2D(new Node(midPoint()));
+        seg.succ=this.succ;
+        seg.pred=this;
+        this.succ.pred=seg;
+        this.succ=seg;
+        return seg;
     }
 }
