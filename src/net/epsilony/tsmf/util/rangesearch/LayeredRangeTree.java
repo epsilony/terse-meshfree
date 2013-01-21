@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tsmf.util.pair.PairPack;
@@ -44,18 +43,7 @@ public class LayeredRangeTree<K, V> {
     }
 
     public LayeredRangeTree(List<? extends K> keys, List<? extends V> values, List<? extends Comparator<K>> comparators) {
-        if (keys.size() != values.size()) {
-            throw new IllegalArgumentException("Keys's size and values' size mismatch");
-        }
-
-        Iterator<? extends K> keyIter = keys.iterator();
-        Iterator<? extends V> valIter = values.iterator();
-        LinkedList<WithPair<K, V>> pairs = new LinkedList<>();
-        while (keyIter.hasNext()) {
-            K key = keyIter.next();
-            V val = valIter.next();
-            pairs.add(new PairPack<>(key, val));
-        }
+        List<WithPair<K, V>> pairs = PairPack.pack(keys, values, new LinkedList<WithPair<K, V>>());
         buildTree(comparators, pairs);
     }
 
