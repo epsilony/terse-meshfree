@@ -4,11 +4,13 @@
  */
 package net.epsilony.tsmf.model;
 
+import net.epsilony.tsmf.util.IntIdentity;
+
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public abstract class Boundary2D {
+public abstract class Boundary2D implements IntIdentity{
 
     public Boundary2D pred, succ;
 
@@ -25,4 +27,17 @@ public abstract class Boundary2D {
     public Node getRear() {
         return succ.getHead();
     }
+    
+    public int id;
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
+    }
+    
 }
