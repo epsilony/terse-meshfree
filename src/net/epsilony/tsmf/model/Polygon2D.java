@@ -49,6 +49,11 @@ public class Polygon2D implements Iterable<Segment2D> {
             chainsHeads.add(chainHead);
         }
         prepareLRTree();
+        int id = 0;
+        for (Segment2D seg : this) {
+            seg.setId(id);
+            id++;
+        }
     }
 
     private void prepareLRTree() {
@@ -216,48 +221,48 @@ public class Polygon2D implements Iterable<Segment2D> {
             last.succ.pred = last.pred;
         }
     }
-    
-    public Polygon2D fractionize(double maxLength){
-        Polygon2D res=copy(false);
-        for(Segment2D cHead:res.chainsHeads){
-            Segment2D seg=cHead;
-            do{
-                while(seg.length()>maxLength){
+
+    public Polygon2D fractionize(double maxLength) {
+        Polygon2D res = copy(false);
+        for (Segment2D cHead : res.chainsHeads) {
+            Segment2D seg = cHead;
+            do {
+                while (seg.length() > maxLength) {
                     seg.subdivide();
                 }
-                seg=(Segment2D) seg.succ;
-            }while(seg!=cHead);
+                seg = (Segment2D) seg.succ;
+            } while (seg != cHead);
         }
         return res;
     }
-    
-    public Polygon2D copy(boolean deep){
+
+    public Polygon2D copy(boolean deep) {
         ArrayList<LinkedList<Node>> vertes = getVertes();
-        if(deep){
-            ArrayList<LinkedList<Node>> vertesCopy=new ArrayList<>(vertes.size());
-            for(LinkedList<Node> chain:vertes){
-                LinkedList<Node> cs=new LinkedList<>();
+        if (deep) {
+            ArrayList<LinkedList<Node>> vertesCopy = new ArrayList<>(vertes.size());
+            for (LinkedList<Node> chain : vertes) {
+                LinkedList<Node> cs = new LinkedList<>();
                 vertesCopy.add(cs);
-                for(Node nd:chain){
-                    cs.add(new Node(nd.coord,true));
+                for (Node nd : chain) {
+                    cs.add(new Node(nd.coord, true));
                 }
             }
             return new Polygon2D(vertesCopy);
-        }else{
+        } else {
             return new Polygon2D(vertes);
         }
     }
-    
-    public ArrayList<LinkedList<Node>> getVertes(){
-        ArrayList<LinkedList<Node>> res=new ArrayList<>(chainsHeads.size());
-        for(Segment2D cHead:chainsHeads){
-            LinkedList<Node> vs=new LinkedList<>();
+
+    public ArrayList<LinkedList<Node>> getVertes() {
+        ArrayList<LinkedList<Node>> res = new ArrayList<>(chainsHeads.size());
+        for (Segment2D cHead : chainsHeads) {
+            LinkedList<Node> vs = new LinkedList<>();
             res.add(vs);
-            Segment2D seg=cHead;
-            do{
+            Segment2D seg = cHead;
+            do {
                 vs.add(seg.getHead());
-                seg=(Segment2D) seg.succ;
-            }while(seg!=cHead);
+                seg = (Segment2D) seg.succ;
+            } while (seg != cHead);
         }
         return res;
     }
