@@ -167,7 +167,11 @@ public class LayeredRangeTree<K, V> {
                     TreeNode v = vs.left;
                     while (!v.isLeaf()) {
                         if (dictCompare(from, v.key) <= 0) {
-                            v.right.rangeQuary(results, from, to);
+                            if (!v.right.isLeaf()) {
+                                v.right.associateTree.rangeQuary(results, from, to);
+                            } else {
+                                v.right.checkTo(from, to, results);
+                            }
                             v = v.left;
                         } else {
                             v = v.right;
@@ -177,7 +181,11 @@ public class LayeredRangeTree<K, V> {
                     v = vs.right;
                     while (!v.isLeaf()) {
                         if (dictCompare(v.key, to) <= 0) {
-                            v.left.rangeQuary(results, from, to);
+                            if (!v.left.isLeaf()) {
+                                v.left.associateTree.rangeQuary(results, from, to);
+                            } else {
+                                v.left.checkTo(from, to, results);
+                            }
                             v = v.right;
                         } else {
                             v = v.left;
