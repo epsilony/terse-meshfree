@@ -4,6 +4,7 @@
  */
 package net.epsilony.tsmf.model;
 
+import gnu.trove.list.array.TDoubleArrayList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -27,9 +28,60 @@ public class Model2D {
     private final int DIM = 2;
     ArrayList<Node> spaceNodes;
     private final SearchMethod searchMethod;
+    TDoubleArrayList influenceRads;
+    public final boolean DEFAULT_WHETHER_USE_DISTURB = true;
 
-    public void search(double[] center, Segment2D bnd, double radius, List<Node> nodes, List<Segment2D> segs, List<Node> blockedNds, List<Segment2D> ndBlockBySeg) {
-        searchMethod.search(center, bnd, radius, nodes, segs, blockedNds, ndBlockBySeg);
+    public void search(double[] center, Segment2D bnd, double radius, boolean filetByInfluence, List<Node> nodes, List<Segment2D> segs, List<Node> blockedNds, List<Segment2D> ndBlockBySeg) {
+        searchMethod.search(center, bnd, radius, filetByInfluence, nodes, segs, blockedNds, ndBlockBySeg);
+    }
+
+    public void searchNodesSegments(double[] center, double radius, List<Node> nodes, List<Segment2D> segs) {
+        nodes.clear();
+        segs.clear();
+        polygon.segmentsIntersectingDisc(center, radius, segs);
+        double[] from = new double[]{center[0] - radius, center[1] - radius};
+        double[] to = new double[]{center[0] + radius, center[1] + radius};
+        nodesLRTree.rangeSearch(nodes, from, to);
+        Iterator<Node> rsIter = nodes.iterator();
+        while (rsIter.hasNext()) {
+            Node nd = rsIter.next();
+            if (distance(nd.coord, center) >= radius) {
+                rsIter.remove();
+            }
+        }
+    }
+
+    public List<Node> filetNodesByInfluenceRad(double[] center, List<Node> nodes, List<Node> result) {
+        if (null == result) {
+            result = new LinkedList<>();
+        } else {
+            result.clear();
+        }
+        for (Node nd : nodes) {
+            double rad = getInfluenceRad(nd);
+            if (rad > distance(nd.coord, center)) {
+                result.add(nd);
+            }
+        }
+        return result;
+    }
+
+    public double getInfluenceRad(Node node) {
+        if (allNodes.get(node.id) != node) {
+            throw new IllegalArgumentException("the input node is not in this model of node index been modified unproperly:" + node);
+        }
+        return influenceRads.get(node.id);
+    }
+
+    public void setInfluenceRad(Node node, double rad) {
+        if (allNodes.get(node.id) != node) {
+            throw new IllegalArgumentException("the input node is not in this model of node index been modified unproperly:" + node);
+        }
+        influenceRads.set(node.id, rad);
+    }
+
+    public void setInfluenceRadForAll(double rad) {
+        influenceRads.fill(rad);
     }
 
     public class SearchMethod {
@@ -44,33 +96,15 @@ public class Model2D {
             segs.clear();
         }
 
-        public void search(double[] center, Segment2D bnd, double radius,
+        public void search(double[] center, Segment2D bnd, double radius, boolean filetByInflucen,
                 List<Node> nodes, List<Segment2D> segs,
                 List<Node> blockedNds, List<Segment2D> ndBlockBySeg) {
-
-            initOutput(nodes, segs, blockedNds, ndBlockBySeg);
-            LinkedList<Node> rangeSearchedNds = searchNodesAndSegs(center, radius, segs);
+            LinkedList<Node> rangeSearchedNds = preSearch(center, radius, filetByInflucen, nodes, segs, blockedNds, ndBlockBySeg);
             if (null != bnd) {
                 filetByBnd(center, bnd, radius, rangeSearchedNds, segs, blockedNds, ndBlockBySeg);
             }
             filetBySegments(center, bnd, radius, rangeSearchedNds, segs, blockedNds, ndBlockBySeg);
             nodes.addAll(rangeSearchedNds);
-        }
-
-        protected LinkedList<Node> searchNodesAndSegs(double[] center, double radius, List<Segment2D> segs) {
-            polygon.segmentsIntersectingDisc(center, radius, segs);
-            LinkedList<Node> rangeSearchedNds = new LinkedList<>();
-            double[] from = new double[]{center[0] - radius, center[1] - radius};
-            double[] to = new double[]{center[0] + radius, center[1] + radius};
-            nodesLRTree.rangeSearch(rangeSearchedNds, from, to);
-            Iterator<Node> rsIter = rangeSearchedNds.iterator();
-            while (rsIter.hasNext()) {
-                Node nd = rsIter.next();
-                if (distance(nd.coord, center) >= radius) {
-                    rsIter.remove();
-                }
-            }
-            return rangeSearchedNds;
         }
 
         protected void filetBySegments(double[] center, Segment2D bnd, double radius, LinkedList<Node> rangeSearchedNds, List<Segment2D> segs, List<Node> blockedNds, List<Segment2D> ndBlockBySeg) {
@@ -119,6 +153,18 @@ public class Model2D {
                 }
             }
         }
+
+        protected LinkedList<Node> preSearch(double[] center, double radius, boolean filetByInflucen, List<Node> nodes, List<Segment2D> segs, List<Node> blockedNds, List<Segment2D> ndBlockBySeg) {
+            initOutput(nodes, segs, blockedNds, ndBlockBySeg);
+            LinkedList<Node> searchedNds = new LinkedList<>();
+            searchNodesSegments(center, radius, searchedNds, segs);
+            if (filetByInflucen) {
+                LinkedList<Node> bak = searchedNds;
+                searchedNds = new LinkedList<>();
+                filetNodesByInfluenceRad(center, bak, searchedNds);
+            }
+            return searchedNds;
+        }
     }
     public static final double DEFAULT_DISTANCE_RATION = 1e-6;
 
@@ -158,16 +204,15 @@ public class Model2D {
         }
 
         @Override
-        public void search(double[] center, Segment2D bnd, double radius, List<Node> nodes, List<Segment2D> segs, List<Node> blockedNds, List<Segment2D> ndBlockBySeg) {
-            initOutput(nodes, segs, blockedNds, ndBlockBySeg);
-            LinkedList<Node> rangeSearchedNds = searchNodesAndSegs(center, radius, segs);
+        public void search(double[] center, Segment2D bnd, double radius, boolean filetByInfluence, List<Node> nodes, List<Segment2D> segs, List<Node> blockedNds, List<Segment2D> ndBlockBySeg) {
+            LinkedList<Node> searchedNds = preSearch(center, radius, filetByInfluence, nodes, segs, blockedNds, ndBlockBySeg);
             double[] actCenter = (null == bnd) ? center : perturbCenter(center, bnd, segs);
-            filetBySegments(actCenter, null, radius, rangeSearchedNds, segs, blockedNds, ndBlockBySeg);
-            nodes.addAll(rangeSearchedNds);
+            filetBySegments(actCenter, null, radius, searchedNds, segs, blockedNds, ndBlockBySeg);
+            nodes.addAll(searchedNds);
         }
     }
 
-    public Model2D(Polygon2D polygon, List<Node> spaceNodes, boolean useDisturbedCenterOnBnd) {
+    public Model2D(Polygon2D polygon, List<Node> spaceNodes, boolean useDisturbSearch) {
         this.polygon = polygon;
         this.spaceNodes = new ArrayList<>(spaceNodes);
         allNodes = new ArrayList<>(spaceNodes);
@@ -182,11 +227,14 @@ public class Model2D {
             nd.setId(id);
             id++;
         }
-        if (useDisturbedCenterOnBnd) {
+        if (useDisturbSearch) {
             searchMethod = new PerturbationSearch();
         } else {
             searchMethod = new SearchMethod();
         }
+        double[] t = new double[allNodes.size()];
+        Arrays.fill(t, Double.POSITIVE_INFINITY);
+        influenceRads = new TDoubleArrayList(t);
     }
 
     public Model2D(Polygon2D polygon, List<Node> spaceNodes) {
