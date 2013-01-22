@@ -36,6 +36,22 @@ public class Model2D implements ModelSearcher {
         searchMethod.search(center, bnd, radius, filetByInfluence, nodes, segs, blockedNds, blockNdsSegs);
     }
 
+    public double maxInfluenceRad() {
+        return influenceRads.max();
+    }
+
+    public Polygon2D getPolygon() {
+        return polygon;
+    }
+
+    public ArrayList<Node> getSpaceNodes() {
+        return spaceNodes;
+    }
+
+    public ArrayList<Node> getAllNodes() {
+        return allNodes;
+    }
+
     public void searchNodesSegments(double[] center, double radius, List<Node> nodes, List<Segment2D> segs) {
         nodes.clear();
         segs.clear();
