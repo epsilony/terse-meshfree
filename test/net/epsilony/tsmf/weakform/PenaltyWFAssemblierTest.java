@@ -4,6 +4,7 @@
  */
 package net.epsilony.tsmf.weakform;
 
+import net.epsilony.tsmf.assemblier.PenaltyWFAssemblier;
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import no.uib.cipr.matrix.DenseMatrix;
