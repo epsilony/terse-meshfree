@@ -20,7 +20,7 @@ import net.epsilony.tsmf.util.rangesearch.LayeredRangeTree;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a> St-Pierre</a>
  */
-public class Model2D {
+public class Model2D implements ModelSearcher {
 
     Polygon2D polygon;
     ArrayList<Node> allNodes;
@@ -31,8 +31,9 @@ public class Model2D {
     TDoubleArrayList influenceRads;
     public final boolean DEFAULT_WHETHER_USE_DISTURB = true;
 
-    public void search(double[] center, Segment2D bnd, double radius, boolean filetByInfluence, List<Node> nodes, List<Segment2D> segs, List<Node> blockedNds, List<Segment2D> ndBlockBySeg) {
-        searchMethod.search(center, bnd, radius, filetByInfluence, nodes, segs, blockedNds, ndBlockBySeg);
+    @Override
+    public void searchModel(double[] center, Segment2D bnd, double radius, boolean filetByInfluence, List<Node> nodes, List<Segment2D> segs, List<Node> blockedNds, List<Segment2D> blockNdsSegs) {
+        searchMethod.search(center, bnd, radius, filetByInfluence, nodes, segs, blockedNds, blockNdsSegs);
     }
 
     public void searchNodesSegments(double[] center, double radius, List<Node> nodes, List<Segment2D> segs) {
@@ -87,27 +88,27 @@ public class Model2D {
     public class SearchMethod {
 
         void initOutput(List<Node> nodes, List<Segment2D> segs,
-                List<Node> blockedNds, List<Segment2D> ndBlockBySeg) {
+                List<Node> blockedNds, List<Segment2D> blockNdsSegs) {
             nodes.clear();
-            if (null != blockedNds) {
+            if (null != segs) {
+                segs.clear();
                 blockedNds.clear();
-                ndBlockBySeg.clear();
+                blockNdsSegs.clear();
             }
-            segs.clear();
         }
 
         public void search(double[] center, Segment2D bnd, double radius, boolean filetByInflucen,
                 List<Node> nodes, List<Segment2D> segs,
-                List<Node> blockedNds, List<Segment2D> ndBlockBySeg) {
-            LinkedList<Node> rangeSearchedNds = preSearch(center, radius, filetByInflucen, nodes, segs, blockedNds, ndBlockBySeg);
+                List<Node> blockedNds, List<Segment2D> blockNdsSegs) {
+            LinkedList<Node> rangeSearchedNds = preSearch(center, radius, filetByInflucen, nodes, segs, blockedNds, blockNdsSegs);
             if (null != bnd) {
-                filetByBnd(center, bnd, radius, rangeSearchedNds, segs, blockedNds, ndBlockBySeg);
+                filetByBnd(center, bnd, radius, rangeSearchedNds, segs, blockedNds, blockNdsSegs);
             }
-            filetBySegments(center, bnd, radius, rangeSearchedNds, segs, blockedNds, ndBlockBySeg);
+            filetBySegments(center, bnd, radius, rangeSearchedNds, segs, blockedNds, blockNdsSegs);
             nodes.addAll(rangeSearchedNds);
         }
 
-        protected void filetBySegments(double[] center, Segment2D bnd, double radius, LinkedList<Node> rangeSearchedNds, List<Segment2D> segs, List<Node> blockedNds, List<Segment2D> ndBlockBySeg) {
+        protected void filetBySegments(double[] center, Segment2D bnd, double radius, LinkedList<Node> rangeSearchedNds, List<Segment2D> segs, List<Node> blockedNds, List<Segment2D> blockNdsSegs) {
             for (Segment2D seg : segs) {
                 if (seg == bnd) {
                     continue;
@@ -126,14 +127,14 @@ public class Model2D {
                         rsIter.remove();
                         if (null != blockedNds) {
                             blockedNds.add(nd);
-                            ndBlockBySeg.add(seg);
+                            blockNdsSegs.add(seg);
                         }
                     }
                 }
             }
         }
 
-        protected void filetByBnd(double[] center, Segment2D bnd, double radius, LinkedList<Node> rangeSearchedNds, List<Segment2D> segs, List<Node> blockedNds, List<Segment2D> ndBlockBySeg) {
+        protected void filetByBnd(double[] center, Segment2D bnd, double radius, LinkedList<Node> rangeSearchedNds, List<Segment2D> segs, List<Node> blockedNds, List<Segment2D> blockNdsSegs) {
             if (null != bnd) {
                 double[] hc = bnd.getHead().coord;
                 double[] rc = bnd.getRear().coord;
@@ -147,7 +148,7 @@ public class Model2D {
                         rsIter.remove();
                         if (null != blockedNds) {
                             blockedNds.add(nd);
-                            ndBlockBySeg.add(bnd);
+                            blockNdsSegs.add(bnd);
                         }
                     }
                 }

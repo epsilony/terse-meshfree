@@ -46,7 +46,7 @@ public class Model2DTest {
         LinkedList<Segment2D> ndsBlockedBySeg = new LinkedList<>();
         LinkedList<Node> nodes = new LinkedList<>();
         LinkedList<Node> blockedNds = new LinkedList<>();
-        sampleModel2D.search(center, null, radius,false, nodes, segs, blockedNds, ndsBlockedBySeg);
+        sampleModel2D.searchModel(center, null, radius, false, nodes, segs, blockedNds, ndsBlockedBySeg);
         Collections.sort(nodes, new IntIdentityComparator<>());
         List<WithPair<Node, Segment2D>> blockPair = PairPack.pack(blockedNds, ndsBlockedBySeg, new LinkedList<WithPair<Node, Segment2D>>());
         Collections.sort(blockPair, new WithPairComparator<Node, Segment2D>(new IntIdentityComparator<Node>()));
@@ -113,7 +113,7 @@ public class Model2DTest {
             LinkedList<Segment2D> ndsBlockedBySeg = new LinkedList<>();
             LinkedList<Node> nodes = new LinkedList<>();
             LinkedList<Node> blockedNds = new LinkedList<>();
-            sampleModel2D.search(center, bnd, radius,false, nodes, segs, blockedNds, ndsBlockedBySeg);
+            sampleModel2D.searchModel(center, bnd, radius, false, nodes, segs, blockedNds, ndsBlockedBySeg);
             Collections.sort(nodes, new IntIdentityComparator<>());
             int[] expPgNdIdx = wp ? expPgNdIdxWithPerb : expPgNdIdxNoPerb;
 
