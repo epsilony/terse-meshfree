@@ -10,8 +10,8 @@ package net.epsilony.tsmf.util.quadrature;
  */
 public class QuadraturePoint {
 
-    double weight;
-    double[] coord;
+    public double weight;
+    public double[] coord;
 
     QuadraturePoint(double weight, double x, double y) {
         this.weight = weight;
