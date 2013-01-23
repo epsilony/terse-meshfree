@@ -14,6 +14,7 @@ import net.epsilony.tsmf.shape_func.ShapeFunction;
  * @author epsilon
  */
 public class ProcessPackage {
+
     public Project project;
     public Model2D model;
     public InfluenceRadsCalc influenceRadCalc;

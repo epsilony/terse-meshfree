@@ -31,16 +31,16 @@ public class PenaltyWFAssemblier implements WFAssemblier {
         dense = denseMainMatrix;
         initMainMatrixVector(nodesSize * 2);
     }
-    
-    protected final void initMainMatrixVector(int numRowCol){
+
+    protected final void initMainMatrixVector(int numRowCol) {
         if (dense) {
             if (constitutiveLaw.isSymmetric()) {
                 mainMatrix = new UpperSymmDenseMatrix(numRowCol);
             } else {
-                mainMatrix = new DenseMatrix(numRowCol,numRowCol);
+                mainMatrix = new DenseMatrix(numRowCol, numRowCol);
             }
         } else {
-            mainMatrix = new FlexCompRowMatrix(numRowCol,numRowCol);
+            mainMatrix = new FlexCompRowMatrix(numRowCol, numRowCol);
         }
         mainVector = new DenseVector(numRowCol);
     }

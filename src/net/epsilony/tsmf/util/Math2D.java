@@ -73,9 +73,9 @@ public class Math2D {
     public static boolean isSegmentsIntersecting(double[] head1, double[] rear1, double[] head2, double[] rear2) {
         return isSegmentsIntersecting(head1[0], head1[1], rear1[0], rear1[1], head2[0], head2[1], rear2[0], rear2[1]);
     }
-    
-    public static boolean isSegmentsIntersecting(double h1x,double h1y,double r1x,double r1y,double h2x,double h2y,double r2x,double r2y){
-                double u1 = r1x - h1x;
+
+    public static boolean isSegmentsIntersecting(double h1x, double h1y, double r1x, double r1y, double h2x, double h2y, double r2x, double r2y) {
+        double u1 = r1x - h1x;
         double u2 = r1y - h1y;
         double v1 = r2x - h2x;
         double v2 = r2y - h2y;

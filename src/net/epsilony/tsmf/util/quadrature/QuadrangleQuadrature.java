@@ -60,11 +60,11 @@ public class QuadrangleQuadrature implements Iterable<QuadraturePoint> {
         us_or_vs = pointsWeightsByDegree[0];
         weights = pointsWeightsByDegree[1];
     }
-    
-    public double quadrate(ArrvarFunction func){
-        double res=0;
-        for (QuadraturePoint qp:this){
-            res+=func.value(qp.coord)*qp.weight;
+
+    public double quadrate(ArrvarFunction func) {
+        double res = 0;
+        for (QuadraturePoint qp : this) {
+            res += func.value(qp.coord) * qp.weight;
         }
         return res;
     }

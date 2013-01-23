@@ -81,11 +81,11 @@ public class Segment2DQuadrature implements Iterable<QuadraturePoint> {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     }
-    
-    public double quadrate(ArrvarFunction func){
-        double res=0;
-        for (QuadraturePoint qp:this){
-            res+=func.value(qp.coord)*qp.weight;
+
+    public double quadrate(ArrvarFunction func) {
+        double res = 0;
+        for (QuadraturePoint qp : this) {
+            res += func.value(qp.coord) * qp.weight;
         }
         return res;
     }

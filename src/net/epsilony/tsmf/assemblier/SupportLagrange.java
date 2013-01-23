@@ -9,5 +9,6 @@ package net.epsilony.tsmf.assemblier;
  * @author epsilon
  */
 public interface SupportLagrange {
+
     public void setDirichletNodesNums(int diriNum);
 }

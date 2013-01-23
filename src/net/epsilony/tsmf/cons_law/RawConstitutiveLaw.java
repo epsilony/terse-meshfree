@@ -10,7 +10,8 @@ import no.uib.cipr.matrix.DenseMatrix;
  *
  * @author epsilon
  */
-public class RawConstitutiveLaw implements ConstitutiveLaw{
+public class RawConstitutiveLaw implements ConstitutiveLaw {
+
     boolean isSym;
     DenseMatrix matrix;
 
@@ -28,6 +29,4 @@ public class RawConstitutiveLaw implements ConstitutiveLaw{
         this.isSym = isSym;
         this.matrix = matrix;
     }
-    
-    
 }

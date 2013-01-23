@@ -159,7 +159,7 @@ public class WFProcessor2D {
         boolean lagDiri = isAssemblyDirichletByLagrange();
         if (lagDiri) {
             lagProcessor = new LinearLagrangeDirichletProcessor(points, model.getAllNodes().size());
-            SupportLagrange sL=(SupportLagrange) assemblier;
+            SupportLagrange sL = (SupportLagrange) assemblier;
             sL.setDirichletNodesNums(lagProcessor.getDirichletNodesSize());
         }
 

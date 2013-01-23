@@ -41,8 +41,8 @@ public class Segment2DQuadratureTest {
         }
         assertTrue(getHere);
     }
-    
-     @Test
+
+    @Test
     public void testLadderX() {
         ArrvarFunction func = new ArrvarFunction() {
             @Override

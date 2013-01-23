@@ -33,23 +33,23 @@ public class LinearLagrangeDirichletProcessor {
     }
 
     public LinearLagrangeDirichletProcessor(List<ProcessPoint> pts, int baseNodesNum) {
-        idMap=new int[baseNodesNum];
+        idMap = new int[baseNodesNum];
         Arrays.fill(idMap, -1);
-        int id=baseNodesNum;
+        int id = baseNodesNum;
         for (ProcessPoint pt : pts) {
             Segment2D seg = pt.seg;
             Node head = seg.getHead();
             Node rear = seg.getRear();
-            if(idMap[head.id]<0){
-                idMap[head.id]=id;
+            if (idMap[head.id] < 0) {
+                idMap[head.id] = id;
                 id++;
             }
-            if(idMap[rear.id]<0){
-                idMap[rear.id]=id;
+            if (idMap[rear.id] < 0) {
+                idMap[rear.id] = id;
                 id++;
             }
         }
-        dirichletNodesSize=id-baseNodesNum;
+        dirichletNodesSize = id - baseNodesNum;
     }
 
     public int getLagrangeId(Node nd) {

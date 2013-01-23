@@ -74,17 +74,17 @@ public class Segment2D extends Boundary2D {
             return result;
         }
     }
-    
-    public double[] midPoint(){
+
+    public double[] midPoint() {
         return midPoint(null);
     }
 
     public Segment2D subdivide() {
-        Segment2D seg=new Segment2D(new Node(midPoint()));
-        seg.succ=this.succ;
-        seg.pred=this;
-        this.succ.pred=seg;
-        this.succ=seg;
+        Segment2D seg = new Segment2D(new Node(midPoint()));
+        seg.succ = this.succ;
+        seg.pred = this;
+        this.succ.pred = seg;
+        this.succ = seg;
         return seg;
     }
 }
