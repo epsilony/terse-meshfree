@@ -6,6 +6,7 @@ package net.epsilony.tsmf.assemblier;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
+import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
 import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
@@ -20,24 +21,37 @@ public class PenaltyWFAssemblier implements WFAssemblier {
 
     Matrix mainMatrix;
     DenseVector mainVector;
-    DenseMatrix constitutiveLaw;
+    ConstitutiveLaw constitutiveLaw;
     double neumannPenalty;
-    final boolean upperSymmetricMainMatrix;
+    boolean dense;
 
-    public PenaltyWFAssemblier(DenseMatrix constitutiveLaw, int nodesSize, double neumannPenalty, boolean denseMainMatrix, boolean upperSymmetricMainMatrix) {
-        if (denseMainMatrix) {
-            if (upperSymmetricMainMatrix) {
-                mainMatrix = new UpperSymmDenseMatrix(nodesSize * 2);
-            } else {
-                mainMatrix = new DenseMatrix(nodesSize * 2, nodesSize * 2);
-            }
-        } else {
-            mainMatrix = new FlexCompRowMatrix(nodesSize * 2, nodesSize * 2);
-        }
-        mainVector = new DenseVector(nodesSize * 2);
+    public PenaltyWFAssemblier(ConstitutiveLaw constitutiveLaw, int nodesSize, double neumannPenalty, boolean denseMainMatrix) {
         this.constitutiveLaw = constitutiveLaw;
         this.neumannPenalty = neumannPenalty;
-        this.upperSymmetricMainMatrix = upperSymmetricMainMatrix;
+        dense = denseMainMatrix;
+        initMainMatrixVector(nodesSize * 2);
+    }
+    
+    protected final void initMainMatrixVector(int numRowCol){
+        if (dense) {
+            if (constitutiveLaw.isSymmetric()) {
+                mainMatrix = new UpperSymmDenseMatrix(numRowCol);
+            } else {
+                mainMatrix = new DenseMatrix(numRowCol,numRowCol);
+            }
+        } else {
+            mainMatrix = new FlexCompRowMatrix(numRowCol,numRowCol);
+        }
+        mainVector = new DenseVector(numRowCol);
+    }
+
+    protected PenaltyWFAssemblier(ConstitutiveLaw constitutiveLaw, boolean denseMainMatrix) {
+        dense = denseMainMatrix;
+        this.constitutiveLaw = constitutiveLaw;
+    }
+
+    public boolean isUpperSymmertric() {
+        return constitutiveLaw.isSymmetric();
     }
 
     @Override
@@ -57,7 +71,7 @@ public class PenaltyWFAssemblier implements WFAssemblier {
             mainVector.add(mat_i + 1, b2 * v_i);
 
             int jStart = 0;
-            if (upperSymmetricMainMatrix) {
+            if (isUpperSymmertric()) {
                 jStart = i;
             }
             for (int j = jStart; j < nodesIds.size(); j++) {
@@ -75,7 +89,7 @@ public class PenaltyWFAssemblier implements WFAssemblier {
                 double d12 = weight * leftRightMult(i_v1, j_v2);
                 double d22 = weight * leftRightMult(i_v2, j_v2);
 
-                if (upperSymmetricMainMatrix && mat_j <= mat_i) {
+                if (isUpperSymmertric() && mat_j <= mat_i) {
                     mat.add(mat_j, mat_i, d11);
                     mat.add(mat_j, mat_i + 1, d21);
                     mat.add(mat_j + 1, mat_i + 1, d22);
@@ -86,7 +100,7 @@ public class PenaltyWFAssemblier implements WFAssemblier {
                     mat.add(mat_i, mat_j, d11);
                     mat.add(mat_i, mat_j + 1, d12);
                     mat.add(mat_i + 1, mat_j + 1, d22);
-                    if (!(upperSymmetricMainMatrix && mat_i == mat_j)) {
+                    if (!(isUpperSymmertric() && mat_i == mat_j)) {
                         mat.add(mat_i + 1, mat_j, d21);
                     }
                 }
@@ -95,7 +109,7 @@ public class PenaltyWFAssemblier implements WFAssemblier {
     }
 
     private double leftRightMult(double[] l, double[] r) {
-        Matrix mat = constitutiveLaw;
+        Matrix mat = constitutiveLaw.getMatrix();
         double result = 0;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -151,7 +165,7 @@ public class PenaltyWFAssemblier implements WFAssemblier {
                 vec.add(mat_i + 1, vi * dirichletVal[1] * factor);
             }
             int jStart = 0;
-            if (upperSymmetricMainMatrix) {
+            if (isUpperSymmertric()) {
                 jStart = i;
             }
             for (int j = jStart; j < nodesIds.size(); j++) {
@@ -159,7 +173,7 @@ public class PenaltyWFAssemblier implements WFAssemblier {
                 double vij = factor * vi * vs.getQuick(j);
                 int indexI;
                 int indexJ;
-                if (upperSymmetricMainMatrix && mat_j <= mat_i) {
+                if (isUpperSymmertric() && mat_j <= mat_i) {
                     indexI = mat_j;
                     indexJ = mat_i;
                 } else {

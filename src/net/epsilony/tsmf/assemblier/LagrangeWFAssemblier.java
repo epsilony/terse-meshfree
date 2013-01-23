@@ -6,7 +6,7 @@ package net.epsilony.tsmf.assemblier;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
-import no.uib.cipr.matrix.DenseMatrix;
+import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
 
@@ -14,12 +14,12 @@ import no.uib.cipr.matrix.Matrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class LagrangeWFAssemblier extends PenaltyWFAssemblier {
+public class LagrangeWFAssemblier extends PenaltyWFAssemblier implements SupportLagrange {
 
-    private final int nodesSize;
+    private int nodesSize;
 
-    public LagrangeWFAssemblier(DenseMatrix constitutiveLaw, int nodesSize, int lagrangeNodesSize, boolean denseMainMatrix, boolean upperSymmetricMainMatrix) {
-        super(constitutiveLaw, nodesSize + lagrangeNodesSize, 0, denseMainMatrix, upperSymmetricMainMatrix);
+    public LagrangeWFAssemblier(ConstitutiveLaw constitutiveLaw, int nodesSize, boolean denseMainMatrix) {
+        super(constitutiveLaw, denseMainMatrix);
         this.nodesSize = nodesSize;
     }
 
@@ -52,7 +52,7 @@ public class LagrangeWFAssemblier extends PenaltyWFAssemblier {
                 double d = -v_i * v_j_w;
                 mat.add(mat_i, mat_j, d);
                 mat.add(mat_i + 1, mat_j + 1, d);
-                if (!upperSymmetricMainMatrix) {
+                if (!isUpperSymmertric()) {
                     mat.add(mat_j, mat_i, d);
                     mat.add(mat_j + 1, mat_i + 1, d);
                 }
@@ -67,5 +67,10 @@ public class LagrangeWFAssemblier extends PenaltyWFAssemblier {
             }
         }
         throw new IllegalStateException("There isn't any normal node ids here!");
+    }
+
+    @Override
+    public void setDirichletNodesNums(int diriNum) {
+        initMainMatrixVector(2 * (nodesSize + diriNum));
     }
 }

@@ -4,9 +4,10 @@
  */
 package net.epsilony.tsmf.weakform;
 
-import net.epsilony.tsmf.assemblier.LagrangeWFAssemblier;
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
+import net.epsilony.tsmf.assemblier.LagrangeWFAssemblier;
+import net.epsilony.tsmf.cons_law.RawConstitutiveLaw;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
 import no.uib.cipr.matrix.MatrixEntry;
@@ -64,7 +65,8 @@ public class LagrangeWFAssemblierTest {
         double[] exp_v = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -170.0, 60.0, 0.0, 0.0, -47.6, 16.8, 0.0, 0.0};
 
         for (boolean upperSym : new boolean[]{true, false}) {
-            LagrangeWFAssemblier lag = new LagrangeWFAssemblier(null, nodesSize, lagNodesSize, true, upperSym);
+            LagrangeWFAssemblier lag = new LagrangeWFAssemblier(new RawConstitutiveLaw(upperSym, null), nodesSize, true);
+            lag.setDirichletNodesNums(lagNodesSize);
             for (int test = 1; test <= 2; test++) {
                 lag.asmDirichlet(weight, nodesIds, shapeFuncVal, dirichletVal, new boolean[]{true, true});
                 Matrix mat = lag.getMainMatrix();

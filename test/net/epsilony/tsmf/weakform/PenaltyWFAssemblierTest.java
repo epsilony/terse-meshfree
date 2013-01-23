@@ -7,6 +7,8 @@ package net.epsilony.tsmf.weakform;
 import net.epsilony.tsmf.assemblier.PenaltyWFAssemblier;
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
+import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
+import net.epsilony.tsmf.cons_law.RawConstitutiveLaw;
 import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
@@ -22,8 +24,8 @@ public class PenaltyWFAssemblierTest {
     public PenaltyWFAssemblierTest() {
     }
 
-    public DenseMatrix sampleConstutiveLaw() {
-        return new DenseMatrix(new double[][]{{11, 12, 0}, {12, 22, 0}, {0, 0, 33}});
+    public ConstitutiveLaw sampleConstutiveLaw(final boolean isSym) {
+        return new RawConstitutiveLaw(isSym, new DenseMatrix(new double[][]{{11, 12, 0}, {12, 22, 0}, {0, 0, 33}}));
     }
 
     public TDoubleArrayList[] sampleShapeFuncVals() {
@@ -34,7 +36,7 @@ public class PenaltyWFAssemblierTest {
     }
 
     public PenaltyWFAssemblier sampleAsm(int nodesSize, double penalty, boolean upperSym) {
-        return new PenaltyWFAssemblier(sampleConstutiveLaw(), nodesSize, penalty, true, upperSym);
+        return new PenaltyWFAssemblier(sampleConstutiveLaw(upperSym), nodesSize, penalty, true);
     }
 
     public TIntArrayList sampleNodeIds() {
