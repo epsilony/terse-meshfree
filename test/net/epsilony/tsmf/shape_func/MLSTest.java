@@ -122,7 +122,7 @@ public class MLSTest {
         LinkedList<double[]> coords = genSampleCoords(numPerDim);
         LinkedList<double[]> testPts = genSampleCoords(testPerDim);
         TDoubleArrayList[] radss = new TDoubleArrayList[]{new TDoubleArrayList(new double[]{rad_avg}), new TDoubleArrayList(randomRads(rad_avg, range, coords.size()))};
-        double[] errs = new double[]{1e-10, 9e-6};
+        double[] errs = new double[]{1e-10, 1e-5};
         for (TDoubleArrayList rads : radss) {
             for (double[] pt : testPts) {
                 for (int i = 0; i < errs.length; i++) {
