@@ -4,6 +4,9 @@
  */
 package net.epsilony.tsmf.util;
 
+import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
+import net.epsilony.tsmf.cons_law.IsoElastic2D;
+
 /**
  *
  * @author epsilon
@@ -15,7 +18,7 @@ public class TimoshenkoAnalyticalBeam2D {
     double P;
     double I;
 
-    public TimoshenkoAnalyticalBeam2D(double width, double height, double E, double nu, double P, double I) {
+    public TimoshenkoAnalyticalBeam2D(double width, double height, double E, double nu, double P) {
         this.width = width;
         this.height = height;
         this.E = E;
@@ -109,5 +112,44 @@ public class TimoshenkoAnalyticalBeam2D {
         results[1] = syy;
         results[2] = sxy;
         return results;
+    }
+
+    public class NeumannFunction implements GenericFunction<double[], double[]> {
+
+        @Override
+        public double[] value(double[] input, double[] output) {
+            return displacement(input[0], input[1], 0, input);
+        }
+    }
+
+    public class DirichletFunction implements GenericFunction<double[], double[]> {
+
+        @Override
+        public double[] value(double[] input, double[] output) {
+            double[] strVal = stress(input[0], input[1], null);
+            if (output == null) {
+                output = new double[2];
+            }
+            output[0] = strVal[0];
+            output[1] = strVal[2];
+            return output;
+        }
+    }
+
+    public class DirichletMarker implements GenericFunction<double[], boolean[]> {
+
+        @Override
+        public boolean[] value(double[] input, boolean[] output) {
+            if (output == null) {
+                output = new boolean[2];
+            }
+            output[0] = true;
+            output[1] = true;
+            return output;
+        }
+    }
+
+    public ConstitutiveLaw constitutiveLaw() {
+        return IsoElastic2D.planeStressMatrix(E, nu);
     }
 }
