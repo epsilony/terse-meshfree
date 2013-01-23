@@ -49,6 +49,15 @@ public class Polygon2D implements Iterable<Segment2D> {
             chainsHeads.add(chainHead);
         }
         prepareLRTree();
+        genSegIds();
+    }
+
+    public void refresh() {
+        prepareLRTree();
+        genSegIds();
+    }
+
+    private void genSegIds() {
         int id = 0;
         for (Segment2D seg : this) {
             seg.setId(id);
@@ -223,6 +232,9 @@ public class Polygon2D implements Iterable<Segment2D> {
     }
 
     public Polygon2D fractionize(double maxLength) {
+        if (maxLength <= 0) {
+            throw new IllegalArgumentException("maxLength should be greater than 0 :" + maxLength);
+        }
         Polygon2D res = copy(false);
         for (Segment2D cHead : res.chainsHeads) {
             Segment2D seg = cHead;
@@ -233,6 +245,7 @@ public class Polygon2D implements Iterable<Segment2D> {
                 seg = (Segment2D) seg.succ;
             } while (seg != cHead);
         }
+        res.refresh();
         return res;
     }
 
