@@ -6,7 +6,6 @@ package net.epsilony.tsmf.assemblier;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
-import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
 
@@ -16,11 +15,10 @@ import no.uib.cipr.matrix.Matrix;
  */
 public class LagrangeWFAssemblier extends PenaltyWFAssemblier implements SupportLagrange {
 
-    private int nodesSize;
+    int diriNum;
 
-    public LagrangeWFAssemblier(ConstitutiveLaw constitutiveLaw, int nodesSize, boolean denseMainMatrix) {
-        super(constitutiveLaw, denseMainMatrix);
-        this.nodesSize = nodesSize;
+    public LagrangeWFAssemblier() {
+        super(0);
     }
 
     @Override
@@ -62,7 +60,7 @@ public class LagrangeWFAssemblier extends PenaltyWFAssemblier implements Support
 
     private int firstLagIndex(TIntArrayList nodesIds) {
         for (int i = nodesIds.size() - 1; i >= 0; i--) {
-            if (nodesIds.getQuick(i) < nodesSize) {
+            if (nodesIds.getQuick(i) < nodesNum) {
                 return i + 1;
             }
         }
@@ -71,6 +69,11 @@ public class LagrangeWFAssemblier extends PenaltyWFAssemblier implements Support
 
     @Override
     public void setDirichletNodesNums(int diriNum) {
-        initMainMatrixVector(2 * (nodesSize + diriNum));
+        this.diriNum = diriNum;
+    }
+
+    @Override
+    public void prepare() {
+        initMainMatrixVector(2 * (nodesNum + diriNum));
     }
 }

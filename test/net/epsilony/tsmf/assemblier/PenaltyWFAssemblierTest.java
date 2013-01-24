@@ -2,9 +2,8 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.epsilony.tsmf.weakform;
+package net.epsilony.tsmf.assemblier;
 
-import net.epsilony.tsmf.assemblier.PenaltyWFAssemblier;
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
@@ -12,8 +11,8 @@ import net.epsilony.tsmf.cons_law.RawConstitutiveLaw;
 import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -36,7 +35,12 @@ public class PenaltyWFAssemblierTest {
     }
 
     public PenaltyWFAssemblier sampleAsm(int nodesSize, double penalty, boolean upperSym) {
-        return new PenaltyWFAssemblier(sampleConstutiveLaw(upperSym), nodesSize, penalty, true);
+        PenaltyWFAssemblier res = new PenaltyWFAssemblier(penalty);
+        res.setNodesNum(nodesSize);
+        res.setConstitutiveLaw(sampleConstutiveLaw(upperSym));
+        res.setMatrixDense(true);
+        res.prepare();
+        return res;
     }
 
     public TIntArrayList sampleNodeIds() {

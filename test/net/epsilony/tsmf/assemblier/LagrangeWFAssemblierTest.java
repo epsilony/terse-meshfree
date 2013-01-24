@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.epsilony.tsmf.weakform;
+package net.epsilony.tsmf.assemblier;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
@@ -65,8 +65,12 @@ public class LagrangeWFAssemblierTest {
         double[] exp_v = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -170.0, 60.0, 0.0, 0.0, -47.6, 16.8, 0.0, 0.0};
 
         for (boolean upperSym : new boolean[]{true, false}) {
-            LagrangeWFAssemblier lag = new LagrangeWFAssemblier(new RawConstitutiveLaw(upperSym, null), nodesSize, true);
+            LagrangeWFAssemblier lag = new LagrangeWFAssemblier();
+            lag.setConstitutiveLaw(new RawConstitutiveLaw(upperSym, null));
+            lag.setNodesNum(nodesSize);
+            lag.setMatrixDense(upperSym);
             lag.setDirichletNodesNums(lagNodesSize);
+            lag.prepare();
             for (int test = 1; test <= 2; test++) {
                 lag.asmDirichlet(weight, nodesIds, shapeFuncVal, dirichletVal, new boolean[]{true, true});
                 Matrix mat = lag.getMainMatrix();

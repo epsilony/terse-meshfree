@@ -30,6 +30,7 @@ import no.uib.cipr.matrix.Matrix;
 public class WFProcessor2D {
 
     public static final int DEFAULT_CAPACITY = 60;
+    public static final int DENSE_MATRIC_SIZE_THRESHOLD = 200;
     Project project;
     Model2D model;
     ShapeFunction shapeFunction;
@@ -40,6 +41,10 @@ public class WFProcessor2D {
     LinearLagrangeDirichletProcessor lagProcessor;
     ConstitutiveLaw constitutiveLaw;
     DenseVector nodesValue;
+    private List<ProcessPoint> balanceProcessPoints;
+    private List<ProcessPoint> dirichletProcessPoints;
+    private List<ProcessPoint> neumannProcessPoints;
+    private boolean lagDiri;
 
     public WFProcessor2D(Model2D model, InfluenceRadsCalc inflRadCalc, Project project, ShapeFunction shapeFunction, WFAssemblier assemblier, ConstitutiveLaw constitutiveLaw) {
         this.model = model;
@@ -59,6 +64,24 @@ public class WFProcessor2D {
         processBalance();
         processNeumann();
         processDirichlet();
+    }
+
+    public void prepareAssemblier() {
+        balanceProcessPoints = project.balance();
+        dirichletProcessPoints = project.dirichlet();
+        neumannProcessPoints = project.neumann();
+
+        assemblier.setConstitutiveLaw(constitutiveLaw);
+        assemblier.setNodesNum(model.getAllNodes().size());
+        boolean dense = model.getAllNodes().size() <= DENSE_MATRIC_SIZE_THRESHOLD;
+        assemblier.setMatrixDense(dense);
+        lagDiri = isAssemblyDirichletByLagrange();
+        if (lagDiri) {
+            lagProcessor = new LinearLagrangeDirichletProcessor(dirichletProcessPoints, model.getAllNodes().size());
+            SupportLagrange sL = (SupportLagrange) assemblier;
+            sL.setDirichletNodesNums(lagProcessor.getDirichletNodesSize());
+        }
+        assemblier.prepare();
     }
 
     public void prepareInfluenceRads() {
@@ -84,7 +107,7 @@ public class WFProcessor2D {
     public void processBalance() {
         final int diffOrder = 1;
 
-        List<ProcessPoint> points = project.balance();
+        List<ProcessPoint> points = balanceProcessPoints;
         ArrayList<Node> nodes = new ArrayList<>(DEFAULT_CAPACITY);
         ArrayList<double[]> coords = new ArrayList<>(DEFAULT_CAPACITY);
         ArrayList<Segment2D> segs = null;
@@ -118,7 +141,7 @@ public class WFProcessor2D {
     public void processNeumann() {
         final int diffOrder = 0;
 
-        List<ProcessPoint> points = project.neumann();
+        List<ProcessPoint> points = neumannProcessPoints;
 
         ArrayList<Node> nodes = new ArrayList<>(DEFAULT_CAPACITY);
         ArrayList<double[]> coords = new ArrayList<>(DEFAULT_CAPACITY);
@@ -153,7 +176,7 @@ public class WFProcessor2D {
     public void processDirichlet() {
         final int diffOrder = 0;
 
-        List<ProcessPoint> points = project.dirichlet();
+        List<ProcessPoint> points = dirichletProcessPoints;
 
         ArrayList<Node> nodes = new ArrayList<>(DEFAULT_CAPACITY);
         ArrayList<double[]> coords = new ArrayList<>(DEFAULT_CAPACITY);
@@ -163,12 +186,6 @@ public class WFProcessor2D {
         TIntArrayList nodesIds = new TIntArrayList(DEFAULT_CAPACITY, -1);
         TDoubleArrayList infRads = new TDoubleArrayList(DEFAULT_CAPACITY);
         TDoubleArrayList[] shapeFuncVals = WithDiffOrderUtil.initOutput(null, DEFAULT_CAPACITY, 2, diffOrder);
-        boolean lagDiri = isAssemblyDirichletByLagrange();
-        if (lagDiri) {
-            lagProcessor = new LinearLagrangeDirichletProcessor(points, model.getAllNodes().size());
-            SupportLagrange sL = (SupportLagrange) assemblier;
-            sL.setDirichletNodesNums(lagProcessor.getDirichletNodesSize());
-        }
 
         if (complexCriterion) {
             segs = new ArrayList<>(DEFAULT_CAPACITY);
@@ -198,7 +215,7 @@ public class WFProcessor2D {
     public void solve() {
         Matrix mainMatrix = assemblier.getMainMatrix();
         DenseVector mainVector = assemblier.getMainVector();
-        ReverseCuthillMcKeeSolver rcm = new ReverseCuthillMcKeeSolver(mainMatrix, constitutiveLaw.isSymmetric());
+        ReverseCuthillMcKeeSolver rcm = new ReverseCuthillMcKeeSolver(mainMatrix, assemblier.isUpperSymmertric());
         nodesValue = rcm.solve(mainVector);
     }
 

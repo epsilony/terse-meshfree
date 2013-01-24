@@ -22,14 +22,20 @@ public class PenaltyWFAssemblier implements WFAssemblier {
     Matrix mainMatrix;
     DenseVector mainVector;
     ConstitutiveLaw constitutiveLaw;
-    double neumannPenalty;
+    double penalty;
     boolean dense;
 
-    public PenaltyWFAssemblier(ConstitutiveLaw constitutiveLaw, int nodesSize, double neumannPenalty, boolean denseMainMatrix) {
-        this.constitutiveLaw = constitutiveLaw;
-        this.neumannPenalty = neumannPenalty;
-        dense = denseMainMatrix;
-        initMainMatrixVector(nodesSize * 2);
+    public double getPenalty() {
+        return penalty;
+    }
+
+    public void setPenalty(double penalty) {
+        this.penalty = penalty;
+    }
+    int nodesNum;
+
+    public PenaltyWFAssemblier(double neumannPenalty) {
+        this.penalty = neumannPenalty;
     }
 
     protected final void initMainMatrixVector(int numRowCol) {
@@ -45,11 +51,7 @@ public class PenaltyWFAssemblier implements WFAssemblier {
         mainVector = new DenseVector(numRowCol);
     }
 
-    protected PenaltyWFAssemblier(ConstitutiveLaw constitutiveLaw, boolean denseMainMatrix) {
-        dense = denseMainMatrix;
-        this.constitutiveLaw = constitutiveLaw;
-    }
-
+    @Override
     public boolean isUpperSymmertric() {
         return constitutiveLaw.isSymmetric();
     }
@@ -143,12 +145,12 @@ public class PenaltyWFAssemblier implements WFAssemblier {
     }
 
     double getNeumannPenalty() {
-        return neumannPenalty;
+        return penalty;
     }
 
     @Override
     public void asmDirichlet(double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFuncVals, double[] dirichletVal, boolean[] dirichletMark) {
-        double factor = weight * neumannPenalty;
+        double factor = weight * penalty;
         Matrix mat = mainMatrix;
         DenseVector vec = mainVector;
         TDoubleArrayList vs = shapeFuncVals[0];
@@ -198,5 +200,25 @@ public class PenaltyWFAssemblier implements WFAssemblier {
     @Override
     public DenseVector getMainVector() {
         return mainVector;
+    }
+
+    @Override
+    public void setNodesNum(int nodesNum) {
+        this.nodesNum = nodesNum;
+    }
+
+    @Override
+    public void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw) {
+        this.constitutiveLaw = constitutiveLaw;
+    }
+
+    @Override
+    public void prepare() {
+        initMainMatrixVector(nodesNum * 2);
+    }
+
+    @Override
+    public void setMatrixDense(boolean dense) {
+        this.dense = dense;
     }
 }

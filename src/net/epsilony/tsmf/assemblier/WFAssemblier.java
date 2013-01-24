@@ -6,6 +6,7 @@ package net.epsilony.tsmf.assemblier;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
+import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
 
@@ -21,7 +22,17 @@ public interface WFAssemblier {
 
     void asmDirichlet(double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFunVals, double[] dirichletVal, boolean[] dirichletMark);
 
+    void setNodesNum(int nodesNum);
+
+    void setMatrixDense(boolean dense);
+
+    void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw);
+
+    void prepare();
+
     Matrix getMainMatrix();
 
     DenseVector getMainVector();
+
+    boolean isUpperSymmertric();
 }
