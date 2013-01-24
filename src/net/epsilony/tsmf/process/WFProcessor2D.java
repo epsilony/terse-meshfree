@@ -19,6 +19,9 @@ import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.model.influence.InfluenceRadsCalc;
 import net.epsilony.tsmf.shape_func.ShapeFunction;
 import net.epsilony.tsmf.util.WithDiffOrderUtil;
+import net.epsilony.tsmf.util.matrix.ReverseCuthillMcKeeSolver;
+import no.uib.cipr.matrix.DenseVector;
+import no.uib.cipr.matrix.Matrix;
 
 /**
  *
@@ -36,6 +39,7 @@ public class WFProcessor2D {
     boolean complexCriterion = false;
     LinearLagrangeDirichletProcessor lagProcessor;
     ConstitutiveLaw constitutiveLaw;
+    DenseVector nodesValue;
 
     public WFProcessor2D(Model2D model, InfluenceRadsCalc inflRadCalc, Project project, ShapeFunction shapeFunction, WFAssemblier assemblier, ConstitutiveLaw constitutiveLaw) {
         this.model = model;
@@ -189,6 +193,13 @@ public class WFProcessor2D {
 
             assemblier.asmDirichlet(pt.weight, nodesIds, shapeFuncVals, pt.value, pt.mark);
         }
+    }
+
+    public void solve() {
+        Matrix mainMatrix = assemblier.getMainMatrix();
+        DenseVector mainVector = assemblier.getMainVector();
+        ReverseCuthillMcKeeSolver rcm = new ReverseCuthillMcKeeSolver(mainMatrix, constitutiveLaw.isSymmetric());
+        nodesValue = rcm.solve(mainVector);
     }
 
     void fromNodesToIdsCoordsInfRads(
