@@ -134,6 +134,6 @@ public class TimoshenkoStandardProject implements Project {
         ConstitutiveLaw constitutiveLaw = timoBeam.constitutiveLaw();
         WFAssemblier assemblier = new LagrangeWFAssemblier(constitutiveLaw, model.getAllNodes().size(), false);
         InfluenceRadsCalc influenceRadsCalc = new ConstantInfluenceRadCalc(influenceRad);
-        return new ProcessPackage(project, model, influenceRadsCalc, assemblier, shapeFunc);
+        return new ProcessPackage(project, model, influenceRadsCalc, assemblier, shapeFunc, constitutiveLaw);
     }
 }

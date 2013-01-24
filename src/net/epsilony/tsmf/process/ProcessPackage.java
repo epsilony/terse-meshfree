@@ -5,6 +5,7 @@
 package net.epsilony.tsmf.process;
 
 import net.epsilony.tsmf.assemblier.WFAssemblier;
+import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
 import net.epsilony.tsmf.model.Model2D;
 import net.epsilony.tsmf.model.influence.InfluenceRadsCalc;
 import net.epsilony.tsmf.shape_func.ShapeFunction;
@@ -20,12 +21,14 @@ public class ProcessPackage {
     public InfluenceRadsCalc influenceRadCalc;
     public WFAssemblier assemblier;
     public ShapeFunction shapeFunc;
+    public ConstitutiveLaw constitutiveLaw;
 
-    public ProcessPackage(Project project, Model2D model, InfluenceRadsCalc influenceRadCalc, WFAssemblier assemblier, ShapeFunction shapeFunc) {
+    public ProcessPackage(Project project, Model2D model, InfluenceRadsCalc influenceRadCalc, WFAssemblier assemblier, ShapeFunction shapeFunc,ConstitutiveLaw constitutiveLaw) {
         this.project = project;
         this.model = model;
         this.influenceRadCalc = influenceRadCalc;
         this.assemblier = assemblier;
         this.shapeFunc = shapeFunc;
+        this.constitutiveLaw=constitutiveLaw;
     }
 }
