@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.List;
 import net.epsilony.tsmf.assemblier.SupportLagrange;
 import net.epsilony.tsmf.assemblier.WFAssemblier;
+import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
 import net.epsilony.tsmf.model.LinearLagrangeDirichletProcessor;
 import net.epsilony.tsmf.model.Model2D;
 import net.epsilony.tsmf.model.Node;
@@ -34,17 +35,19 @@ public class WFProcessor2D {
     double maxIfluenceRad;
     boolean complexCriterion = false;
     LinearLagrangeDirichletProcessor lagProcessor;
+    ConstitutiveLaw constitutiveLaw;
 
-    public WFProcessor2D(Model2D model, InfluenceRadsCalc inflRadCalc, Project project, ShapeFunction shapeFunction, WFAssemblier assemblier) {
+    public WFProcessor2D(Model2D model, InfluenceRadsCalc inflRadCalc, Project project, ShapeFunction shapeFunction, WFAssemblier assemblier, ConstitutiveLaw constitutiveLaw) {
         this.model = model;
         this.shapeFunction = shapeFunction;
         this.assemblier = assemblier;
         this.inflRadCalc = inflRadCalc;
         this.project = project;
+        this.constitutiveLaw = constitutiveLaw;
     }
 
     public WFProcessor2D(ProcessPackage pack) {
-        this(pack.model, pack.influenceRadCalc, pack.project, pack.shapeFunc, pack.assemblier);
+        this(pack.model, pack.influenceRadCalc, pack.project, pack.shapeFunc, pack.assemblier, pack.constitutiveLaw);
     }
 
     public void process() {
