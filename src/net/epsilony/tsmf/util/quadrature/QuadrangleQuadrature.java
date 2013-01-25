@@ -61,6 +61,10 @@ public class QuadrangleQuadrature implements Iterable<QuadraturePoint> {
         weights = pointsWeightsByDegree[1];
     }
 
+    public int getDegree() {
+        return degree;
+    }
+
     public double quadrate(ArrvarFunction func) {
         double res = 0;
         for (QuadraturePoint qp : this) {
