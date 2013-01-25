@@ -110,7 +110,7 @@ public class WFProcessor2D {
         List<ProcessPoint> points = balanceProcessPoints;
         ArrayList<Node> nodes = new ArrayList<>(DEFAULT_CAPACITY);
         ArrayList<double[]> coords = new ArrayList<>(DEFAULT_CAPACITY);
-        ArrayList<Segment2D> segs = null;
+        ArrayList<Segment2D> segs = new ArrayList<>(DEFAULT_CAPACITY);
         ArrayList<Node> blockedNds = null;
         ArrayList<Segment2D> blockNdsSegs = null;
         TIntArrayList nodesIds = new TIntArrayList(DEFAULT_CAPACITY, -1);
@@ -118,7 +118,6 @@ public class WFProcessor2D {
         TDoubleArrayList[] shapeFuncVals = WithDiffOrderUtil.initOutput(null, DEFAULT_CAPACITY, 2, diffOrder);
 
         if (complexCriterion) {
-            segs = new ArrayList<>(DEFAULT_CAPACITY);
             blockedNds = new ArrayList<>(DEFAULT_CAPACITY);
             blockNdsSegs = new ArrayList<>(DEFAULT_CAPACITY);
         }
@@ -145,7 +144,7 @@ public class WFProcessor2D {
 
         ArrayList<Node> nodes = new ArrayList<>(DEFAULT_CAPACITY);
         ArrayList<double[]> coords = new ArrayList<>(DEFAULT_CAPACITY);
-        ArrayList<Segment2D> segs = null;
+        ArrayList<Segment2D> segs = new ArrayList<>(DEFAULT_CAPACITY);
         ArrayList<Node> blockedNds = null;
         ArrayList<Segment2D> blockNdsSegs = null;
         TIntArrayList nodesIds = new TIntArrayList(DEFAULT_CAPACITY, -1);
@@ -153,7 +152,6 @@ public class WFProcessor2D {
         TDoubleArrayList[] shapeFuncVals = WithDiffOrderUtil.initOutput(null, DEFAULT_CAPACITY, 2, diffOrder);
 
         if (complexCriterion) {
-            segs = new ArrayList<>(DEFAULT_CAPACITY);
             blockedNds = new ArrayList<>(DEFAULT_CAPACITY);
             blockNdsSegs = new ArrayList<>(DEFAULT_CAPACITY);
         }
@@ -180,7 +178,7 @@ public class WFProcessor2D {
 
         ArrayList<Node> nodes = new ArrayList<>(DEFAULT_CAPACITY);
         ArrayList<double[]> coords = new ArrayList<>(DEFAULT_CAPACITY);
-        ArrayList<Segment2D> segs = null;
+        ArrayList<Segment2D> segs = new ArrayList<>(DEFAULT_CAPACITY);
         ArrayList<Node> blockedNds = null;
         ArrayList<Segment2D> blockNdsSegs = null;
         TIntArrayList nodesIds = new TIntArrayList(DEFAULT_CAPACITY, -1);
@@ -188,7 +186,6 @@ public class WFProcessor2D {
         TDoubleArrayList[] shapeFuncVals = WithDiffOrderUtil.initOutput(null, DEFAULT_CAPACITY, 2, diffOrder);
 
         if (complexCriterion) {
-            segs = new ArrayList<>(DEFAULT_CAPACITY);
             blockedNds = new ArrayList<>(DEFAULT_CAPACITY);
             blockNdsSegs = new ArrayList<>(DEFAULT_CAPACITY);
         }
