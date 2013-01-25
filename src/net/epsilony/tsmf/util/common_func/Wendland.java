@@ -25,6 +25,14 @@ public class Wendland implements UnivarArrayFunction {
     PolynomialFunction pFunc;
     PolynomialFunction[] pFuncs;
 
+    public Wendland(int continuous) {
+        initWendland(continuous);
+    }
+
+    public Wendland() {
+        this(4);
+    }
+
     private void initWendland(int c) {
         boolean legal = false;
         for (int lc : LEGAL_CONTINUOUS_ORDERS) {
