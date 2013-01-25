@@ -7,6 +7,7 @@ package net.epsilony.tsmf.assemblier;
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
+import net.epsilony.tsmf.util.NeedPreparation;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
 
@@ -14,7 +15,7 @@ import no.uib.cipr.matrix.Matrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface WFAssemblier {
+public interface WFAssemblier extends NeedPreparation {
 
     void asmBalance(double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFunVals, double[] volumnForce);
 
@@ -27,8 +28,6 @@ public interface WFAssemblier {
     void setMatrixDense(boolean dense);
 
     void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw);
-
-    void prepare();
 
     Matrix getMainMatrix();
 
