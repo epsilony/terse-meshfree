@@ -13,6 +13,7 @@ import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
 import no.uib.cipr.matrix.MatrixEntry;
 import no.uib.cipr.matrix.UpperSPDBandMatrix;
+import no.uib.cipr.matrix.UpperSPDDenseMatrix;
 import no.uib.cipr.matrix.UpperSPDPackMatrix;
 import no.uib.cipr.matrix.UpperSymmBandMatrix;
 import no.uib.cipr.matrix.Vector;
@@ -33,7 +34,7 @@ public class ReverseCuthillMcKeeSolver {
     int oriBandWidth;
     int optBandWidth;
 
-    public  ReverseCuthillMcKeeSolver(Matrix mat, boolean upperSymmetric) {
+    public ReverseCuthillMcKeeSolver(Matrix mat, boolean upperSymmetric) {
         this.mat = mat;
         this.upperSymmetric = upperSymmetric;
         genGraphMat();
@@ -200,7 +201,7 @@ public class ReverseCuthillMcKeeSolver {
 
         if (upperSymmetric) {
 
-            if (mat instanceof UpperSPDBandMatrix || mat instanceof UpperSPDBandMatrix || mat instanceof UpperSPDPackMatrix) {
+            if (mat instanceof UpperSPDBandMatrix || mat instanceof UpperSPDDenseMatrix || mat instanceof UpperSPDPackMatrix) {
                 optMatrix = new UpperSPDBandMatrix(size(), optBandWidth);
             } else {
                 optMatrix = new UpperSymmBandMatrix(size(), optBandWidth);
