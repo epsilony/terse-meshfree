@@ -239,4 +239,20 @@ public class WFProcessor2D implements NeedPreparation {
         prepareInfluenceRads();
         prepareAssemblier();
     }
+
+    public static WFProcessor2D genTimoshenkoProjectProcess() {
+        TimoshenkoAnalyticalBeam2D timoBeam = new TimoshenkoAnalyticalBeam2D(48, 12, 3e7, 0.3, -1000);
+        TimoshenkoStandardProject tProject = new TimoshenkoStandardProject(timoBeam, 2, 4, 4);
+        WFProcessor2D res = new WFProcessor2D(tProject.processPackage(2, 6.2));
+        return res;
+    }
+
+    public static void main(String[] args) {
+        WFProcessor2D process = genTimoshenkoProjectProcess();
+        process.prepare();
+        process.processBalance();
+        process.processDirichlet();
+        process.processNeumann();
+        process.solve();
+    }
 }
