@@ -20,8 +20,8 @@ public class SymTriangleQuadrature implements Iterable<QuadraturePoint> {
 
     public final static int MAX_POWER = 8;
     public final static int MIN_POWER = 1;
-    public final static int[] numPts = new int[]{1, 3, 4, 6, 7, 12, 13, 16};
-    public final static double[][] weights = new double[][]{
+    final static int[] numPts = new int[]{1, 3, 4, 6, 7, 12, 13, 16};
+    final static double[][] weights = new double[][]{
         {1},
         {1 / 3d, 1 / 3d, 1 / 3d},
         {-27 / 48d, 25 / 48d, 25 / 48d, 25 / 48d},
@@ -30,7 +30,7 @@ public class SymTriangleQuadrature implements Iterable<QuadraturePoint> {
         {0.050844906370207, 0.050844906370207, 0.050844906370207, 0.116786275726379, 0.116786275726379, 0.116786275726379, 0.082851075618374, 0.082851075618374, 0.082851075618374, 0.082851075618374, 0.082851075618374, 0.082851075618374},
         {-0.149570044467682, 0.175615257433208, 0.175615257433208, 0.175615257433208, 0.053347235608838, 0.053347235608838, 0.053347235608838, 0.077113760890257, 0.077113760890257, 0.077113760890257, 0.077113760890257, 0.077113760890257, 0.077113760890257},
         {0.144315607677787, 0.095091634267285, 0.095091634267285, 0.095091634267285, 0.103217370534718, 0.103217370534718, 0.103217370534718, 0.032458497623198, 0.032458497623198, 0.032458497623198, 0.027230314174435, 0.027230314174435, 0.027230314174435, 0.027230314174435, 0.027230314174435, 0.027230314174435},};
-    public final static double[][] barycentricCoordinates = new double[][]{
+    final static double[][] barycentricCoordinates = new double[][]{
         {1 / 3d, 1 / 3d, 1 / 3d},
         {2 / 3d, 1 / 6d, 1 / 6d,
             1 / 6d, 2 / 3d, 1 / 6d,
