@@ -25,6 +25,11 @@ public class Polygon2D implements Iterable<Segment2D> {
     ArrayList<Segment2D> chainsHeads;
     LayeredRangeTree<double[], Segment2D> lrTree;
     double maxSegLen;
+    double minSegLen;
+
+    public double getMinSegmentLength() {
+        return minSegLen;
+    }
 
     public Polygon2D(List<? extends List<? extends Node>> nodeChains) {
         if (nodeChains.isEmpty()) {
@@ -67,12 +72,16 @@ public class Polygon2D implements Iterable<Segment2D> {
 
     private void prepareLRTree() {
         double maxLen = 0;
+        double minLen = Double.POSITIVE_INFINITY;
         LinkedList<WithPair<double[], Segment2D>> midSegPairs = new LinkedList<>();
         for (Segment2D seg : this) {
             PairPack<double[], Segment2D> midSegPair = new PairPack<>(seg.midPoint(), seg);
             double len = seg.length();
             if (len > maxLen) {
                 maxLen = len;
+            }
+            if (len < minLen) {
+                minLen = len;
             }
             midSegPairs.add(midSegPair);
         }
@@ -82,6 +91,7 @@ public class Polygon2D implements Iterable<Segment2D> {
         }
         lrTree = new LayeredRangeTree<>(midSegPairs, comps);
         maxSegLen = maxLen;
+        minSegLen = minLen;
     }
 
     public static Polygon2D byCoordChains(double[][][] coordChains) {
@@ -231,15 +241,19 @@ public class Polygon2D implements Iterable<Segment2D> {
         }
     }
 
-    public Polygon2D fractionize(double maxLength) {
-        if (maxLength <= 0) {
-            throw new IllegalArgumentException("maxLength should be greater than 0 :" + maxLength);
+    public double getMaxSegmentLength() {
+        return maxSegLen;
+    }
+
+    public Polygon2D fractionize(double lenUpBnd) {
+        if (lenUpBnd <= 0) {
+            throw new IllegalArgumentException("maxLength should be greater than 0 :" + lenUpBnd);
         }
         Polygon2D res = copy(false);
         for (Segment2D cHead : res.chainsHeads) {
             Segment2D seg = cHead;
             do {
-                while (seg.length() > maxLength) {
+                while (seg.length() > lenUpBnd) {
                     seg.subdivide();
                 }
                 seg = (Segment2D) seg.succ;
