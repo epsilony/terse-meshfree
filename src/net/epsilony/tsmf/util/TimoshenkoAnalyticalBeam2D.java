@@ -118,7 +118,7 @@ public class TimoshenkoAnalyticalBeam2D {
 
         @Override
         public double[] value(double[] input, double[] output) {
-            return displacement(input[0], input[1], 0, input);
+            return displacement(input[0], input[1], 0, output);
         }
     }
 
