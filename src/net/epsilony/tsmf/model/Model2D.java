@@ -106,8 +106,8 @@ public class Model2D implements ModelSearcher {
         void initOutput(List<Node> nodes, List<Segment2D> segs,
                 List<Node> blockedNds, List<Segment2D> blockNdsSegs) {
             nodes.clear();
-            if (null != segs) {
-                segs.clear();
+            segs.clear();
+            if (null != blockedNds) {
                 blockedNds.clear();
                 blockNdsSegs.clear();
             }
