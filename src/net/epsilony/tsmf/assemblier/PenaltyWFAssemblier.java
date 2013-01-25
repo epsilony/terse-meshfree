@@ -61,17 +61,21 @@ public class PenaltyWFAssemblier implements WFAssemblier {
         TDoubleArrayList v = shapeFunVals[0];
         TDoubleArrayList v_x = shapeFunVals[1];
         TDoubleArrayList v_y = shapeFunVals[2];
-        double b1 = volumnForce[0] * weight;
-        double b2 = volumnForce[1] * weight;
+        double b1 = 0, b2 = 0;
+        if (volumnForce != null) {
+            b1 = volumnForce[0] * weight;
+            b2 = volumnForce[1] * weight;
+        }
         Matrix mat = mainMatrix;
         for (int i = 0; i < nodesIds.size(); i++) {
             int mat_i = nodesIds.getQuick(i) * 2;
             double v_x_i = v_x.getQuick(i);
             double v_y_i = v_y.getQuick(i);
             double v_i = v.getQuick(i);
-            mainVector.add(mat_i, b1 * v_i);
-            mainVector.add(mat_i + 1, b2 * v_i);
-
+            if (volumnForce != null) {
+                mainVector.add(mat_i, b1 * v_i);
+                mainVector.add(mat_i + 1, b2 * v_i);
+            }
             int jStart = 0;
             if (isUpperSymmertric()) {
                 jStart = i;
