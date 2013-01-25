@@ -254,7 +254,7 @@ public class Polygon2D implements Iterable<Segment2D> {
             Segment2D seg = cHead;
             do {
                 while (seg.length() > lenUpBnd) {
-                    seg.subdivide();
+                    seg.bisection();
                 }
                 seg = (Segment2D) seg.succ;
             } while (seg != cHead);

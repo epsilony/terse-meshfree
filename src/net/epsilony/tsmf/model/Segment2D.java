@@ -79,7 +79,7 @@ public class Segment2D extends Boundary2D {
         return midPoint(null);
     }
 
-    public Segment2D subdivide() {
+    public Segment2D bisection() {
         Segment2D seg = new Segment2D(new Node(midPoint()));
         seg.succ = this.succ;
         seg.pred = this;
