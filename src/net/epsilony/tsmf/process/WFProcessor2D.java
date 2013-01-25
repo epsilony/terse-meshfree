@@ -18,6 +18,8 @@ import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.model.influence.InfluenceRadsCalc;
 import net.epsilony.tsmf.shape_func.ShapeFunction;
+import net.epsilony.tsmf.util.NeedPreparation;
+import net.epsilony.tsmf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.tsmf.util.WithDiffOrderUtil;
 import net.epsilony.tsmf.util.matrix.ReverseCuthillMcKeeSolver;
 import no.uib.cipr.matrix.DenseVector;
@@ -27,7 +29,7 @@ import no.uib.cipr.matrix.Matrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class WFProcessor2D {
+public class WFProcessor2D implements NeedPreparation {
 
     public static final int DEFAULT_CAPACITY = 60;
     public static final int DENSE_MATRIC_SIZE_THRESHOLD = 200;
@@ -230,5 +232,11 @@ public class WFProcessor2D {
             ids.add(nd.getId());
             infRads.add(model.getInfluenceRad(nd));
         }
+    }
+
+    @Override
+    public void prepare() {
+        prepareInfluenceRads();
+        prepareAssemblier();
     }
 }
