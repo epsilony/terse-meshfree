@@ -26,10 +26,20 @@ public class PolygonProject2D implements Project {
     GenericFunction<double[], double[]> volumnForceFunc;
     int segQuadDegree;
 
-    public PolygonProject2D(Polygon2D polygon, int segQuadDegree) {
+    public PolygonProject2D(Polygon2D polygon) {
+        initPolygonProject2D(polygon);
+    }
+
+    protected PolygonProject2D() {
+    }
+
+    final protected void initPolygonProject2D(Polygon2D polygon) {
         this.polygon = polygon;
         neumannBCs = new LinkedList<>();
         dirichletBCs = new LinkedList<>();
+    }
+
+    public void setSegmentQuadratureDegree(int segQuadDegree) {
         this.segQuadDegree = segQuadDegree;
     }
 
