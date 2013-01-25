@@ -25,11 +25,11 @@ public class Model2D implements ModelSearcher {
     Polygon2D polygon;
     ArrayList<Node> allNodes;
     LayeredRangeTree<double[], Node> nodesLRTree;
-    private final int DIM = 2;
+    public final static int DIM = 2;
     ArrayList<Node> spaceNodes;
     private final SearchMethod searchMethod;
     TDoubleArrayList influenceRads;
-    public final boolean DEFAULT_WHETHER_USE_DISTURB = true;
+    public final static boolean DEFAULT_WHETHER_USE_DISTURB = true;
 
     @Override
     public void searchModel(double[] center, Segment2D bnd, double radius, boolean filetByInfluence, List<Node> nodes, List<Segment2D> segs, List<Node> blockedNds, List<Segment2D> blockNdsSegs) {
