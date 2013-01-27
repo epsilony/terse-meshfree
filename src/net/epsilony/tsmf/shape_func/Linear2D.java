@@ -22,8 +22,8 @@ public class Linear2D implements ShapeFunction {
             output = new TDoubleArrayList[]{new TDoubleArrayList(2)};
         }
         double len = Math2D.distance(coords.get(0), coords.get(1));
-        double v1 = Math2D.distance(xy, coords.get(0)) / len;
-        double v2 = 1 - v1;
+        double v2 = Math2D.distance(xy, coords.get(0)) / len;
+        double v1 = 1 - v2;
         output[0].add(v1);
         output[1].add(v2);
         return output;
@@ -34,8 +34,8 @@ public class Linear2D implements ShapeFunction {
             output = new double[2];
         }
         double len = Math2D.distance(hCoord, rCoord);
-        double v1 = Math2D.distance(xy, hCoord) / len;
-        double v2 = 1 - v1;
+        double v2 = Math2D.distance(xy, hCoord) / len;
+        double v1 = 1 - v2;
         output[0] = v1;
         output[1] = v2;
         return output;
