@@ -118,14 +118,6 @@ public class TimoshenkoAnalyticalBeam2D {
 
         @Override
         public double[] value(double[] input, double[] output) {
-            return displacement(input[0], input[1], 0, output);
-        }
-    }
-
-    public class DirichletFunction implements GenericFunction<double[], double[]> {
-
-        @Override
-        public double[] value(double[] input, double[] output) {
             double[] strVal = stress(input[0], input[1], null);
             if (output == null) {
                 output = new double[2];
@@ -133,6 +125,15 @@ public class TimoshenkoAnalyticalBeam2D {
             output[0] = strVal[0];
             output[1] = strVal[2];
             return output;
+        }
+    }
+
+    public class DirichletFunction implements GenericFunction<double[], double[]> {
+
+        @Override
+        public double[] value(double[] input, double[] output) {
+            return displacement(input[0], input[1], 0, output);
+
         }
     }
 
