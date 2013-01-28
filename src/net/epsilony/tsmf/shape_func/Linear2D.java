@@ -21,8 +21,7 @@ public class Linear2D implements ShapeFunction {
         } else {
             output = new TDoubleArrayList[]{new TDoubleArrayList(2)};
         }
-        double len = Math2D.distance(coords.get(0), coords.get(1));
-        double v2 = Math2D.distance(xy, coords.get(0)) / len;
+        double v2 = calcV2(coords.get(0), coords.get(1), xy);
         double v1 = 1 - v2;
         output[0].add(v1);
         output[1].add(v2);
@@ -33,8 +32,7 @@ public class Linear2D implements ShapeFunction {
         if (null == output) {
             output = new double[2];
         }
-        double len = Math2D.distance(hCoord, rCoord);
-        double v2 = Math2D.distance(xy, hCoord) / len;
+        double v2 = calcV2(hCoord, rCoord, xy);
         double v1 = 1 - v2;
         output[0] = v1;
         output[1] = v2;
@@ -49,5 +47,11 @@ public class Linear2D implements ShapeFunction {
     @Override
     public void setDiffOrder(int diffOrder) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    private static double calcV2(double[] hCoord, double[] rCoord, double[] xy) {
+        double len = Math2D.distance(hCoord, rCoord);
+        double v2 = Math2D.distance(xy, hCoord) / len;
+        return v2;
     }
 }
