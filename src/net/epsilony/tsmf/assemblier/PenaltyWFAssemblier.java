@@ -68,20 +68,20 @@ public class PenaltyWFAssemblier implements WFAssemblier {
         }
         Matrix mat = mainMatrix;
         for (int i = 0; i < nodesIds.size(); i++) {
-            int mat_i = nodesIds.getQuick(i) * 2;
+            int row = nodesIds.getQuick(i) * 2;
             double v_x_i = v_x.getQuick(i);
             double v_y_i = v_y.getQuick(i);
             double v_i = v.getQuick(i);
             if (volumnForce != null) {
-                mainVector.add(mat_i, b1 * v_i);
-                mainVector.add(mat_i + 1, b2 * v_i);
+                mainVector.add(row, b1 * v_i);
+                mainVector.add(row + 1, b2 * v_i);
             }
             int jStart = 0;
             if (isUpperSymmertric()) {
                 jStart = i;
             }
             for (int j = jStart; j < nodesIds.size(); j++) {
-                int mat_j = nodesIds.getQuick(j) * 2;
+                int col = nodesIds.getQuick(j) * 2;
                 double v_x_j = v_x.getQuick(j);
                 double v_y_j = v_y.getQuick(j);
 
@@ -90,36 +90,36 @@ public class PenaltyWFAssemblier implements WFAssemblier {
                 double[] j_v1 = new double[]{v_x_j, 0, v_y_j};
                 double[] j_v2 = new double[]{0, v_y_j, v_x_j};
 
-                double d11 = weight * leftRightMult(i_v1, j_v1);
-                double d21 = weight * leftRightMult(i_v2, j_v1);
-                double d12 = weight * leftRightMult(i_v1, j_v2);
-                double d22 = weight * leftRightMult(i_v2, j_v2);
+                double d11 = weight * multConstitutiveLaw(i_v1, j_v1);
+                double d21 = weight * multConstitutiveLaw(i_v2, j_v1);
+                double d12 = weight * multConstitutiveLaw(i_v1, j_v2);
+                double d22 = weight * multConstitutiveLaw(i_v2, j_v2);
 
-                if (isUpperSymmertric() && mat_j <= mat_i) {
-                    mat.add(mat_j, mat_i, d11);
-                    mat.add(mat_j, mat_i + 1, d21);
-                    mat.add(mat_j + 1, mat_i + 1, d22);
-                    if (mat_i != mat_j) {
-                        mat.add(mat_j + 1, mat_i, d12);
+                if (isUpperSymmertric() && col <= row) {
+                    mat.add(col, row, d11);
+                    mat.add(col, row + 1, d21);
+                    mat.add(col + 1, row + 1, d22);
+                    if (row != col) {
+                        mat.add(col + 1, row, d12);
                     }
                 } else {
-                    mat.add(mat_i, mat_j, d11);
-                    mat.add(mat_i, mat_j + 1, d12);
-                    mat.add(mat_i + 1, mat_j + 1, d22);
-                    if (!(isUpperSymmertric() && mat_i == mat_j)) {
-                        mat.add(mat_i + 1, mat_j, d21);
+                    mat.add(row, col, d11);
+                    mat.add(row, col + 1, d12);
+                    mat.add(row + 1, col + 1, d22);
+                    if (!(isUpperSymmertric() && row == col)) {
+                        mat.add(row + 1, col, d21);
                     }
                 }
             }
         }
     }
 
-    private double leftRightMult(double[] l, double[] r) {
+    private double multConstitutiveLaw(double[] left, double[] right) {
         Matrix mat = constitutiveLaw.getMatrix();
         double result = 0;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                double t = l[i] * r[j];
+                double t = left[i] * right[j];
                 if (t != 0) {
                     result += t * mat.get(i, j);
                 }
@@ -159,38 +159,38 @@ public class PenaltyWFAssemblier implements WFAssemblier {
         DenseVector vec = mainVector;
         TDoubleArrayList vs = shapeFuncVals[0];
 
-        final boolean vb1 = dirichletMark[0];
-        final boolean vb2 = dirichletMark[1];
+        final boolean dirichletX = dirichletMark[0];
+        final boolean dirichletY = dirichletMark[1];
         for (int i = 0; i < nodesIds.size(); i++) {
-            int mat_i = nodesIds.getQuick(i) * 2;
+            int row = nodesIds.getQuick(i) * 2;
             double vi = vs.getQuick(i);
-            if (vb1) {
-                vec.add(mat_i, vi * dirichletVal[0] * factor);
+            if (dirichletX) {
+                vec.add(row, vi * dirichletVal[0] * factor);
             }
-            if (vb2) {
-                vec.add(mat_i + 1, vi * dirichletVal[1] * factor);
+            if (dirichletY) {
+                vec.add(row + 1, vi * dirichletVal[1] * factor);
             }
             int jStart = 0;
             if (isUpperSymmertric()) {
                 jStart = i;
             }
             for (int j = jStart; j < nodesIds.size(); j++) {
-                int mat_j = nodesIds.getQuick(j) * 2;
+                int col = nodesIds.getQuick(j) * 2;
                 double vij = factor * vi * vs.getQuick(j);
-                int indexI;
-                int indexJ;
-                if (isUpperSymmertric() && mat_j <= mat_i) {
-                    indexI = mat_j;
-                    indexJ = mat_i;
+                int tRow;
+                int tCol;
+                if (isUpperSymmertric() && col <= row) {
+                    tRow = col;
+                    tCol = row;
                 } else {
-                    indexI = mat_i;
-                    indexJ = mat_j;
+                    tRow = row;
+                    tCol = col;
                 }
-                if (vb1) {
-                    mat.add(indexI, indexJ, vij);
+                if (dirichletX) {
+                    mat.add(tRow, tCol, vij);
                 }
-                if (vb2) {
-                    mat.add(indexI + 1, indexJ + 1, vij);
+                if (dirichletY) {
+                    mat.add(tRow + 1, tCol + 1, vij);
                 }
             }
         }

@@ -27,8 +27,8 @@ public class LagrangeWFAssemblier extends PenaltyWFAssemblier implements Support
         DenseVector vec = mainVector;
 
         TDoubleArrayList vs = shapeFuncVals[0];
-        final boolean vb1 = dirichletMark[0];
-        final boolean vb2 = dirichletMark[1];
+        final boolean dirichletX = dirichletMark[0];
+        final boolean dirichletY = dirichletMark[1];
         double drk1 = dirichletVal[0];
         double drk2 = dirichletVal[1];
 
@@ -36,23 +36,23 @@ public class LagrangeWFAssemblier extends PenaltyWFAssemblier implements Support
 
         for (int j = lagIndex; j < nodesIds.size(); j++) {
             double v_j_w = vs.getQuick(j) * weight;
-            int mat_j = nodesIds.getQuick(j) * 2;
-            if (vb1) {
-                vec.add(mat_j, -v_j_w * drk1);
+            int col = nodesIds.getQuick(j) * 2;
+            if (dirichletX) {
+                vec.add(col, -v_j_w * drk1);
             }
-            if (vb2) {
-                vec.add(mat_j + 1, -v_j_w * drk2);
+            if (dirichletY) {
+                vec.add(col + 1, -v_j_w * drk2);
             }
             for (int i = 0; i < lagIndex; i++) {
                 double v_i = vs.getQuick(i);
-                int mat_i = nodesIds.getQuick(i) * 2;
+                int row = nodesIds.getQuick(i) * 2;
 
                 double d = -v_i * v_j_w;
-                mat.add(mat_i, mat_j, d);
-                mat.add(mat_i + 1, mat_j + 1, d);
+                mat.add(row, col, d);
+                mat.add(row + 1, col + 1, d);
                 if (!isUpperSymmertric()) {
-                    mat.add(mat_j, mat_i, d);
-                    mat.add(mat_j + 1, mat_i + 1, d);
+                    mat.add(col, row, d);
+                    mat.add(col + 1, row + 1, d);
                 }
             }
         }
@@ -64,7 +64,7 @@ public class LagrangeWFAssemblier extends PenaltyWFAssemblier implements Support
                 return i + 1;
             }
         }
-        throw new IllegalStateException("There isn't any normal node ids here!");
+        throw new IllegalStateException("nodesIds should contains both Lagrange-node ids and normal-nodes ids");
     }
 
     @Override
