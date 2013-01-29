@@ -15,13 +15,13 @@ import java.util.List;
 public class DictComparator<T> implements Comparator<T> {
 
     List<Comparator<T>> comparators;
-    private final int mainKey;
+    private final int primeComparatorIndex;
 
     @Override
     public int compare(T o1, T o2) {
         final int size = comparators.size();
         for (int i = 0; i < size; i++) {
-            int c = comparators.get((i + mainKey) % size).compare(o1, o2);
+            int c = comparators.get((i + primeComparatorIndex) % size).compare(o1, o2);
             if (c != 0) {
                 return c;
             }
@@ -35,15 +35,15 @@ public class DictComparator<T> implements Comparator<T> {
         } else {
             this.comparators = comparators;
         }
-        this.mainKey = mainKey;
+        this.primeComparatorIndex = mainKey;
     }
 
     public DictComparator<T> getSlibing(int mainKey) {
         return new DictComparator<>(comparators, false, mainKey);
     }
 
-    public int getMainKey() {
-        return mainKey;
+    public int getPrimeComparatorIndex() {
+        return primeComparatorIndex;
     }
 
     public List<Comparator<T>> getComparators() {

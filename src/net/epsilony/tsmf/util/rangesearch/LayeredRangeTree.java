@@ -79,6 +79,30 @@ public class LayeredRangeTree<K, V> {
         root = new TreeNode(sortedPairLists, 0);
     }
 
+    private WithPair<K, V> getMidPair(List<? extends WithPair<K, V>> sortedPairs) {
+        int midIndex = (sortedPairs.size() - 1) / 2;
+        WithPair<K, V> midPair = sortedPairs.get(midIndex);
+        return midPair;
+    }
+
+    private void subDivide(List<WithPair<K, V>> pairs,
+            List<WithPair<K, V>> lessEqualTos,
+            List<WithPair<K, V>> greaterThans,
+            K divideKey, int dictComparatorIndex) {
+        DictComparator<K> comparator = dictComparators.get(dictComparatorIndex);
+        for (WithPair<K, V> p : pairs) {
+            if (comparator.compare(p.getKey(), divideKey) <= 0) {
+                lessEqualTos.add(p);
+            } else {
+                greaterThans.add(p);
+            }
+        }
+    }
+
+    private int numDimensions() {
+        return dictComparators.size();
+    }
+
     final class TreeNode {
 
         boolean isLeaf() {
@@ -86,61 +110,55 @@ public class LayeredRangeTree<K, V> {
         }
         K key;
         V value;
-        int primeDictCompareDimension;
+        int primeDimension;
 
         DictComparator<K> dictComparator() {
-            return dictComparators.get(primeDictCompareDimension);
+            return dictComparators.get(primeDimension);
         }
-        FraCasData fraCasData;
-        TreeNode associateTree;
+        FraCasData fraCasAssociate;
+        TreeNode treeAssociate;
         TreeNode left;    //<=key
         TreeNode right;  //>key
 
-        TreeNode(ArrayList<ArrayList<WithPair<K, V>>> treeAndAssociatesDatasLists, int primeDictCompareDimension) {
+        TreeNode(ArrayList<ArrayList<WithPair<K, V>>> sortedDataLists,int primeDimension) {
 
-            this.primeDictCompareDimension = primeDictCompareDimension;
-            ArrayList<WithPair<K, V>> treeDatas = treeAndAssociatesDatasLists.get(primeDictCompareDimension);
+            this.primeDimension = primeDimension;
+            ArrayList<WithPair<K, V>> treeDatas = sortedDataLists.get(primeDimension);
 
             int midIndex = (treeDatas.size() - 1) / 2;
-            WithPair<K, V> midPair = treeDatas.get(midIndex);
+            WithPair<K, V> midPair = getMidPair(treeDatas);
             key = midPair.getKey();
             value = midPair.getValue();
             if (treeDatas.size() == 1) {
                 return;
             }
-            ArrayList<ArrayList<WithPair<K, V>>> leftSubTreeAndAssociatesDatasLists = new ArrayList<>(treeAndAssociatesDatasLists.size());
-            ArrayList<ArrayList<WithPair<K, V>>> rightSubTreeAndAssociatedDatasLists = new ArrayList<>(treeAndAssociatesDatasLists.size());
+            ArrayList<ArrayList<WithPair<K, V>>> leftSortedDataLists = new ArrayList<>(sortedDataLists.size());
+            ArrayList<ArrayList<WithPair<K, V>>> rightSortedDataLists= new ArrayList<>(sortedDataLists.size());
 
-            for (int demension = 0; demension < treeAndAssociatesDatasLists.size(); demension++) {
-                ArrayList<WithPair<K, V>> leftSubTreeAndAssociatesDatas, rightSubTreeAndAssociatesDatas;
-                if (demension < primeDictCompareDimension) {
-                    leftSubTreeAndAssociatesDatas = null;
-                    rightSubTreeAndAssociatesDatas = null;
+            for (int demension = 0; demension < numDimensions(); demension++) {
+                ArrayList<WithPair<K, V>> leftSorteds, rightSorteds;
+                if (demension < primeDimension) {
+                    leftSorteds = null;
+                    rightSorteds = null;
                 } else {
-                    List<WithPair<K, V>> sortedPairs = treeAndAssociatesDatasLists.get(demension);
-                    leftSubTreeAndAssociatesDatas = new ArrayList<>(midIndex + 1);
-                    rightSubTreeAndAssociatesDatas = new ArrayList<>(treeDatas.size() - midIndex - 1);
-                    for (WithPair<K, V> p : sortedPairs) {
-                        if (dictComparator().compare(p.getKey(), key) <= 0) {
-                            leftSubTreeAndAssociatesDatas.add(p);
-                        } else {
-                            rightSubTreeAndAssociatesDatas.add(p);
-                        }
-                    }
+                    List<WithPair<K, V>> sortedPairs = sortedDataLists.get(demension);
+                    leftSorteds = new ArrayList<>(midIndex + 1);
+                    rightSorteds = new ArrayList<>(treeDatas.size() - midIndex - 1);
+                    subDivide(sortedPairs, leftSorteds, rightSorteds, key, primeDimension);
                 }
-                leftSubTreeAndAssociatesDatasLists.add(leftSubTreeAndAssociatesDatas);
-                rightSubTreeAndAssociatedDatasLists.add(rightSubTreeAndAssociatesDatas);
+                leftSortedDataLists.add(leftSorteds);
+                rightSortedDataLists.add(rightSorteds);
             }
             if (isOnLastTwoDimension()) {
-                fraCasData = new FraCasData(
-                        treeAndAssociatesDatasLists.get(primeDictCompareDimension + 1),
-                        leftSubTreeAndAssociatesDatasLists.get(primeDictCompareDimension + 1),
-                        rightSubTreeAndAssociatedDatasLists.get(primeDictCompareDimension + 1));
+                fraCasAssociate = new FraCasData(
+                        sortedDataLists.get(primeDimension + 1),
+                        leftSortedDataLists.get(primeDimension + 1),
+                        rightSortedDataLists.get(primeDimension + 1));
             } else {
-                associateTree = new TreeNode(treeAndAssociatesDatasLists, primeDictCompareDimension + 1);
+                treeAssociate = new TreeNode(sortedDataLists, primeDimension + 1);
             }
-            left = new TreeNode(leftSubTreeAndAssociatesDatasLists, primeDictCompareDimension);
-            right = new TreeNode(rightSubTreeAndAssociatedDatasLists, primeDictCompareDimension);
+            left = new TreeNode(leftSortedDataLists, primeDimension);
+            right = new TreeNode(rightSortedDataLists, primeDimension);
         }
 
         public int dictCompare(K o1, K o2) {
@@ -175,7 +193,7 @@ public class LayeredRangeTree<K, V> {
             while (!v.isLeaf()) {
                 if (dictCompare(from, v.key) <= 0) {
                     if (!v.right.isLeaf()) {
-                        v.right.associateTree.rangeSearch(results, from, to);
+                        v.right.treeAssociate.rangeSearch(results, from, to);
                     } else {
                         v.right.checkTo(from, to, results);
                     }
@@ -189,7 +207,7 @@ public class LayeredRangeTree<K, V> {
             while (!v.isLeaf()) {
                 if (dictCompare(v.key, to) <= 0) {
                     if (!v.left.isLeaf()) {
-                        v.left.associateTree.rangeSearch(results, from, to);
+                        v.left.treeAssociate.rangeSearch(results, from, to);
                     } else {
                         v.left.checkTo(from, to, results);
                     }
@@ -205,19 +223,19 @@ public class LayeredRangeTree<K, V> {
             TreeNode v = splitNode.left;
             int casIndex = 0;
             if (!v.isLeaf()) {
-                casIndex = v.fraCasData.searchCasIndex(from);
+                casIndex = v.fraCasAssociate.searchCasIndex(from);
             }
-            while (!v.isLeaf() && casIndex < v.fraCasData.keys.size()) {
+            while (!v.isLeaf() && casIndex < v.fraCasAssociate.keys.size()) {
                 if (dictCompare(from, v.key) <= 0) {
                     if (v.right.isLeaf()) {
                         v.right.checkTo(from, to, results);
                     } else {
-                        v.right.fraCasData.checkTo(results, v.fraCasData.rightCas[casIndex], to);
+                        v.right.fraCasAssociate.checkTo(results, v.fraCasAssociate.rightCas[casIndex], to);
                     }
-                    casIndex = v.fraCasData.leftCas[casIndex];
+                    casIndex = v.fraCasAssociate.leftCas[casIndex];
                     v = v.left;
                 } else {
-                    casIndex = v.fraCasData.rightCas[casIndex];
+                    casIndex = v.fraCasAssociate.rightCas[casIndex];
                     v = v.right;
                 }
             }
@@ -227,19 +245,19 @@ public class LayeredRangeTree<K, V> {
 
             v = splitNode.right;
             if (!v.isLeaf()) {
-                casIndex = v.fraCasData.searchCasIndex(from);
+                casIndex = v.fraCasAssociate.searchCasIndex(from);
             }
-            while (!v.isLeaf() && casIndex < v.fraCasData.keys.size()) {
+            while (!v.isLeaf() && casIndex < v.fraCasAssociate.keys.size()) {
                 if (dictCompare(v.key, to) <= 0) {
                     if (v.left.isLeaf()) {
                         v.left.checkTo(from, to, results);
                     } else {
-                        v.left.fraCasData.checkTo(results, v.fraCasData.leftCas[casIndex], to);
+                        v.left.fraCasAssociate.checkTo(results, v.fraCasAssociate.leftCas[casIndex], to);
                     }
-                    casIndex = v.fraCasData.rightCas[casIndex];
+                    casIndex = v.fraCasAssociate.rightCas[casIndex];
                     v = v.right;
                 } else {
-                    casIndex = v.fraCasData.leftCas[casIndex];
+                    casIndex = v.fraCasAssociate.leftCas[casIndex];
                     v = v.left;
                 }
             }
@@ -251,7 +269,7 @@ public class LayeredRangeTree<K, V> {
         void checkTo(K from, K to, Collection<? super V> results) {
             List<? extends Comparator<K>> comparators = dictComparator().getComparators();
             boolean b = true;
-            for (int i = primeDictCompareDimension; i < comparators.size(); i++) {
+            for (int i = primeDimension; i < comparators.size(); i++) {
                 if (comparators.get(i).compare(from, key) > 0 || comparators.get(i).compare(key, to) > 0) {
                     b = false;
                     break;
@@ -263,7 +281,7 @@ public class LayeredRangeTree<K, V> {
         }
 
         private boolean isOnLastTwoDimension() {
-            return dictComparator().getMainKey() >= dictComparator().getKeyDimensionSize() - 2;
+            return primeDimension >= numDimensions() - 2;
         }
     }
 
@@ -318,7 +336,7 @@ public class LayeredRangeTree<K, V> {
         }
 
         void checkTo(Collection<? super V> results, int fromIndex, K to) {
-            Comparator<K> comp = dictComparator().comparators.get(dictComparator().getMainKey());
+            Comparator<K> comp = dictComparator().comparators.get(dictComparator().getPrimeComparatorIndex());
             for (int i = fromIndex; i < keys.size(); i++) {
                 K key = keys.get(i);
                 if (comp.compare(key, to) > 0) {
