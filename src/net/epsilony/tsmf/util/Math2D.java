@@ -115,4 +115,13 @@ public class Math2D {
         }
         return true;
     }
+
+    public static double[] pointOnSegment(double[] head, double[] rear, double t, double[] result) {
+        if (null == result) {
+            result = new double[2];
+        }
+        result[0] = head[0] * (1 - t) + rear[0] * t;
+        result[1] = head[1] * (1 - t) + rear[1] * t;
+        return result;
+    }
 }
