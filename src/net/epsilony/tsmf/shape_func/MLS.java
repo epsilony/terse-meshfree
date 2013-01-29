@@ -7,7 +7,6 @@ package net.epsilony.tsmf.shape_func;
 import gnu.trove.list.array.TDoubleArrayList;
 import java.util.List;
 import net.epsilony.tsmf.util.Math2D;
-import net.epsilony.tsmf.util.WithDiffOrder;
 import net.epsilony.tsmf.util.WithDiffOrderUtil;
 import org.ejml.alg.dense.decomposition.lu.LUDecompositionNR;
 import org.ejml.alg.dense.linsol.lu.LinearSolverLu;
@@ -31,9 +30,7 @@ public class MLS implements ShapeFunction {
     TDoubleArrayList[] basisCache;
     TDoubleArrayList commonCache;
     LinearSolverLu solver = new LinearSolverLu(new LUDecompositionNR());
-    //DenseMatrix64F solverA;
-    DenseMatrix64F b_;
-    DenseMatrix64F gamma, gamma_d, tv1, tv2;
+    DenseMatrix64F gamma, gamma_d, tVec1, tVec2;
     static private final double[] ZERO = new double[]{0, 0};
 
     @Override
@@ -60,9 +57,8 @@ public class MLS implements ShapeFunction {
         weightsCache = new TDoubleArrayList[diffSize];
         gamma = new DenseMatrix64F(basisLen, 1);
         gamma_d = new DenseMatrix64F(basisLen, 1);
-        tv1 = new DenseMatrix64F(basisLen, 1);
-        tv2 = new DenseMatrix64F(basisLen, 1);
-        b_ = new DenseMatrix64F(basisLen, 1);
+        tVec1 = new DenseMatrix64F(basisLen, 1);
+        tVec2 = new DenseMatrix64F(basisLen, 1);
         commonCache = new TDoubleArrayList(DEFAULT_MAT_B_CAPACITY);
         for (int i = 0; i < diffSize; i++) {
             matAs[i] = new DenseMatrix64F(basisLen, basisLen);
@@ -119,45 +115,26 @@ public class MLS implements ShapeFunction {
     public TDoubleArrayList[] values(double[] xy, List<double[]> coords, TDoubleArrayList influcenceRads, TDoubleArrayList[] dists, TDoubleArrayList[] output) {
         resetCaches(coords.size());
         TDoubleArrayList[] results = WithDiffOrderUtil.initOutput(output, coords.size(), 2, getDiffOrder());
-        TDoubleArrayList[] ds = dists;
         if (null == dists) {
-            fillDistsCache(xy, coords);
-            ds = distsCache;
+            dists = ordinaryDistances(xy, coords);
         }
-        weightFunc.values(ds, influcenceRads, weightsCache);
 
-        basisFunc.setDiffOrder(0);
-        double[] tds = new double[2];
-        int crd_index = 0;
-        for (double[] crd : coords) {
-            basisFunc.values(Math2D.subs(crd, xy, tds), basisCache);
-            TDoubleArrayList basis = basisCache[0];
-            for (int i = 0; i < matAs.length; i++) {
-                DenseMatrix64F A_d = matAs[i];
-                TDoubleArrayList[] B_d = matBs[i];
-                double weight = weightsCache[i].getQuick(crd_index);
-                addToA(weight, basis, A_d);
-                addToB(weight, basis, B_d);
-            }
-            crd_index++;
-        }
+        calcMatAB(xy, coords, influcenceRads, dists);
 
         int diffOrder = getDiffOrder();
-        if (diffOrder > 0) {
-            basisFunc.setDiffOrder(diffOrder);
-        }
+        basisFunc.setDiffOrder(diffOrder);
         basisFunc.values(ZERO, basisCache);
         solver.setA(matAs[0]);
-        copyTo(basisCache[0], b_);
-        solver.solve(b_, gamma);
+        copyTo(basisCache[0], tVec1);
+        solver.solve(tVec1, gamma);
         dot(matBs[0], gamma, results[0]);
 
         if (diffOrder > 0) {
             for (int i = 1; i < matAs.length; i++) {
-                MatrixVectorMult.mult(matAs[i], gamma, tv1);
-                copyTo(basisCache[i], tv2);
-                CommonOps.sub(tv2, tv1, tv1);
-                solver.solve(tv1, gamma_d);
+                MatrixVectorMult.mult(matAs[i], gamma, tVec1);
+                copyTo(basisCache[i], tVec2);
+                CommonOps.sub(tVec2, tVec1, tVec1);
+                solver.solve(tVec1, gamma_d);
                 dot(matBs[i], gamma, results[i]);
                 commonCache.resetQuick();
                 dot(matBs[0], gamma_d, commonCache);
@@ -166,6 +143,25 @@ public class MLS implements ShapeFunction {
         }
 
         return results;
+    }
+
+    private void calcMatAB(double[] xy, List<double[]> coords, TDoubleArrayList influcenceRads, TDoubleArrayList[] dists) {
+        TDoubleArrayList[] weightsByDiffs = weightFunc.values(dists, influcenceRads, weightsCache);
+        basisFunc.setDiffOrder(0);
+        double[] tds = new double[2];
+        int coordIndex = 0;
+        for (double[] crd : coords) {
+            basisFunc.values(Math2D.subs(crd, xy, tds), basisCache);
+            TDoubleArrayList basis = basisCache[0];
+            for (int differential = 0; differential < matAs.length; differential++) {
+                DenseMatrix64F A_d = matAs[differential];
+                TDoubleArrayList[] B_d = matBs[differential];
+                double weight = weightsByDiffs[differential].getQuick(coordIndex);
+                vectorTransMultVectorAddtoA(weight, basis, A_d);
+                appendToB(weight, basis, B_d);
+            }
+            coordIndex++;
+        }
     }
 
     static private void addTo(TDoubleArrayList from, TDoubleArrayList to) {
@@ -190,23 +186,23 @@ public class MLS implements ShapeFunction {
         }
     }
 
-    static private void addToA(double w, TDoubleArrayList basis, DenseMatrix64F matA) {
-        for (int i = 0; i < basis.size(); i++) {
-            double b1 = basis.getQuick(i);
-            for (int j = 0; j < basis.size(); j++) {
-                double b2 = basis.getQuick(j);
-                matA.add(i, j, w * b1 * b2);
+    static private void vectorTransMultVectorAddtoA(double scale, TDoubleArrayList vector, DenseMatrix64F matA) {
+        for (int i = 0; i < vector.size(); i++) {
+            double b1 = vector.getQuick(i);
+            for (int j = 0; j < vector.size(); j++) {
+                double b2 = vector.getQuick(j);
+                matA.add(i, j, scale * b1 * b2);
             }
         }
     }
 
-    static private void addToB(double w, TDoubleArrayList basis, TDoubleArrayList[] matB) {
-        for (int i = 0; i < basis.size(); i++) {
-            matB[i].add(w * basis.getQuick(i));
+    static private void appendToB(double scale, TDoubleArrayList vector, TDoubleArrayList[] matB) {
+        for (int row = 0; row < vector.size(); row++) {
+            matB[row].add(scale * vector.getQuick(row));
         }
     }
 
-    private void fillDistsCache(double[] xy, List<double[]> coords) {
+    private TDoubleArrayList[] ordinaryDistances(double[] xy, List<double[]> coords) {
         int diffSize = distsCache.length;
         double[] tds = null;
         if (diffSize > 1) {
@@ -222,5 +218,6 @@ public class MLS implements ShapeFunction {
                 distsCache[0].add(Math2D.distance(xy, crd));
             }
         }
+        return distsCache;
     }
 }
