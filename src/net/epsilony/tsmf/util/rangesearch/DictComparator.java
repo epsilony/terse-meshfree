@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class DictComparator<T> implements Comparator<T> {
 
-    List<Comparator<T>> comparators;
+    ArrayList<Comparator<T>> comparators;
     private final int primeComparatorIndex;
 
     @Override
@@ -29,24 +29,20 @@ public class DictComparator<T> implements Comparator<T> {
         return 0;
     }
 
-    public DictComparator(List<Comparator<T>> comparators, boolean copy, int mainKey) {
-        if (copy) {
-            this.comparators = new ArrayList<>(comparators);
-        } else {
-            this.comparators = comparators;
-        }
-        this.primeComparatorIndex = mainKey;
+    public DictComparator(List<? extends Comparator<T>> comparators, int primeComparatorIndex) {
+        this.comparators = new ArrayList<>(comparators);
+        this.primeComparatorIndex = primeComparatorIndex;
     }
 
-    public DictComparator<T> getSlibing(int mainKey) {
-        return new DictComparator<>(comparators, false, mainKey);
+    public DictComparator<T> getSlibing(int primeComparatorIndex) {
+        return new DictComparator<>(comparators,primeComparatorIndex);
     }
 
     public int getPrimeComparatorIndex() {
         return primeComparatorIndex;
     }
 
-    public List<Comparator<T>> getComparators() {
+    public ArrayList<Comparator<T>> getComparators() {
         return comparators;
     }
 

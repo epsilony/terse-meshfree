@@ -68,7 +68,7 @@ public class LayeredRangeTreeTest {
             try {
                 lrTree.rangeSearch(acts, from, to);
                 LinkedList<double[]> exps = rangeSearch(samples, from, to);
-                DictComparator<double[]> dComp = new DictComparator<>(comps, false, 0);
+                DictComparator<double[]> dComp = new DictComparator<>(comps, 0);
                 Collections.sort(acts, dComp);
                 Collections.sort(exps, dComp);
                 //System.out.println("acts.size(), exps.size() = " + acts.size() + ", " + exps.size());
@@ -90,7 +90,7 @@ public class LayeredRangeTreeTest {
                 }
             } catch (Throwable t) { // just for debug
                 LinkedList<double[]> exps = rangeSearch(samples, from, to);
-                DictComparator<double[]> dComp = new DictComparator<>(comps, false, 0);
+                DictComparator<double[]> dComp = new DictComparator<>(comps, 0);
                 Collections.sort(exps, dComp);
                 lrTree.rangeSearch(acts, from, to);
                 throw t;
@@ -144,7 +144,7 @@ public class LayeredRangeTreeTest {
         for (int i = 0; i < testTime; i++) {
             lrTree.rangeSearch(acts, from, to);
             LinkedList<double[]> exps = rangeSearch(samples, from, to);
-            DictComparator<double[]> dComp = new DictComparator<>(comps, false, 0);
+            DictComparator<double[]> dComp = new DictComparator<>(comps, 0);
             Collections.sort(acts, dComp);
             Collections.sort(exps, dComp);
             //System.out.println("acts.size(), exps.size() = " + acts.size() + ", " + exps.size());
