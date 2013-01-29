@@ -28,14 +28,14 @@ import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
 
 /**
- * 
+ *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class WFProcessor2D implements NeedPreparation {
+public class WeakformProcessor2D implements NeedPreparation {
 
     public static final int DEFAULT_CAPACITY = 60;
     public static final int DENSE_MATRIC_SIZE_THRESHOLD = 200;
-    Project project;
+    WeakformTask project;
     Model2D model;
     ShapeFunction shapeFunction;
     WFAssemblier assemblier;
@@ -45,12 +45,12 @@ public class WFProcessor2D implements NeedPreparation {
     LinearLagrangeDirichletProcessor lagProcessor;
     ConstitutiveLaw constitutiveLaw;
     DenseVector nodesValue;
-    private List<ProcessPoint> balanceProcessPoints;
-    private List<ProcessPoint> dirichletProcessPoints;
-    private List<ProcessPoint> neumannProcessPoints;
+    private List<TaskUnit> balanceProcessPoints;
+    private List<TaskUnit> dirichletProcessPoints;
+    private List<TaskUnit> neumannProcessPoints;
     private boolean lagDiri;
 
-    public WFProcessor2D(Model2D model, InfluenceRadsCalc inflRadCalc, Project project, ShapeFunction shapeFunction, WFAssemblier assemblier, ConstitutiveLaw constitutiveLaw) {
+    public WeakformProcessor2D(Model2D model, InfluenceRadsCalc inflRadCalc, WeakformTask project, ShapeFunction shapeFunction, WFAssemblier assemblier, ConstitutiveLaw constitutiveLaw) {
         this.model = model;
         this.shapeFunction = shapeFunction;
         this.assemblier = assemblier;
@@ -59,7 +59,7 @@ public class WFProcessor2D implements NeedPreparation {
         this.constitutiveLaw = constitutiveLaw;
     }
 
-    public WFProcessor2D(ProcessPackage pack) {
+    public WeakformProcessor2D(WeakformProject pack) {
         this(pack.model, pack.influenceRadCalc, pack.project, pack.shapeFunc, pack.assemblier, pack.constitutiveLaw);
     }
 
@@ -111,14 +111,14 @@ public class WFProcessor2D implements NeedPreparation {
     public void processBalance() {
         final int diffOrder = 1;
 
-        List<ProcessPoint> points = balanceProcessPoints;
+        List<TaskUnit> points = balanceProcessPoints;
 
         Mixer mixer = new Mixer();
         mixer.setDiffOrder(diffOrder);
         TIntArrayList nodesIds = mixer.getNodesIds();
         TDoubleArrayList[] shapeFuncVals = mixer.getShapeFuncVals();
         shapeFunction.setDiffOrder(diffOrder);
-        for (ProcessPoint pt : points) {
+        for (TaskUnit pt : points) {
             mixer.mix(pt.coord, pt.seg);
             assemblier.asmBalance(pt.weight, nodesIds, shapeFuncVals, pt.value);
         }
@@ -127,13 +127,13 @@ public class WFProcessor2D implements NeedPreparation {
     public void processNeumann() {
         final int diffOrder = 0;
 
-        List<ProcessPoint> points = neumannProcessPoints;
+        List<TaskUnit> points = neumannProcessPoints;
 
         Mixer mixer = new Mixer();
         mixer.setDiffOrder(diffOrder);
         TIntArrayList nodesIds = mixer.getNodesIds();
         TDoubleArrayList[] shapeFuncVals = mixer.getShapeFuncVals();
-        for (ProcessPoint pt : points) {
+        for (TaskUnit pt : points) {
             mixer.mix(pt.coord, pt.seg);
             assemblier.asmNeumann(pt.weight, nodesIds, shapeFuncVals, pt.value);
         }
@@ -142,13 +142,13 @@ public class WFProcessor2D implements NeedPreparation {
     public void processDirichlet() {
         final int diffOrder = 0;
 
-        List<ProcessPoint> points = dirichletProcessPoints;
+        List<TaskUnit> points = dirichletProcessPoints;
 
         Mixer mixer = new Mixer();
         mixer.setDiffOrder(diffOrder);
         TIntArrayList nodesIds = mixer.getNodesIds();
         TDoubleArrayList[] shapeFuncVals = mixer.getShapeFuncVals();
-        for (ProcessPoint pt : points) {
+        for (TaskUnit pt : points) {
             mixer.mix(pt.coord, pt.seg);
             if (lagDiri) {
                 lagProcessor.process(pt, nodesIds, shapeFuncVals[0]);
@@ -265,18 +265,18 @@ public class WFProcessor2D implements NeedPreparation {
         return new PostProcessor();
     }
 
-    public static WFProcessor2D genTimoshenkoProjectProcess() {
+    public static WeakformProcessor2D genTimoshenkoProjectProcess() {
         TimoshenkoAnalyticalBeam2D timoBeam = new TimoshenkoAnalyticalBeam2D(48, 12, 3e7, 0.3, -1000);
         int quadDomainSize = 2;
         int quadDegree = 4;
         double inflRads = quadDomainSize * 4.1;
-        TimoshenkoStandardProject tProject = new TimoshenkoStandardProject(timoBeam, quadDomainSize, quadDomainSize, quadDegree);
-        WFProcessor2D res = new WFProcessor2D(tProject.processPackage(quadDomainSize, inflRads));
+        TimoshenkoStandardTask tProject = new TimoshenkoStandardTask(timoBeam, quadDomainSize, quadDomainSize, quadDegree);
+        WeakformProcessor2D res = new WeakformProcessor2D(tProject.processPackage(quadDomainSize, inflRads));
         return res;
     }
 
     public static void main(String[] args) {
-        WFProcessor2D process = genTimoshenkoProjectProcess();
+        WeakformProcessor2D process = genTimoshenkoProjectProcess();
         process.prepare();
         process.processBalance();
         process.processDirichlet();

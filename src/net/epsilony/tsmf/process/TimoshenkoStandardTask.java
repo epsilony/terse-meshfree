@@ -19,23 +19,23 @@ import net.epsilony.tsmf.util.TimoshenkoAnalyticalBeam2D;
  *
  * @author epsilon
  */
-public class TimoshenkoStandardProject implements Project {
+public class TimoshenkoStandardTask implements WeakformTask {
 
     TimoshenkoAnalyticalBeam2D timoBeam;
-    RectangleProject rectProject;
+    RectangleTask rectProject;
 
     @Override
-    public List<ProcessPoint> balance() {
+    public List<TaskUnit> balance() {
         return rectProject.balance();
     }
 
     @Override
-    public List<ProcessPoint> neumann() {
+    public List<TaskUnit> neumann() {
         return rectProject.neumann();
     }
 
     @Override
-    public List<ProcessPoint> dirichlet() {
+    public List<TaskUnit> dirichlet() {
         return rectProject.dirichlet();
     }
 
@@ -43,7 +43,7 @@ public class TimoshenkoStandardProject implements Project {
         return timoBeam;
     }
 
-    public TimoshenkoStandardProject(TimoshenkoAnalyticalBeam2D timoBeam, double segLengthUpBnd, double quadDomainSize, int quadDegree) {
+    public TimoshenkoStandardTask(TimoshenkoAnalyticalBeam2D timoBeam, double segLengthUpBnd, double quadDomainSize, int quadDegree) {
 
         this.timoBeam = timoBeam;
         double w = timoBeam.getWidth();
@@ -52,7 +52,7 @@ public class TimoshenkoStandardProject implements Project {
         double down = -h / 2;
         double right = w;
         double up = h / 2;
-        rectProject = new RectangleProject(left, down, right, up, segLengthUpBnd);
+        rectProject = new RectangleTask(left, down, right, up, segLengthUpBnd);
         rectProject.setSegmentQuadratureDegree(quadDegree);
         rectProject.setBalanceSpecification(null, quadDomainSize, quadDegree);
         rectProject.addBoundaryConditionOnEdge("r", timoBeam.new NeumannFunction(), null);
@@ -63,13 +63,13 @@ public class TimoshenkoStandardProject implements Project {
         return timoBeam.constitutiveLaw();
     }
 
-    public ProcessPackage processPackage(double spaceNdsGap, double influenceRad) {
-        Project project = this;
+    public WeakformProject processPackage(double spaceNdsGap, double influenceRad) {
+        WeakformTask project = this;
         Model2D model = rectProject.model(spaceNdsGap);
         ShapeFunction shapeFunc = new MLS();
         ConstitutiveLaw constitutiveLaw = timoBeam.constitutiveLaw();
         WFAssemblier assemblier = new LagrangeWFAssemblier();
         InfluenceRadsCalc influenceRadsCalc = new ConstantInfluenceRadCalc(influenceRad);
-        return new ProcessPackage(project, model, influenceRadsCalc, assemblier, shapeFunc, constitutiveLaw);
+        return new WeakformProject(project, model, influenceRadsCalc, assemblier, shapeFunc, constitutiveLaw);
     }
 }

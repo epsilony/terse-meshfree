@@ -17,7 +17,7 @@ import net.epsilony.tsmf.util.quadrature.Segment2DQuadrature;
  *
  * @author epsilon
  */
-public class PolygonProject2D implements Project {
+public class PolygonTask2D implements WeakformTask {
 
     Polygon2D polygon;
     List<BCSpecification> neumannBCs;
@@ -26,11 +26,11 @@ public class PolygonProject2D implements Project {
     GenericFunction<double[], double[]> volumnForceFunc;
     int segQuadDegree;
 
-    public PolygonProject2D(Polygon2D polygon) {
+    public PolygonTask2D(Polygon2D polygon) {
         initPolygonProject2D(polygon);
     }
 
-    protected PolygonProject2D() {
+    protected PolygonTask2D() {
     }
 
     final protected void initPolygonProject2D(Polygon2D polygon) {
@@ -49,18 +49,18 @@ public class PolygonProject2D implements Project {
     }
 
     @Override
-    public List<ProcessPoint> balance() {
-        LinkedList<ProcessPoint> res = new LinkedList<>();
+    public List<TaskUnit> balance() {
+        LinkedList<TaskUnit> res = new LinkedList<>();
         for (QuadraturePoint qp : balanceQuadraturePoints) {
             double[] volForce = volumnForceFunc == null ? null : volumnForceFunc.value(qp.coord, null);
-            res.add(new ProcessPoint(qp.weight, qp.coord, null, volForce, null));
+            res.add(new TaskUnit(qp.weight, qp.coord, null, volForce, null));
         }
         return res;
     }
 
     @Override
-    public List<ProcessPoint> neumann() {
-        LinkedList<ProcessPoint> res = new LinkedList<>();
+    public List<TaskUnit> neumann() {
+        LinkedList<TaskUnit> res = new LinkedList<>();
         LinkedList<Segment2D> segs = new LinkedList<>();
         Segment2DQuadrature segQuad = new Segment2DQuadrature(segQuadDegree);
         for (BCSpecification spec : neumannBCs) {
@@ -70,7 +70,7 @@ public class PolygonProject2D implements Project {
                 segQuad.setSegment(seg);
                 for (QuadraturePoint qp : segQuad) {
                     double[] value = func.value(qp.coord, null);
-                    res.add(new ProcessPoint(qp.weight, qp.coord, seg, value, null));
+                    res.add(new TaskUnit(qp.weight, qp.coord, seg, value, null));
                 }
             }
         }
@@ -78,8 +78,8 @@ public class PolygonProject2D implements Project {
     }
 
     @Override
-    public List<ProcessPoint> dirichlet() {
-        LinkedList<ProcessPoint> res = new LinkedList<>();
+    public List<TaskUnit> dirichlet() {
+        LinkedList<TaskUnit> res = new LinkedList<>();
         LinkedList<Segment2D> segs = new LinkedList<>();
         Segment2DQuadrature segQuad = new Segment2DQuadrature(segQuadDegree);
         for (BCSpecification spec : dirichletBCs) {
@@ -91,7 +91,7 @@ public class PolygonProject2D implements Project {
                 for (QuadraturePoint qp : segQuad) {
                     double[] value = func.value(qp.coord, null);
                     boolean[] mark = markFunc.value(qp.coord, null);
-                    res.add(new ProcessPoint(qp.weight, qp.coord, seg, value, mark));
+                    res.add(new TaskUnit(qp.weight, qp.coord, seg, value, mark));
                 }
             }
         }

@@ -17,14 +17,14 @@ import net.epsilony.tsmf.util.quadrature.QuadraturePoint;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class RectangleProject extends PolygonProject2D {
+public class RectangleTask extends PolygonTask2D {
 
     double left;
     double down;
     double right;
     double up;
 
-    public RectangleProject(double left, double down, double right, double up, double segLengthUpBnd) {
+    public RectangleTask(double left, double down, double right, double up, double segLengthUpBnd) {
         if (left >= right) {
             throw new IllegalArgumentException(String.format("left (%f) should be less then right (%f)", left, right));
         }

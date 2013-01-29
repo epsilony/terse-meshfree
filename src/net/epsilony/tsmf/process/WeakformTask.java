@@ -10,11 +10,11 @@ import java.util.List;
  *
  * @author epsilon
  */
-public interface Project {
+public interface WeakformTask {
 
-    List<ProcessPoint> balance();
+    List<TaskUnit> balance();
 
-    List<ProcessPoint> neumann();
+    List<TaskUnit> neumann();
 
-    List<ProcessPoint> dirichlet();
+    List<TaskUnit> dirichlet();
 }

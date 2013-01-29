@@ -14,21 +14,21 @@ import net.epsilony.tsmf.shape_func.ShapeFunction;
  *
  * @author epsilon
  */
-public class ProcessPackage {
+public class WeakformProject {
 
-    public Project project;
+    public WeakformTask project;
     public Model2D model;
     public InfluenceRadsCalc influenceRadCalc;
     public WFAssemblier assemblier;
     public ShapeFunction shapeFunc;
     public ConstitutiveLaw constitutiveLaw;
 
-    public ProcessPackage(Project project, Model2D model, InfluenceRadsCalc influenceRadCalc, WFAssemblier assemblier, ShapeFunction shapeFunc,ConstitutiveLaw constitutiveLaw) {
+    public WeakformProject(WeakformTask project, Model2D model, InfluenceRadsCalc influenceRadCalc, WFAssemblier assemblier, ShapeFunction shapeFunc, ConstitutiveLaw constitutiveLaw) {
         this.project = project;
         this.model = model;
         this.influenceRadCalc = influenceRadCalc;
         this.assemblier = assemblier;
         this.shapeFunc = shapeFunc;
-        this.constitutiveLaw=constitutiveLaw;
+        this.constitutiveLaw = constitutiveLaw;
     }
 }
