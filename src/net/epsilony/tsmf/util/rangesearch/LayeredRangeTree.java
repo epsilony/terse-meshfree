@@ -125,7 +125,7 @@ public class LayeredRangeTree<K, V> {
         private final K key;
         private final V value;
         private final int primeDimension;
-        private FraCasData fraCasAssociate = null;
+        private FraCasTree fraCasAssociate = null;
         private TreeNode treeAssociate = null;
         private final TreeNode left;    //<=key
         private final TreeNode right;  //>key
@@ -182,7 +182,7 @@ public class LayeredRangeTree<K, V> {
 
         private void buildAssociates(int primeDimension, List<ArrayList<WithPair<K, V>>> sortedDataLists, ArrayList<ArrayList<WithPair<K, V>>> leftSortedDataLists, ArrayList<ArrayList<WithPair<K, V>>> rightSortedDataLists) {
             if (isOnLastTwoDimension()) {
-                fraCasAssociate = new FraCasData(
+                fraCasAssociate = new FraCasTree(
                         sortedDataLists.get(1),
                         leftSortedDataLists.get(1),
                         rightSortedDataLists.get(1));
@@ -318,7 +318,7 @@ public class LayeredRangeTree<K, V> {
     /**
      * Fractional Cascading Data, acts as the range tree of the last dimension.
      */
-    private final class FraCasData {
+    private final class FraCasTree {
 
         /**
          *
@@ -326,7 +326,7 @@ public class LayeredRangeTree<K, V> {
          * @param leftDatas
          * @param rightDatas
          */
-        private FraCasData(ArrayList<WithPair<K, V>> pairs, ArrayList<WithPair<K, V>> leftDatas, ArrayList<WithPair<K, V>> rightDatas) {
+        private FraCasTree(ArrayList<WithPair<K, V>> pairs, ArrayList<WithPair<K, V>> leftDatas, ArrayList<WithPair<K, V>> rightDatas) {
             this.keys = new ArrayList<>(pairs.size());
             this.values = new ArrayList<>(pairs.size());
             for (WithPair<K, V> pair : pairs) {
