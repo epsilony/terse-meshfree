@@ -58,25 +58,40 @@ public class LayeredRangeTree<K, V> {
 
     private void buildTree(List<? extends Comparator<K>> comparators, Collection<? extends WithPair<K, V>> datas) throws IllegalArgumentException {
         dictComparators = new ArrayList<>(comparators.size());
-        ArrayList<Comparator<K>> normComps = new ArrayList<>(comparators);
-        ArrayList<ArrayList<WithPair<K, V>>> sortedPairLists = new ArrayList<>(comparators.size());
+        buildDictComparators(comparators);
+        ArrayList<ArrayList<WithPair<K, V>>> sortedDatasByDimension = sortedListsByDimensions(datas);
+        if (isContainingDuplicates(sortedDatasByDimension.get(0), 0)) {
+            throw new IllegalArgumentException("The input datas contains two elements which are indistinguishable for each other.");
+        }
+        root = new TreeNode(sortedDatasByDimension, 0);
+    }
+
+    private void buildDictComparators(List<? extends Comparator<K>> comparators) {
         for (int i = 0; i < comparators.size(); i++) {
-            DictComparator<K> dictComparator = new DictComparator<>(normComps, false, i);
+            DictComparator<K> dictComparator = new DictComparator<>(comparators, i);
             dictComparators.add(dictComparator);
-            ArrayList<WithPair<K, V>> sortedPair = new ArrayList<>(datas);
-            Comparator<WithPair<K, V>> pairComp = new WithPairComparator<>(dictComparator);
+        }
+    }
+
+    private ArrayList<ArrayList<WithPair<K, V>>> sortedListsByDimensions(Collection<? extends WithPair<K, V>> pairs) {
+        ArrayList<ArrayList<WithPair<K, V>>> sortedPairLists = new ArrayList<>(numDimensions());
+        for (int dimensionIndex = 0; dimensionIndex < numDimensions(); dimensionIndex++) {
+            ArrayList<WithPair<K, V>> sortedPair = new ArrayList<>(pairs);
+            Comparator<WithPair<K, V>> pairComp = new WithPairComparator<>(dictComparators.get(dimensionIndex));
             Collections.sort(sortedPair, pairComp);
-            if (i == 0) {
-                for (int j = 1; j < sortedPair.size(); j++) {
-                    if (0 == pairComp.compare(sortedPair.get(j - 1), sortedPair.get(j))) {
-                        throw new IllegalArgumentException("The input datas contains two elements which are indistinguishable for each other.");
-                    }
-                }
-            }
             sortedPairLists.add(sortedPair);
         }
+        return sortedPairLists;
+    }
 
-        root = new TreeNode(sortedPairLists, 0);
+    private boolean isContainingDuplicates(ArrayList<WithPair<K, V>> sorteds, int primeDictCompareIndex) {
+        Comparator<WithPair<K, V>> pairComp = new WithPairComparator<>(dictComparators.get(primeDictCompareIndex));
+        for (int i = 1; i < sorteds.size(); i++) {
+            if (0 == pairComp.compare(sorteds.get(i - 1), sorteds.get(i))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private WithPair<K, V> getMidPair(List<? extends WithPair<K, V>> sortedPairs) {
@@ -85,7 +100,7 @@ public class LayeredRangeTree<K, V> {
         return midPair;
     }
 
-    private void subDivide(List<WithPair<K, V>> pairs,
+    private void subDivide(List<? extends WithPair<K, V>> pairs,
             List<WithPair<K, V>> lessEqualTos,
             List<WithPair<K, V>> greaterThans,
             K divideKey, int dictComparatorIndex) {
@@ -101,6 +116,8 @@ public class LayeredRangeTree<K, V> {
 
     private int numDimensions() {
         return dictComparators.size();
+
+
     }
 
     final class TreeNode {
@@ -120,45 +137,55 @@ public class LayeredRangeTree<K, V> {
         TreeNode left;    //<=key
         TreeNode right;  //>key
 
-        TreeNode(ArrayList<ArrayList<WithPair<K, V>>> sortedDataLists,int primeDimension) {
+        TreeNode(List<ArrayList<WithPair<K, V>>> sortedDataLists, int primeDimension) {
 
             this.primeDimension = primeDimension;
-            ArrayList<WithPair<K, V>> treeDatas = sortedDataLists.get(primeDimension);
+            ArrayList<WithPair<K, V>> treeDatas = sortedDataLists.get(0);
 
-            int midIndex = (treeDatas.size() - 1) / 2;
             WithPair<K, V> midPair = getMidPair(treeDatas);
             key = midPair.getKey();
             value = midPair.getValue();
+
             if (treeDatas.size() == 1) {
                 return;
             }
-            ArrayList<ArrayList<WithPair<K, V>>> leftSortedDataLists = new ArrayList<>(sortedDataLists.size());
-            ArrayList<ArrayList<WithPair<K, V>>> rightSortedDataLists= new ArrayList<>(sortedDataLists.size());
 
-            for (int demension = 0; demension < numDimensions(); demension++) {
-                ArrayList<WithPair<K, V>> leftSorteds, rightSorteds;
-                if (demension < primeDimension) {
-                    leftSorteds = null;
-                    rightSorteds = null;
-                } else {
-                    List<WithPair<K, V>> sortedPairs = sortedDataLists.get(demension);
-                    leftSorteds = new ArrayList<>(midIndex + 1);
-                    rightSorteds = new ArrayList<>(treeDatas.size() - midIndex - 1);
-                    subDivide(sortedPairs, leftSorteds, rightSorteds, key, primeDimension);
-                }
-                leftSortedDataLists.add(leftSorteds);
-                rightSortedDataLists.add(rightSorteds);
-            }
-            if (isOnLastTwoDimension()) {
-                fraCasAssociate = new FraCasData(
-                        sortedDataLists.get(primeDimension + 1),
-                        leftSortedDataLists.get(primeDimension + 1),
-                        rightSortedDataLists.get(primeDimension + 1));
-            } else {
-                treeAssociate = new TreeNode(sortedDataLists, primeDimension + 1);
-            }
+            ArrayList<ArrayList<WithPair<K, V>>> leftSortedDataLists = new ArrayList<>(sortedDataLists.size());
+            ArrayList<ArrayList<WithPair<K, V>>> rightSortedDataLists = new ArrayList<>(sortedDataLists.size());
+            subDivideLists(sortedDataLists, leftSortedDataLists, rightSortedDataLists);
+
+            buildAssociates(primeDimension, sortedDataLists, leftSortedDataLists, rightSortedDataLists);
+
             left = new TreeNode(leftSortedDataLists, primeDimension);
             right = new TreeNode(rightSortedDataLists, primeDimension);
+        }
+
+        private void subDivideLists(List<? extends List<? extends WithPair<K, V>>> lists, List<ArrayList<WithPair<K, V>>> leftLists, List<ArrayList<WithPair<K, V>>> rightLists) {
+            int listsLength = lists.get(0).size();
+            int leftListsLength = (listsLength - 1) / 2 + 1;
+            int rightListsLength = listsLength - leftListsLength;
+            for (int i = 0; i < lists.size(); i++) {
+                ArrayList<WithPair<K, V>> leftSorteds, rightSorteds;
+                List<? extends WithPair<K, V>> sortedPairs = lists.get(i);
+                leftSorteds = new ArrayList<>(leftListsLength);
+                rightSorteds = new ArrayList<>(
+                        rightListsLength);
+                subDivide(sortedPairs, leftSorteds, rightSorteds, key, primeDimension);
+
+                leftLists.add(leftSorteds);
+                rightLists.add(rightSorteds);
+            }
+        }
+
+        private void buildAssociates(int primeDimension, List<ArrayList<WithPair<K, V>>> sortedDataLists, ArrayList<ArrayList<WithPair<K, V>>> leftSortedDataLists, ArrayList<ArrayList<WithPair<K, V>>> rightSortedDataLists) {
+            if (isOnLastTwoDimension()) {
+                fraCasAssociate = new FraCasData(
+                        sortedDataLists.get(1),
+                        leftSortedDataLists.get(1),
+                        rightSortedDataLists.get(1));
+            } else {
+                treeAssociate = new TreeNode(sortedDataLists.subList(1, sortedDataLists.size()), primeDimension + 1);
+            }
         }
 
         public int dictCompare(K o1, K o2) {
