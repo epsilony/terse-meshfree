@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tsmf.util.DoubleArrayComparator;
+import net.epsilony.tsmf.util.Math2D;
 import static net.epsilony.tsmf.util.Math2D.cross;
 import static net.epsilony.tsmf.util.Math2D.distance;
 import static net.epsilony.tsmf.util.Math2D.isSegmentsIntersecting;
@@ -24,9 +25,9 @@ public class Model2D implements ModelSearcher {
 
     Polygon2D polygon;
     ArrayList<Node> allNodes;
-    LayeredRangeTree<double[], Node> nodesLRTree;
+    private LayeredRangeTree<double[], Node> nodesLRTree;
     public final static int DIM = 2;
-    ArrayList<Node> spaceNodes;
+    ArrayList<Node> spaceNodes;   //allNode - polygon.getVertes()
     private final SearchMethod searchMethod;
     TDoubleArrayList influenceRads;
     public final static boolean DEFAULT_WHETHER_USE_DISTURB = true;
@@ -101,9 +102,9 @@ public class Model2D implements ModelSearcher {
         influenceRads.fill(rad);
     }
 
-    public class SearchMethod {
+    private class SearchMethod {
 
-        void initOutput(List<Node> nodes, List<Segment2D> segs,
+        private void initOutput(List<Node> nodes, List<Segment2D> segs,
                 List<Node> blockedNds, List<Segment2D> blockNdsSegs) {
             nodes.clear();
             segs.clear();
@@ -113,7 +114,7 @@ public class Model2D implements ModelSearcher {
             }
         }
 
-        public void search(double[] center, Segment2D bnd, double radius, boolean filetByInflucen,
+        protected void search(double[] center, Segment2D bnd, double radius, boolean filetByInflucen,
                 List<Node> nodes, List<Segment2D> segs,
                 List<Node> blockedNds, List<Segment2D> blockNdsSegs) {
             LinkedList<Node> rangeSearchedNds = preSearch(center, radius, filetByInflucen, nodes, segs, blockedNds, blockNdsSegs);
@@ -183,18 +184,24 @@ public class Model2D implements ModelSearcher {
             return searchedNds;
         }
     }
-    public static final double DEFAULT_DISTANCE_RATION = 1e-6;
+    private static double DEFAULT_PERTURB_DISTANCE_RATION = 1e-6;  //perturb distance vs segment length
+    // The mininum angle of adjacency segments of polygon. If no angle is less
+    // than below, PertubtionSearchMethod works well.
+    // Note that the angle of a crack tip is nearly 2pi which is very large.
+    private static double DEFAULT_ALLOWABLE_ANGLE = Math.PI / 1800 * 0.95;
 
-    public class PerturbationSearch extends SearchMethod {
+    private class PerturbationSearchMethod extends SearchMethod {
 
-        public double distance_ratio;
+        private double perterbDistanceRatio;
+        private double minVertexDistanceRatio;
 
-        public PerturbationSearch(double distance_ratio) {
-            this.distance_ratio = distance_ratio;
-        }
-
-        public PerturbationSearch() {
-            distance_ratio = DEFAULT_DISTANCE_RATION;
+//        private PerturbationSearchMethod(double distance_ratio) {
+//            this.perterbDistanceRatio = distance_ratio;
+//        }
+        private PerturbationSearchMethod() {
+            perterbDistanceRatio = DEFAULT_PERTURB_DISTANCE_RATION;
+            double minAngle = DEFAULT_ALLOWABLE_ANGLE;
+            minVertexDistanceRatio = perterbDistanceRatio / Math.tan(minAngle);
         }
 
         private double[] perturbCenter(double[] center, Segment2D bnd, List<Segment2D> segs) {
@@ -206,8 +213,17 @@ public class Model2D implements ModelSearcher {
             double[] pertCenter = new double[2];
             double dx = rCoord[0] - hCoord[0];
             double dy = rCoord[1] - hCoord[1];
-            pertCenter[0] = -dy * distance_ratio + center[0];
-            pertCenter[1] = dx * distance_ratio + center[1];
+
+            double headDistRatio = Math2D.distance(hCoord, center) / bnd.length();
+            double[] pertOri = center;
+            if (headDistRatio <= minVertexDistanceRatio) {
+                pertOri = Math2D.pointOnSegment(hCoord, rCoord, minVertexDistanceRatio, null);
+            } else if (headDistRatio >= 1 - minVertexDistanceRatio) {
+                pertOri = Math2D.pointOnSegment(hCoord, rCoord, 1 - minVertexDistanceRatio, null);
+            }
+
+            pertCenter[0] = -dy * perterbDistanceRatio + pertOri[0];
+            pertCenter[1] = dx * perterbDistanceRatio + pertOri[1];
 
             for (Segment2D seg : segs) {
                 if (seg == bnd) {
@@ -221,7 +237,7 @@ public class Model2D implements ModelSearcher {
         }
 
         @Override
-        public void search(double[] center, Segment2D bnd, double radius, boolean filetByInfluence, List<Node> nodes, List<Segment2D> segs, List<Node> blockedNds, List<Segment2D> ndBlockBySeg) {
+        protected void search(double[] center, Segment2D bnd, double radius, boolean filetByInfluence, List<Node> nodes, List<Segment2D> segs, List<Node> blockedNds, List<Segment2D> ndBlockBySeg) {
             LinkedList<Node> searchedNds = preSearch(center, radius, filetByInfluence, nodes, segs, blockedNds, ndBlockBySeg);
             double[] actCenter = (null == bnd) ? center : perturbCenter(center, bnd, segs);
             filetBySegments(actCenter, null, radius, searchedNds, segs, blockedNds, ndBlockBySeg);
@@ -245,7 +261,7 @@ public class Model2D implements ModelSearcher {
             id++;
         }
         if (useDisturbSearch) {
-            searchMethod = new PerturbationSearch();
+            searchMethod = new PerturbationSearchMethod();
         } else {
             searchMethod = new SearchMethod();
         }
@@ -255,6 +271,6 @@ public class Model2D implements ModelSearcher {
     }
 
     public Model2D(Polygon2D polygon, List<Node> spaceNodes) {
-        this(polygon, spaceNodes, true);
+        this(polygon, spaceNodes, DEFAULT_WHETHER_USE_DISTURB);
     }
 }
