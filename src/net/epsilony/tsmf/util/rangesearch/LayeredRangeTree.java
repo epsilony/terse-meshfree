@@ -30,8 +30,8 @@ import net.epsilony.tsmf.util.pair.WithPairComparator;
  */
 public class LayeredRangeTree<K, V> {
 
-    TreeNode root;
-    ArrayList<DictComparator<K>> dictComparators;
+    private TreeNode root;
+    private ArrayList<DictComparator<K>> dictComparators;
 
     /**
      *
@@ -120,24 +120,17 @@ public class LayeredRangeTree<K, V> {
 
     }
 
-    final class TreeNode {
+    private final class TreeNode {
 
-        boolean isLeaf() {
-            return left == null;
-        }
-        K key;
-        V value;
-        int primeDimension;
+        private final K key;
+        private final V value;
+        private final int primeDimension;
+        private FraCasData fraCasAssociate = null;
+        private TreeNode treeAssociate = null;
+        private final TreeNode left;    //<=key
+        private final TreeNode right;  //>key
 
-        DictComparator<K> dictComparator() {
-            return dictComparators.get(primeDimension);
-        }
-        FraCasData fraCasAssociate;
-        TreeNode treeAssociate;
-        TreeNode left;    //<=key
-        TreeNode right;  //>key
-
-        TreeNode(List<ArrayList<WithPair<K, V>>> sortedDataLists, int primeDimension) {
+        private TreeNode(List<ArrayList<WithPair<K, V>>> sortedDataLists, int primeDimension) {
 
             this.primeDimension = primeDimension;
             ArrayList<WithPair<K, V>> treeDatas = sortedDataLists.get(0);
@@ -147,6 +140,8 @@ public class LayeredRangeTree<K, V> {
             value = midPair.getValue();
 
             if (treeDatas.size() == 1) {
+                left = null;
+                right = null;
                 return;
             }
 
@@ -158,6 +153,14 @@ public class LayeredRangeTree<K, V> {
 
             left = new TreeNode(leftSortedDataLists, primeDimension);
             right = new TreeNode(rightSortedDataLists, primeDimension);
+        }
+
+        private boolean isLeaf() {
+            return left == null;
+        }
+
+        private DictComparator<K> dictComparator() {
+            return dictComparators.get(primeDimension);
         }
 
         private void subDivideLists(List<? extends List<? extends WithPair<K, V>>> lists, List<ArrayList<WithPair<K, V>>> leftLists, List<ArrayList<WithPair<K, V>>> rightLists) {
@@ -188,7 +191,7 @@ public class LayeredRangeTree<K, V> {
             }
         }
 
-        public int dictCompare(K o1, K o2) {
+        private int dictCompare(K o1, K o2) {
             return dictComparator().compare(o1, o2);
         }
 
@@ -202,7 +205,7 @@ public class LayeredRangeTree<K, V> {
             return v;
         }
 
-        void rangeSearch(Collection<? super V> results, K from, K to) {
+        private void rangeSearch(Collection<? super V> results, K from, K to) {
             TreeNode splitNode = findSplitNode(from, to);
             if (splitNode.isLeaf()) {
                 splitNode.checkTo(from, to, results);
@@ -293,7 +296,7 @@ public class LayeredRangeTree<K, V> {
             }
         }
 
-        void checkTo(K from, K to, Collection<? super V> results) {
+        private void checkTo(K from, K to, Collection<? super V> results) {
             List<? extends Comparator<K>> comparators = dictComparator().getComparators();
             boolean b = true;
             for (int i = primeDimension; i < comparators.size(); i++) {
@@ -315,7 +318,7 @@ public class LayeredRangeTree<K, V> {
     /**
      * Fractional Cascading Data, acts as the range tree of the last dimension.
      */
-    final class FraCasData {
+    private final class FraCasData {
 
         /**
          *
@@ -323,7 +326,7 @@ public class LayeredRangeTree<K, V> {
          * @param leftDatas
          * @param rightDatas
          */
-        FraCasData(ArrayList<WithPair<K, V>> pairs, ArrayList<WithPair<K, V>> leftDatas, ArrayList<WithPair<K, V>> rightDatas) {
+        private FraCasData(ArrayList<WithPair<K, V>> pairs, ArrayList<WithPair<K, V>> leftDatas, ArrayList<WithPair<K, V>> rightDatas) {
             this.keys = new ArrayList<>(pairs.size());
             this.values = new ArrayList<>(pairs.size());
             for (WithPair<K, V> pair : pairs) {
@@ -345,16 +348,16 @@ public class LayeredRangeTree<K, V> {
         }
         //
 
-        DictComparator<K> dictComparator() {
+        private DictComparator<K> dictComparator() {
             return dictComparators.get(dictComparators.size() - 1);
         }
-        ArrayList<K> keys;
-        ArrayList<V> values;
+        private ArrayList<K> keys;
+        private ArrayList<V> values;
         //fractional cascading keys:
-        int[] leftCas;    //leftCase[i] is the smallest one that left.associate.keys[leftCas[i]]>=keys[i], if leftCas[i]>left.associate.data it should be -1
-        int[] rightCas;  //like leftCase
+        private int[] leftCas;    //leftCase[i] is the smallest one that left.associate.keys[leftCas[i]]>=keys[i], if leftCas[i]>left.associate.data it should be -1
+        private int[] rightCas;  //like leftCase
 
-        int searchCasIndex(K from) {
+        private int searchCasIndex(K from) {
             int fromIndex = Collections.binarySearch(keys, from, dictComparator());
             if (fromIndex < 0) {
                 return -fromIndex - 1;
@@ -362,7 +365,7 @@ public class LayeredRangeTree<K, V> {
             return fromIndex;
         }
 
-        void checkTo(Collection<? super V> results, int fromIndex, K to) {
+        private void checkTo(Collection<? super V> results, int fromIndex, K to) {
             Comparator<K> comp = dictComparator().comparators.get(dictComparator().getPrimeComparatorIndex());
             for (int i = fromIndex; i < keys.size(); i++) {
                 K key = keys.get(i);
