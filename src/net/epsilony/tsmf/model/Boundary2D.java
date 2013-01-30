@@ -5,6 +5,7 @@
 package net.epsilony.tsmf.model;
 
 import net.epsilony.tsmf.util.IntIdentity;
+import net.epsilony.tsmf.util.Math2D;
 
 /**
  *
@@ -37,5 +38,16 @@ public abstract class Boundary2D implements IntIdentity {
     @Override
     public void setId(int id) {
         this.id = id;
+    }
+
+    public boolean isStrictlyAtLeft(double[] xy) {
+        double[] headCoord = getHead().coord;
+        double[] rearCoord = getRear().coord;
+        double dhrX = rearCoord[0] - headCoord[0];
+        double dhrY = rearCoord[1] - headCoord[1];
+        double dx = xy[0] - headCoord[0];
+        double dy = xy[1] - headCoord[1];
+        double cross = Math2D.cross(dhrX, dhrY, dx, dy);
+        return cross > 0 ? true : false;
     }
 }
