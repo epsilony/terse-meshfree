@@ -56,4 +56,9 @@ public class Node implements IntIdentity, WithPair<double[], Node> {
     public Node getValue() {
         return this;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Node(%d)%s", id, Arrays.toString(coord));
+    }
 }

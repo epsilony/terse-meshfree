@@ -87,4 +87,11 @@ public class Segment2D extends Boundary2D {
         this.succ = seg;
         return seg;
     }
+
+    @Override
+    public String toString() {
+        Node rear = getRear();
+        String rearStr = null == rear ? "NULL" : rear.toString();
+        return String.format("Segment2D(%d)[h:(%s), r:(%s)]", id, head, rearStr);
+    }
 }
