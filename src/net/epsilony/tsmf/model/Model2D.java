@@ -7,6 +7,7 @@ package net.epsilony.tsmf.model;
 import gnu.trove.list.array.TDoubleArrayList;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -224,16 +225,41 @@ public class Model2D implements ModelSearcher {
 
             pertCenter[0] = -dy * perterbDistanceRatio + pertOri[0];
             pertCenter[1] = dx * perterbDistanceRatio + pertOri[1];
+            checkPerturbCenter(center, pertCenter, bnd, segs);
+            return pertCenter;
+        }
 
-            for (Segment2D seg : segs) {
-                if (seg == bnd) {
-                    continue;
-                }
-                if (isSegmentsIntersecting(center, pertCenter, seg.getHead().coord, seg.getRear().coord)) {
-                    throw new IllegalStateException("Center and perturbed center over cross a segment, center:" + Arrays.toString(center) + " perturbed center" + Arrays.toString(pertCenter) + " seg: " + seg);
+        void checkPerturbCenter(double[] center, double[] perturbedCenter, Segment2D bnd, Collection<? extends Segment2D> segs) {
+            Segment2D bndNeighbor = null;
+            double[] bndNeighborFurtherPoint = null;
+            if (center == bnd.getHead().coord) {
+                bndNeighbor = (Segment2D) bnd.pred;
+                bndNeighborFurtherPoint = bndNeighbor.getHead().coord;
+            } else if (center == bnd.getRear().coord) {
+                bndNeighbor = (Segment2D) bnd.succ;
+                bndNeighborFurtherPoint = bndNeighbor.getRear().coord;
+            }
+
+            if (null != bndNeighbor && bnd.isStrictlyAtLeft(bndNeighborFurtherPoint)) {
+                if (!bndNeighbor.isStrictlyAtLeft(perturbedCenter)) {
+                    throw new IllegalStateException("perturbed center over cross neighbor of bnd\n\t"
+                            + "center :" + Arrays.toString(center) + "\n\t"
+                            + "perturbed center :" + Arrays.toString(perturbedCenter) + "\n\t"
+                            + "bnd: " + bnd + "\n\t"
+                            + "neighbor of bnd: " + bndNeighbor);
                 }
             }
-            return pertCenter;
+
+            for (Segment2D seg : segs) {
+                if (seg == bnd || seg == bndNeighbor) {
+                    continue;
+                }
+                if (isSegmentsIntersecting(center, perturbedCenter, seg.getHead().coord, seg.getRear().coord)) {
+                    throw new IllegalStateException("Center and perturbed center over cross a segment\n\t"
+                            + "center: " + Arrays.toString(center) + "\n\tperturbed center"
+                            + Arrays.toString(perturbedCenter) + "\n\tseg: " + seg);
+                }
+            }
         }
 
         @Override
