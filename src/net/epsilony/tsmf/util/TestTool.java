@@ -4,6 +4,7 @@
  */
 package net.epsilony.tsmf.util;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import net.epsilony.tsmf.model.Polygon2D;
@@ -34,6 +35,16 @@ public class TestTool {
             ri = rd.nextInt(size);
             list.add(ri, e);
         }
+    }
+
+    public static LinkedList<double[]> linSpace2D(double[] start, double[] end, int numPt) {
+        double[] parms = TestTool.linSpace(0, 1, numPt);
+        LinkedList<double[]> result = new LinkedList<>();
+        for (double par : parms) {
+            double[] point = Math2D.pointOnSegment(start, end, par, null);
+            result.add(point);
+        }
+        return result;
     }
 
     public static Polygon2D samplePolygon(List<double[][][]> coordChainsOut) {
