@@ -31,6 +31,10 @@ public class Polygon2D implements Iterable<Segment2D> {
         return minSegLen;
     }
 
+    public ArrayList<Segment2D> getChainsHeads() {
+        return chainsHeads;
+    }
+
     public Polygon2D(List<? extends List<? extends Node>> nodeChains) {
         if (nodeChains.isEmpty()) {
             throw new IllegalArgumentException("There is at least 1 chain in a Polygon");
