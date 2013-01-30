@@ -4,6 +4,8 @@
  */
 package net.epsilony.tsmf.util;
 
+import java.util.Arrays;
+
 /**
  *
  * @author <a href="mailto:epsionyuan@gmail.com">Man YUAN</a>
@@ -123,5 +125,23 @@ public class Math2D {
         result[0] = head[0] * (1 - t) + rear[0] * t;
         result[1] = head[1] * (1 - t) + rear[1] * t;
         return result;
+    }
+
+    public static double[] intersectionPoint(double[] headA, double[] rearA, double[] headB, double[] rearB, double[] result) {
+        double deltaAx = rearA[0] - headA[0];
+        double deltaAy = rearA[1] - headA[1];
+        double deltaBx = rearB[0] - headB[0];
+        double deltaBy = rearB[1] - headB[1];
+        
+        double crossDelta = cross(deltaAx, deltaAy, deltaBx, deltaBy);
+        if (crossDelta == 0) {
+            throw new IllegalArgumentException("the two segments are colinear or parrallel or one of them has zero length:\n\t"
+                    + "SegA :" + Arrays.toString(headA) + "-" + Arrays.toString(rearA) + "\n\t"
+                    + "SegB :" + Arrays.toString(headB) + "-" + Arrays.toString(rearB));
+        }
+        
+        double uA = cross(headB[0] - headA[0], headB[1] - headA[1], deltaBx, deltaBy) / crossDelta;
+        
+        return pointOnSegment(headA, rearA, uA, result);
     }
 }

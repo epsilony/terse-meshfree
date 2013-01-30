@@ -35,4 +35,14 @@ public class Math2DTest {
             assertEquals(exps[i], act);
         }
     }
+
+    @Test
+    public void testIntersectionPointsOfTwoSegments() {
+        double[][] inputs = new double[][]{
+            {-2, 2}, {3, 3}, {2, 5}, {3, -2}
+        };
+        double[] exp = new double[]{83 / 36d, 103 / 36d};
+        double[] act = Math2D.intersectionPoint(inputs[0], inputs[1], inputs[2], inputs[3], null);
+        assertArrayEquals(exp, act, 1e-13);
+    }
 }
