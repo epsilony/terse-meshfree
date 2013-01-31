@@ -102,7 +102,7 @@ public class MLSTest {
         for (TDoubleArrayList rads : radss) {
             for (double[] pt : testPts) {
                 Object[] searchRes = searchCoords(pt, coords, rads);
-                TDoubleArrayList[] vals = mls.values(pt, (List<double[]>) searchRes[0], (TDoubleArrayList) searchRes[1], null, null);
+                TDoubleArrayList[] vals = mls.values(pt, (List<double[]>) searchRes[0], (TDoubleArrayList) searchRes[1], null);
                 double[] acts = new double[]{vals[0].sum(), vals[1].sum(), vals[2].sum()};
                 assertArrayEquals(exp, acts, 1e-12);
 
@@ -128,7 +128,7 @@ public class MLSTest {
                 for (int i = 0; i < errs.length; i++) {
                     Object[] searchRes = searchCoords(pt, coords, rads);
                     List<double[]> res_coords = (List<double[]>) searchRes[0];
-                    TDoubleArrayList[] vals = mls.values(pt, res_coords, (TDoubleArrayList) searchRes[1], null, null);
+                    TDoubleArrayList[] vals = mls.values(pt, res_coords, (TDoubleArrayList) searchRes[1], null);
                     double[] acts = new double[]{0, 0, 0};
                     int j = 0;
                     for (double[] c : res_coords) {

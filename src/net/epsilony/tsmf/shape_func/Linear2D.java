@@ -14,18 +14,20 @@ import net.epsilony.tsmf.util.Math2D;
  */
 public class Linear2D implements ShapeFunction {
 
+    TDoubleArrayList[] shapeFunctionValueLists = null;
+
     @Override
-    public TDoubleArrayList[] values(double[] xy, List<double[]> coords, TDoubleArrayList influcenceRads, TDoubleArrayList[] dists, TDoubleArrayList[] output) {
-        if (null != output) {
-            output[0].resetQuick();
+    public TDoubleArrayList[] values(double[] xy, List<double[]> coords, TDoubleArrayList influcenceRads, TDoubleArrayList[] dists) {
+        if (null != shapeFunctionValueLists) {
+            shapeFunctionValueLists[0].resetQuick();
         } else {
-            output = new TDoubleArrayList[]{new TDoubleArrayList(2)};
+            shapeFunctionValueLists = new TDoubleArrayList[]{new TDoubleArrayList(2)};
         }
         double v2 = calcV2(coords.get(0), coords.get(1), xy);
         double v1 = 1 - v2;
-        output[0].add(v1);
-        output[1].add(v2);
-        return output;
+        shapeFunctionValueLists[0].add(v1);
+        shapeFunctionValueLists[1].add(v2);
+        return shapeFunctionValueLists;
     }
 
     public static double[] values(double[] xy, double[] hCoord, double[] rCoord, double[] output) {

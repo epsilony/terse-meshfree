@@ -115,11 +115,11 @@ public class WeakformProcessor2D implements NeedPreparation {
 
         Mixer mixer = new Mixer();
         mixer.setDiffOrder(diffOrder);
-        TIntArrayList nodesIds = mixer.getNodesIds();
-        TDoubleArrayList[] shapeFuncVals = mixer.getShapeFuncVals();
+
         shapeFunction.setDiffOrder(diffOrder);
         for (TaskUnit pt : points) {
-            mixer.mix(pt.coord, pt.seg);
+            TDoubleArrayList[] shapeFuncVals = mixer.mix(pt.coord, pt.seg);
+            TIntArrayList nodesIds = mixer.getNodesIds();
             assemblier.asmBalance(pt.weight, nodesIds, shapeFuncVals, pt.value);
         }
     }
@@ -131,10 +131,10 @@ public class WeakformProcessor2D implements NeedPreparation {
 
         Mixer mixer = new Mixer();
         mixer.setDiffOrder(diffOrder);
-        TIntArrayList nodesIds = mixer.getNodesIds();
-        TDoubleArrayList[] shapeFuncVals = mixer.getShapeFuncVals();
+
         for (TaskUnit pt : points) {
-            mixer.mix(pt.coord, pt.seg);
+            TDoubleArrayList[] shapeFuncVals = mixer.mix(pt.coord, pt.seg);
+            TIntArrayList nodesIds = mixer.getNodesIds();
             assemblier.asmNeumann(pt.weight, nodesIds, shapeFuncVals, pt.value);
         }
     }
@@ -146,10 +146,10 @@ public class WeakformProcessor2D implements NeedPreparation {
 
         Mixer mixer = new Mixer();
         mixer.setDiffOrder(diffOrder);
-        TIntArrayList nodesIds = mixer.getNodesIds();
-        TDoubleArrayList[] shapeFuncVals = mixer.getShapeFuncVals();
+
         for (TaskUnit pt : points) {
-            mixer.mix(pt.coord, pt.seg);
+            TDoubleArrayList[] shapeFuncVals = mixer.mix(pt.coord, pt.seg);
+            TIntArrayList nodesIds = mixer.getNodesIds();
             if (lagDiri) {
                 lagProcessor.process(pt, nodesIds, shapeFuncVals[0]);
             }
@@ -197,16 +197,12 @@ public class WeakformProcessor2D implements NeedPreparation {
         ArrayList<Segment2D> blockNdsSegs = null;
         TIntArrayList nodesIds = new TIntArrayList(DEFAULT_CAPACITY, -1);
         TDoubleArrayList infRads = new TDoubleArrayList(DEFAULT_CAPACITY);
-        TDoubleArrayList[] shapeFuncVals = null;
-        int diffOrder;
 
         public Mixer() {
-            diffOrder = 0;
-            shapeFuncVals = WithDiffOrderUtil.initOutput(null, DEFAULT_CAPACITY, 2, diffOrder);
-            shapeFunction.setDiffOrder(diffOrder);
+            shapeFunction.setDiffOrder(0);
         }
 
-        public void mix(double[] center, Segment2D bnd) {
+        public TDoubleArrayList[] mix(double[] center, Segment2D bnd) {
             model.searchModel(center, bnd, maxIfluenceRad, true, nodes, segs, blockedNds, blockNdsSegs);
 
             if (complexCriterion) {
@@ -214,36 +210,30 @@ public class WeakformProcessor2D implements NeedPreparation {
             }
 
             fromNodesToIdsCoordsInfRads(nodes, nodesIds, coords, infRads);
-            shapeFunction.values(center, coords, infRads, null, shapeFuncVals);
+            return shapeFunction.values(center, coords, infRads, null);
         }
 
         public TIntArrayList getNodesIds() {
             return nodesIds;
         }
 
-        public TDoubleArrayList[] getShapeFuncVals() {
-            return shapeFuncVals;
-        }
-
         @Override
         public int getDiffOrder() {
-            return diffOrder;
+            return shapeFunction.getDiffOrder();
         }
 
         @Override
         public void setDiffOrder(int diffOrder) {
-            shapeFuncVals = WithDiffOrderUtil.initOutput(null, DEFAULT_CAPACITY, 2, diffOrder);
             shapeFunction.setDiffOrder(diffOrder);
-            this.diffOrder = diffOrder;
         }
     }
 
     public class PostProcessor extends Mixer {
 
         public double[] value(double[] center, Segment2D bnd, double[] output) {
-            mix(center, bnd);
+            TDoubleArrayList[] shapeFuncVals = mix(center, bnd);
             if (null == output) {
-                output = new double[WithDiffOrderUtil.outputLength2D(diffOrder) * 2];
+                output = new double[WithDiffOrderUtil.outputLength2D(getDiffOrder()) * 2];
             } else {
                 Arrays.fill(output, 0);
             }

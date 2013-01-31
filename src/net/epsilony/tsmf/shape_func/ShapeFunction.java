@@ -15,5 +15,5 @@ import net.epsilony.tsmf.util.WithDiffOrder;
  */
 public interface ShapeFunction extends WithDiffOrder {
 
-    TDoubleArrayList[] values(double[] xy, List<double[]> coords, TDoubleArrayList influcenceRads, TDoubleArrayList[] dists, TDoubleArrayList[] output);
+    TDoubleArrayList[] values(double[] xy, List<double[]> coords, TDoubleArrayList influcenceRads, TDoubleArrayList[] dists);
 }

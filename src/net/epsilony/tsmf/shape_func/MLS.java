@@ -20,10 +20,11 @@ import org.ejml.ops.CommonOps;
  */
 public class MLS implements ShapeFunction {
 
+    public static final int DIMENSION = 2;
     RadialFunction2D weightFunc;
     BasisFunction basisFunc;
     DenseMatrix64F[] matAs;
-    public final int DEFAULT_MAT_B_CAPACITY = 50;
+    public final int DEFAULT_CAPACITY_OF_INPUT_COORDS = 50;
     TDoubleArrayList[][] matBs;
     TDoubleArrayList[] distsCache;
     TDoubleArrayList[] weightsCache;
@@ -31,6 +32,7 @@ public class MLS implements ShapeFunction {
     TDoubleArrayList commonCache;
     LinearSolverLu solver = new LinearSolverLu(new LUDecompositionNR());
     DenseMatrix64F gamma, gamma_d, tVec1, tVec2;
+    TDoubleArrayList[] shapeFunctionValueLists;
     static private final double[] ZERO = new double[]{0, 0};
 
     @Override
@@ -59,20 +61,21 @@ public class MLS implements ShapeFunction {
         gamma_d = new DenseMatrix64F(basisLen, 1);
         tVec1 = new DenseMatrix64F(basisLen, 1);
         tVec2 = new DenseMatrix64F(basisLen, 1);
-        commonCache = new TDoubleArrayList(DEFAULT_MAT_B_CAPACITY);
+        commonCache = new TDoubleArrayList(DEFAULT_CAPACITY_OF_INPUT_COORDS);
         for (int i = 0; i < diffSize; i++) {
             matAs[i] = new DenseMatrix64F(basisLen, basisLen);
-            distsCache[i] = new TDoubleArrayList(DEFAULT_MAT_B_CAPACITY);
-            weightsCache[i] = new TDoubleArrayList(DEFAULT_MAT_B_CAPACITY);
+            distsCache[i] = new TDoubleArrayList(DEFAULT_CAPACITY_OF_INPUT_COORDS);
+            weightsCache[i] = new TDoubleArrayList(DEFAULT_CAPACITY_OF_INPUT_COORDS);
             basisCache[i] = new TDoubleArrayList(basisLen);
         }
         matBs = new TDoubleArrayList[diffSize][basisLen];
         for (int i = 0; i < matBs.length; i++) {
             TDoubleArrayList[] matB = matBs[i];
             for (int j = 0; j < matB.length; j++) {
-                matB[j] = new TDoubleArrayList(DEFAULT_MAT_B_CAPACITY);
+                matB[j] = new TDoubleArrayList(DEFAULT_CAPACITY_OF_INPUT_COORDS);
             }
         }
+        shapeFunctionValueLists = WithDiffOrderUtil.initOutput(null, DEFAULT_CAPACITY_OF_INPUT_COORDS, DIMENSION, getDiffOrder());
     }
 
     private void resetCaches(int capacity) {
@@ -88,6 +91,7 @@ public class MLS implements ShapeFunction {
         }
         commonCache.resetQuick();
         commonCache.ensureCapacity(capacity);
+        shapeFunctionValueLists = WithDiffOrderUtil.initOutput(shapeFunctionValueLists, capacity, DIMENSION, getDiffOrder());
     }
 
     public MLS(RadialFunction2D weightFunc, BasisFunction basisFunc) {
@@ -112,9 +116,8 @@ public class MLS implements ShapeFunction {
     }
 
     @Override
-    public TDoubleArrayList[] values(double[] xy, List<double[]> coords, TDoubleArrayList influcenceRads, TDoubleArrayList[] dists, TDoubleArrayList[] output) {
+    public TDoubleArrayList[] values(double[] xy, List<double[]> coords, TDoubleArrayList influcenceRads, TDoubleArrayList[] dists) {
         resetCaches(coords.size());
-        TDoubleArrayList[] results = WithDiffOrderUtil.initOutput(output, coords.size(), 2, getDiffOrder());
         if (null == dists) {
             dists = ordinaryDistances(xy, coords);
         }
@@ -127,7 +130,7 @@ public class MLS implements ShapeFunction {
         solver.setA(matAs[0]);
         copyTo(basisCache[0], tVec1);
         solver.solve(tVec1, gamma);
-        dot(matBs[0], gamma, results[0]);
+        dot(matBs[0], gamma, shapeFunctionValueLists[0]);
 
         if (diffOrder > 0) {
             for (int i = 1; i < matAs.length; i++) {
@@ -135,14 +138,14 @@ public class MLS implements ShapeFunction {
                 copyTo(basisCache[i], tVec2);
                 CommonOps.sub(tVec2, tVec1, tVec1);
                 solver.solve(tVec1, gamma_d);
-                dot(matBs[i], gamma, results[i]);
+                dot(matBs[i], gamma, shapeFunctionValueLists[i]);
                 commonCache.resetQuick();
                 dot(matBs[0], gamma_d, commonCache);
-                addTo(commonCache, results[i]);
+                addTo(commonCache, shapeFunctionValueLists[i]);
             }
         }
 
-        return results;
+        return shapeFunctionValueLists;
     }
 
     private void calcMatAB(double[] xy, List<double[]> coords, TDoubleArrayList influcenceRads, TDoubleArrayList[] dists) {
