@@ -42,25 +42,22 @@ public class Model2DTest {
         }
         Model2D sampleModel2D = new Model2D(pg, spaceNodes);
 
-        LinkedList<Segment2D> segs = new LinkedList<>();
-        LinkedList<Segment2D> ndsBlockedBySeg = new LinkedList<>();
-        LinkedList<Node> nodes = new LinkedList<>();
-        LinkedList<Node> blockedNds = new LinkedList<>();
-        sampleModel2D.searchModel(center, null, radius, false, nodes, segs, blockedNds, ndsBlockedBySeg);
-        Collections.sort(nodes, new IntIdentityComparator<>());
-        List<WithPair<Node, Segment2D>> blockPair = PairPack.pack(blockedNds, ndsBlockedBySeg, new LinkedList<WithPair<Node, Segment2D>>());
+        sampleModel2D.setOnlySearchingInfluentialNodes(false);
+        ModelSearchResult searchResult = sampleModel2D.searchModel(center, null, radius);
+        Collections.sort(searchResult.visibleNodes, new IntIdentityComparator<>());
+        List<WithPair<Node, Segment2D>> blockPair = PairPack.pack(searchResult.invisibleNodes, searchResult.invisibleNodesBlockedBy, new LinkedList<WithPair<Node, Segment2D>>());
         Collections.sort(blockPair, new WithPairComparator<Node, Segment2D>(new IntIdentityComparator<Node>()));
-        Collections.sort(segs, new IntIdentityComparator<>());
+        Collections.sort(searchResult.segments, new IntIdentityComparator<>());
 
         int[] ndsIdsExp = new int[]{1, 2, 3, 9, 12};
         int[] segsIdsExp = new int[]{0, 1, 2, 3, 6, 7, 8, 9, 10, 11};
         int idx = 0;
-        for (Node nd : nodes) {
+        for (Node nd : searchResult.visibleNodes) {
             assertEquals(ndsIdsExp[idx], nd.id);
             idx++;
         }
         idx = 0;
-        for (Segment2D seg : segs) {
+        for (Segment2D seg : searchResult.segments) {
             assertEquals(segsIdsExp[idx], seg.id);
             idx++;
         }
@@ -109,17 +106,14 @@ public class Model2DTest {
         for (boolean wp : withPerturb) {
             Model2D sampleModel2D = new Model2D(pg, spaceNodes, wp);
 
-            LinkedList<Segment2D> segs = new LinkedList<>();
-            LinkedList<Segment2D> ndsBlockedBySeg = new LinkedList<>();
-            LinkedList<Node> nodes = new LinkedList<>();
-            LinkedList<Node> blockedNds = new LinkedList<>();
-            sampleModel2D.searchModel(center, bnd, radius, false, nodes, segs, blockedNds, ndsBlockedBySeg);
-            Collections.sort(nodes, new IntIdentityComparator<>());
+            sampleModel2D.setOnlySearchingInfluentialNodes(false);
+            ModelSearchResult searchResult = sampleModel2D.searchModel(center, bnd, radius);
+            Collections.sort(searchResult.visibleNodes, new IntIdentityComparator<>());
             int[] expPgNdIdx = wp ? expPgNdIdxWithPerb : expPgNdIdxNoPerb;
 
             int idx = 0;
             boolean getHere = false;
-            for (Node nd : nodes) {
+            for (Node nd : searchResult.visibleNodes) {
                 if (idx < expSpackNdIdx.length) {
                     assertEquals(expSpackNdIdx[idx], nd.id);
                 } else {

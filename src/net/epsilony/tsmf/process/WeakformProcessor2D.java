@@ -15,6 +15,7 @@ import net.epsilony.tsmf.assemblier.WFAssemblier;
 import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
 import net.epsilony.tsmf.model.LinearLagrangeDirichletProcessor;
 import net.epsilony.tsmf.model.Model2D;
+import net.epsilony.tsmf.model.ModelSearchResult;
 import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.model.influence.InfluenceRadsCalc;
@@ -198,11 +199,7 @@ public class WeakformProcessor2D implements NeedPreparation {
 
     public class Mixer implements WithDiffOrder {
 
-        ArrayList<Node> nodes = new ArrayList<>(DEFAULT_CAPACITY);
         ArrayList<double[]> coords = new ArrayList<>(DEFAULT_CAPACITY);
-        ArrayList<Segment2D> segs = new ArrayList<>(DEFAULT_CAPACITY);
-        ArrayList<Node> blockedNds = null;
-        ArrayList<Segment2D> blockNdsSegs = null;
         TIntArrayList nodesIds = new TIntArrayList(DEFAULT_CAPACITY, -1);
         TDoubleArrayList infRads = new TDoubleArrayList(DEFAULT_CAPACITY);
 
@@ -211,13 +208,15 @@ public class WeakformProcessor2D implements NeedPreparation {
         }
 
         public MixResult mix(double[] center, Segment2D bnd) {
-            model.searchModel(center, bnd, maxIfluenceRad, true, nodes, segs, blockedNds, blockNdsSegs);
+            model.setOnlyCareVisbleNodes(!SUPPORT_COMPLEX_CRITERION);
+            model.setOnlySearchingInfluentialNodes(true);
+            ModelSearchResult searchResult = model.searchModel(center, bnd, maxIfluenceRad);
 
             if (SUPPORT_COMPLEX_CRITERION) {
                 throw new UnsupportedOperationException();
             }
 
-            fromNodesToIdsCoordsInfRads(nodes, nodesIds, coords, infRads);
+            fromNodesToIdsCoordsInfRads(searchResult.visibleNodes, nodesIds, coords, infRads);
             TDoubleArrayList[] shapeFunctionValueLists = shapeFunction.values(center, coords, infRads, null);
             return new MixResult(shapeFunctionValueLists, nodesIds);
         }

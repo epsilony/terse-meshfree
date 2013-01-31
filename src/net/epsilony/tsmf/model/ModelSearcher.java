@@ -4,13 +4,19 @@
  */
 package net.epsilony.tsmf.model;
 
-import java.util.List;
-
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public interface ModelSearcher {
 
-    void searchModel(double[] center, Segment2D bnd, double radius, boolean filetByInfluence, List<Node> nodes, List<Segment2D> segs, List<Node> blockedNds, List<Segment2D> ndBlockBySeg);
+    boolean isOnlySearchingInfluentialNodes();
+
+    void setOnlySearchingInfluentialNodes(boolean onlySearchingInfluentialNodes);
+
+    boolean isOnlyCareVisibleNodes();
+
+    void setOnlyCareVisbleNodes(boolean onlyCareVisibleNodes);
+
+    ModelSearchResult searchModel(double[] center, Segment2D bndOfCenter, double radius);
 }

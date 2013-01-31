@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import net.epsilony.tsmf.model.ModelSearchResult;
 import net.epsilony.tsmf.model.ModelSearcher;
 import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.Segment2D;
@@ -119,14 +120,12 @@ public class EnsureNodesNum implements InfluenceRadsCalc {
 
     @Override
     public double influcenceRadius(Node node, Segment2D seg, ModelSearcher modelSearcher) {
-        LinkedList<Node> visibleNodes = new LinkedList<>();
-        LinkedList<Segment2D> searchedSegments = new LinkedList<>();
         double searchRad = initSearchRad;
         do {
-            modelSearcher.searchModel(node.coord, seg, searchRad, false, visibleNodes, searchedSegments, null, null);
-            if (visibleNodes.size() >= nodesNumLowerBound) {
+            ModelSearchResult searchResult = modelSearcher.searchModel(node.coord, seg, searchRad);
+            if (searchResult.visibleNodes.size() >= nodesNumLowerBound) {
                 List<Node> cadidateNodes = onlyCountSpaceNodes
-                        ? filterNodesOnSegments(visibleNodes, searchedSegments) : visibleNodes;
+                        ? filterNodesOnSegments(searchResult.visibleNodes, searchResult.segments) : searchResult.visibleNodes;
                 if (cadidateNodes.size() >= nodesNumLowerBound) {
                     double result = shortestRadiusWithEnoughNodes(node.coord, cadidateNodes) * resultEnlargeRatio;
                     if (adaptiveInitSearchRad) {
@@ -140,7 +139,7 @@ public class EnsureNodesNum implements InfluenceRadsCalc {
         throw new IllegalStateException("Can find a suitable radius!");
     }
 
-    private List<Node> filterNodesOnSegments(LinkedList<Node> nodes, LinkedList<Segment2D> segments) {
+    private List<Node> filterNodesOnSegments(List<Node> nodes, List<Segment2D> segments) {
         Node[] sortedNodes = nodes.toArray(new Node[0]);
         Arrays.sort(sortedNodes, idComparator);
         boolean[] onSegment = new boolean[sortedNodes.length];

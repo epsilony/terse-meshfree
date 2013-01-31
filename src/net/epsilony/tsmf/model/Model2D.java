@@ -32,11 +32,8 @@ public class Model2D implements ModelSearcher {
     private final SearchMethod searchMethod;
     TDoubleArrayList influenceRads;
     public final static boolean DEFAULT_WHETHER_USE_DISTURB = true;
-
-    @Override
-    public void searchModel(double[] center, Segment2D bnd, double radius, boolean filetByInfluence, List<Node> nodes, List<Segment2D> segs, List<Node> blockedNds, List<Segment2D> blockNdsSegs) {
-        searchMethod.search(center, bnd, radius, filetByInfluence, nodes, segs, blockedNds, blockNdsSegs);
-    }
+    private boolean onlySearchingInfluentialNodes;
+    private boolean onlyCareVisibleNodes;
 
     public double maxInfluenceRad() {
         return influenceRads.max();
@@ -54,35 +51,31 @@ public class Model2D implements ModelSearcher {
         return allNodes;
     }
 
-    public void searchNodesSegments(double[] center, double radius, List<Node> nodes, List<Segment2D> segs) {
-        nodes.clear();
-        segs.clear();
-        polygon.segmentsIntersectingDisc(center, radius, segs);
+    public ModelSearchResult searchNodesSegments(double[] center, double radius) {
+        ModelSearchResult searchResult = initSearchResult();
+        polygon.segmentsIntersectingDisc(center, radius, searchResult.segments);
         double[] from = new double[]{center[0] - radius, center[1] - radius};
         double[] to = new double[]{center[0] + radius, center[1] + radius};
-        nodesLRTree.rangeSearch(nodes, from, to);
-        Iterator<Node> rsIter = nodes.iterator();
+        nodesLRTree.rangeSearch(searchResult.allNodes, from, to);
+        Iterator<Node> rsIter = searchResult.allNodes.iterator();
         while (rsIter.hasNext()) {
             Node nd = rsIter.next();
             if (distance(nd.coord, center) >= radius) {
                 rsIter.remove();
             }
         }
+        return searchResult;
     }
 
-    public List<Node> filetNodesByInfluenceRad(double[] center, List<Node> nodes, List<Node> result) {
-        if (null == result) {
-            result = new LinkedList<>();
-        } else {
-            result.clear();
-        }
-        for (Node nd : nodes) {
-            double rad = getInfluenceRad(nd);
-            if (rad > distance(nd.coord, center)) {
-                result.add(nd);
+    public void filetNodesByInfluence(double[] center, ModelSearchResult filetAim) {
+        Iterator<Node> nodesIter = filetAim.allNodes.iterator();
+        while (nodesIter.hasNext()) {
+            Node node = nodesIter.next();
+            double rad = getInfluenceRad(node);
+            if (rad <= distance(node.coord, center)) {
+                nodesIter.remove();
             }
         }
-        return result;
     }
 
     public double getInfluenceRad(Node node) {
@@ -103,35 +96,64 @@ public class Model2D implements ModelSearcher {
         influenceRads.fill(rad);
     }
 
+    @Override
+    public boolean isOnlySearchingInfluentialNodes() {
+        return onlySearchingInfluentialNodes;
+    }
+
+    @Override
+    public void setOnlySearchingInfluentialNodes(boolean onlySearchingInfluentialNodes) {
+        this.onlySearchingInfluentialNodes = onlySearchingInfluentialNodes;
+    }
+
+    @Override
+    public boolean isOnlyCareVisibleNodes() {
+        return onlyCareVisibleNodes;
+    }
+
+    @Override
+    public void setOnlyCareVisbleNodes(boolean onlyCareVisibleNodes) {
+        this.onlyCareVisibleNodes = onlyCareVisibleNodes;
+    }
+
+    @Override
+    public ModelSearchResult searchModel(double[] center, Segment2D bndOfCenter, double radius) {
+        return searchMethod.search(center, bndOfCenter, radius);
+    }
+
+    private ModelSearchResult initSearchResult() {
+        ModelSearchResult result = new ModelSearchResult();
+        result.allNodes = new LinkedList<>();
+        result.segments = new LinkedList<>();
+        result.visibleNodes = new LinkedList<>();
+        if (isOnlyCareVisibleNodes()) {
+            result.invisibleNodes = null;
+            result.invisibleNodesBlockedBy = null;
+        } else {
+            result.invisibleNodes = new LinkedList<>();
+            result.invisibleNodesBlockedBy = new LinkedList<>();
+        }
+        return result;
+    }
+
     private class SearchMethod {
 
-        private void initOutput(List<Node> nodes, List<Segment2D> segs,
-                List<Node> blockedNds, List<Segment2D> blockNdsSegs) {
-            nodes.clear();
-            segs.clear();
-            if (null != blockedNds) {
-                blockedNds.clear();
-                blockNdsSegs.clear();
-            }
+        protected ModelSearchResult search(double[] center, Segment2D bndOfCenter, double radius) {
+            ModelSearchResult searchResult = preSearch(center, radius);
+
+
+            filetAllNodesToVisibleNodesByBndOfCenter(bndOfCenter, searchResult);
+
+            filetVisibleNodeBySegments(center, bndOfCenter, searchResult);
+            return searchResult;
         }
 
-        protected void search(double[] center, Segment2D bnd, double radius, boolean filetByInflucen,
-                List<Node> nodes, List<Segment2D> segs,
-                List<Node> blockedNds, List<Segment2D> blockNdsSegs) {
-            LinkedList<Node> rangeSearchedNds = preSearch(center, radius, filetByInflucen, nodes, segs, blockedNds, blockNdsSegs);
-            if (null != bnd) {
-                filetByBnd(center, bnd, radius, rangeSearchedNds, segs, blockedNds, blockNdsSegs);
-            }
-            filetBySegments(center, bnd, radius, rangeSearchedNds, segs, blockedNds, blockNdsSegs);
-            nodes.addAll(rangeSearchedNds);
-        }
-
-        protected void filetBySegments(double[] center, Segment2D bnd, double radius, LinkedList<Node> rangeSearchedNds, List<Segment2D> segs, List<Node> blockedNds, List<Segment2D> blockNdsSegs) {
-            for (Segment2D seg : segs) {
-                if (seg == bnd) {
+        protected void filetVisibleNodeBySegments(double[] center, Segment2D bndOfCenter, ModelSearchResult result) {
+            for (Segment2D seg : result.segments) {
+                if (seg == bndOfCenter) {
                     continue;
                 }
-                Iterator<Node> rsIter = rangeSearchedNds.iterator();
+                Iterator<Node> rsIter = result.visibleNodes.iterator();
                 Node head = seg.getHead();
                 Node rear = seg.getRear();
                 double[] hCoord = head.coord;
@@ -143,46 +165,46 @@ public class Model2D implements ModelSearcher {
                     }
                     if (isSegmentsIntersecting(center, nd.coord, hCoord, rCoord)) {
                         rsIter.remove();
-                        if (null != blockedNds) {
-                            blockedNds.add(nd);
-                            blockNdsSegs.add(seg);
+                        if (!isOnlyCareVisibleNodes()) {
+                            result.invisibleNodes.add(nd);
+                            result.invisibleNodesBlockedBy.add(seg);
                         }
                     }
                 }
             }
         }
 
-        protected void filetByBnd(double[] center, Segment2D bnd, double radius, LinkedList<Node> rangeSearchedNds, List<Segment2D> segs, List<Node> blockedNds, List<Segment2D> blockNdsSegs) {
-            if (null != bnd) {
-                double[] hc = bnd.getHead().coord;
-                double[] rc = bnd.getRear().coord;
+        protected void filetAllNodesToVisibleNodesByBndOfCenter(Segment2D bndOfCenter, ModelSearchResult result) {
+            if (null == bndOfCenter) {
+                result.visibleNodes.addAll(result.allNodes);
+            } else {
+                double[] hc = bndOfCenter.getHead().coord;
+                double[] rc = bndOfCenter.getRear().coord;
                 double dx = rc[0] - hc[0];
                 double dy = rc[1] - hc[1];
-                Iterator<Node> rsIter = rangeSearchedNds.iterator();
+                Iterator<Node> rsIter = result.allNodes.iterator();
                 while (rsIter.hasNext()) {
                     Node nd = rsIter.next();
                     double[] nc = nd.coord;
                     if (cross(dx, dy, nc[0] - hc[0], nc[1] - hc[1]) < 0) {
                         rsIter.remove();
-                        if (null != blockedNds) {
-                            blockedNds.add(nd);
-                            blockNdsSegs.add(bnd);
+                        if (!isOnlyCareVisibleNodes()) {
+                            result.invisibleNodes.add(nd);
+                            result.invisibleNodesBlockedBy.add(bndOfCenter);
                         }
+                    } else {
+                        result.visibleNodes.add(nd);
                     }
                 }
             }
         }
 
-        protected LinkedList<Node> preSearch(double[] center, double radius, boolean filetByInflucen, List<Node> nodes, List<Segment2D> segs, List<Node> blockedNds, List<Segment2D> ndBlockBySeg) {
-            initOutput(nodes, segs, blockedNds, ndBlockBySeg);
-            LinkedList<Node> searchedNds = new LinkedList<>();
-            searchNodesSegments(center, radius, searchedNds, segs);
-            if (filetByInflucen) {
-                LinkedList<Node> bak = searchedNds;
-                searchedNds = new LinkedList<>();
-                filetNodesByInfluenceRad(center, bak, searchedNds);
+        protected ModelSearchResult preSearch(double[] center, double radius) {
+            ModelSearchResult searchResult = searchNodesSegments(center, radius);
+            if (isOnlySearchingInfluentialNodes()) {
+                filetNodesByInfluence(center, searchResult);
             }
-            return searchedNds;
+            return searchResult;
         }
     }
     private static double DEFAULT_PERTURB_DISTANCE_RATION = 1e-6;  //perturb distance vs segment length
@@ -205,9 +227,9 @@ public class Model2D implements ModelSearcher {
             minVertexDistanceRatio = perterbDistanceRatio / Math.tan(minAngle);
         }
 
-        private double[] perturbCenter(double[] center, Segment2D bnd, List<Segment2D> segs) {
-            Node head = bnd.getHead();
-            Node rear = bnd.getRear();
+        private double[] perturbCenter(double[] center, Segment2D bndOfCenter, List<Segment2D> segs) {
+            Node head = bndOfCenter.getHead();
+            Node rear = bndOfCenter.getRear();
             double[] hCoord = head.coord;
             double[] rCoord = rear.coord;
 
@@ -215,7 +237,7 @@ public class Model2D implements ModelSearcher {
             double dx = rCoord[0] - hCoord[0];
             double dy = rCoord[1] - hCoord[1];
 
-            double headDistRatio = Math2D.distance(hCoord, center) / bnd.length();
+            double headDistRatio = Math2D.distance(hCoord, center) / bndOfCenter.length();
             double[] pertOri = center;
             if (headDistRatio <= minVertexDistanceRatio) {
                 pertOri = Math2D.pointOnSegment(hCoord, rCoord, minVertexDistanceRatio, null);
@@ -225,7 +247,7 @@ public class Model2D implements ModelSearcher {
 
             pertCenter[0] = -dy * perterbDistanceRatio + pertOri[0];
             pertCenter[1] = dx * perterbDistanceRatio + pertOri[1];
-            checkPerturbCenter(center, pertCenter, bnd, segs);
+            checkPerturbCenter(center, pertCenter, bndOfCenter, segs);
             return pertCenter;
         }
 
@@ -263,11 +285,12 @@ public class Model2D implements ModelSearcher {
         }
 
         @Override
-        protected void search(double[] center, Segment2D bnd, double radius, boolean filetByInfluence, List<Node> nodes, List<Segment2D> segs, List<Node> blockedNds, List<Segment2D> ndBlockBySeg) {
-            LinkedList<Node> searchedNds = preSearch(center, radius, filetByInfluence, nodes, segs, blockedNds, ndBlockBySeg);
-            double[] actCenter = (null == bnd) ? center : perturbCenter(center, bnd, segs);
-            filetBySegments(actCenter, null, radius, searchedNds, segs, blockedNds, ndBlockBySeg);
-            nodes.addAll(searchedNds);
+        protected ModelSearchResult search(double[] center, Segment2D bndOfCenter, double radius) {
+            ModelSearchResult searchResult = preSearch(center, radius);
+            double[] searchCenter = (null == bndOfCenter) ? center : perturbCenter(center, bndOfCenter, searchResult.segments);
+            filetAllNodesToVisibleNodesByBndOfCenter(null, searchResult);
+            filetVisibleNodeBySegments(searchCenter, null, searchResult);
+            return searchResult;
         }
     }
 
