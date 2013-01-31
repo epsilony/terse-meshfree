@@ -35,7 +35,7 @@ public class WeakformProcessor2D implements NeedPreparation {
 
     public static final int DEFAULT_CAPACITY = 60;
     public static final int DENSE_MATRIC_SIZE_THRESHOLD = 200;
-    WeakformTask project;
+    WeakformTask weakformTask;
     Model2D model;
     ShapeFunction shapeFunction;
     WFAssemblier assemblier;
@@ -55,7 +55,7 @@ public class WeakformProcessor2D implements NeedPreparation {
         this.shapeFunction = shapeFunction;
         this.assemblier = assemblier;
         this.inflRadCalc = inflRadCalc;
-        this.project = project;
+        this.weakformTask = project;
         this.constitutiveLaw = constitutiveLaw;
     }
 
@@ -71,9 +71,9 @@ public class WeakformProcessor2D implements NeedPreparation {
     }
 
     public void prepareAssemblier() {
-        balanceProcessPoints = project.balance();
-        dirichletProcessPoints = project.dirichlet();
-        neumannProcessPoints = project.neumann();
+        balanceProcessPoints = weakformTask.balance();
+        dirichletProcessPoints = weakformTask.dirichlet();
+        neumannProcessPoints = weakformTask.neumann();
 
         assemblier.setConstitutiveLaw(constitutiveLaw);
         assemblier.setNodesNum(model.getAllNodes().size());
