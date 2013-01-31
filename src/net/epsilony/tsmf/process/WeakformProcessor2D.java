@@ -41,7 +41,7 @@ public class WeakformProcessor2D implements NeedPreparation {
     WFAssemblier assemblier;
     InfluenceRadsCalc inflRadCalc;
     double maxIfluenceRad;
-    boolean complexCriterion = false;
+    public static final boolean SUPPORT_COMPLEX_CRITERION = false;
     LinearLagrangeDirichletProcessor lagProcessor;
     ConstitutiveLaw constitutiveLaw;
     DenseVector nodesValue;
@@ -118,9 +118,8 @@ public class WeakformProcessor2D implements NeedPreparation {
 
         shapeFunction.setDiffOrder(diffOrder);
         for (TaskUnit pt : points) {
-            TDoubleArrayList[] shapeFuncVals = mixer.mix(pt.coord, pt.seg);
-            TIntArrayList nodesIds = mixer.getNodesIds();
-            assemblier.asmBalance(pt.weight, nodesIds, shapeFuncVals, pt.value);
+            MixResult mixResult = mixer.mix(pt.coord, pt.seg);
+            assemblier.asmBalance(pt.weight, mixResult.nodeIds, mixResult.shapeFunctionValueLists, pt.value);
         }
     }
 
@@ -133,9 +132,8 @@ public class WeakformProcessor2D implements NeedPreparation {
         mixer.setDiffOrder(diffOrder);
 
         for (TaskUnit pt : points) {
-            TDoubleArrayList[] shapeFuncVals = mixer.mix(pt.coord, pt.seg);
-            TIntArrayList nodesIds = mixer.getNodesIds();
-            assemblier.asmNeumann(pt.weight, nodesIds, shapeFuncVals, pt.value);
+            MixResult mixResult = mixer.mix(pt.coord, pt.seg);
+            assemblier.asmNeumann(pt.weight, mixResult.nodeIds, mixResult.shapeFunctionValueLists, pt.value);
         }
     }
 
@@ -148,12 +146,11 @@ public class WeakformProcessor2D implements NeedPreparation {
         mixer.setDiffOrder(diffOrder);
 
         for (TaskUnit pt : points) {
-            TDoubleArrayList[] shapeFuncVals = mixer.mix(pt.coord, pt.seg);
-            TIntArrayList nodesIds = mixer.getNodesIds();
+            MixResult mixResult = mixer.mix(pt.coord, pt.seg);
             if (lagDiri) {
-                lagProcessor.process(pt, nodesIds, shapeFuncVals[0]);
+                lagProcessor.process(pt, mixResult.nodeIds, mixResult.shapeFunctionValueLists[0]);
             }
-            assemblier.asmDirichlet(pt.weight, nodesIds, shapeFuncVals, pt.value, pt.mark);
+            assemblier.asmDirichlet(pt.weight, mixResult.nodeIds, mixResult.shapeFunctionValueLists, pt.value, pt.mark);
         }
     }
 
@@ -188,6 +185,17 @@ public class WeakformProcessor2D implements NeedPreparation {
         prepareAssemblier();
     }
 
+    public static class MixResult {
+
+        public TDoubleArrayList[] shapeFunctionValueLists;
+        public TIntArrayList nodeIds;
+
+        public MixResult(TDoubleArrayList[] shapeFunctionValueLists, TIntArrayList nodeIds) {
+            this.shapeFunctionValueLists = shapeFunctionValueLists;
+            this.nodeIds = nodeIds;
+        }
+    }
+
     public class Mixer implements WithDiffOrder {
 
         ArrayList<Node> nodes = new ArrayList<>(DEFAULT_CAPACITY);
@@ -202,19 +210,16 @@ public class WeakformProcessor2D implements NeedPreparation {
             shapeFunction.setDiffOrder(0);
         }
 
-        public TDoubleArrayList[] mix(double[] center, Segment2D bnd) {
+        public MixResult mix(double[] center, Segment2D bnd) {
             model.searchModel(center, bnd, maxIfluenceRad, true, nodes, segs, blockedNds, blockNdsSegs);
 
-            if (complexCriterion) {
+            if (SUPPORT_COMPLEX_CRITERION) {
                 throw new UnsupportedOperationException();
             }
 
             fromNodesToIdsCoordsInfRads(nodes, nodesIds, coords, infRads);
-            return shapeFunction.values(center, coords, infRads, null);
-        }
-
-        public TIntArrayList getNodesIds() {
-            return nodesIds;
+            TDoubleArrayList[] shapeFunctionValueLists = shapeFunction.values(center, coords, infRads, null);
+            return new MixResult(shapeFunctionValueLists, nodesIds);
         }
 
         @Override
@@ -231,18 +236,18 @@ public class WeakformProcessor2D implements NeedPreparation {
     public class PostProcessor extends Mixer {
 
         public double[] value(double[] center, Segment2D bnd, double[] output) {
-            TDoubleArrayList[] shapeFuncVals = mix(center, bnd);
+            MixResult mixResult = mix(center, bnd);
             if (null == output) {
                 output = new double[WithDiffOrderUtil.outputLength2D(getDiffOrder()) * 2];
             } else {
                 Arrays.fill(output, 0);
             }
-            for (int i = 0; i < nodesIds.size(); i++) {
-                int nodeId = nodesIds.getQuick(i);
+            for (int i = 0; i < mixResult.nodeIds.size(); i++) {
+                int nodeId = mixResult.nodeIds.getQuick(i);
                 double nu = nodesValue.get(nodeId * 2);
                 double nv = nodesValue.get(nodeId * 2 + 1);
-                for (int j = 0; j < shapeFuncVals.length; j++) {
-                    double sv = shapeFuncVals[j].get(i);
+                for (int j = 0; j < mixResult.shapeFunctionValueLists.length; j++) {
+                    double sv = mixResult.shapeFunctionValueLists[j].get(i);
                     output[j * 2] += nu * sv;
                     output[j * 2 + 1] += nv * sv;
                 }
