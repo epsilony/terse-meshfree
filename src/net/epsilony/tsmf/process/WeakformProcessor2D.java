@@ -7,7 +7,6 @@ package net.epsilony.tsmf.process;
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import net.epsilony.tsmf.assemblier.SupportLagrange;
@@ -234,13 +233,10 @@ public class WeakformProcessor2D implements NeedPreparation {
 
     public class PostProcessor extends Mixer {
 
-        public double[] value(double[] center, Segment2D bnd, double[] output) {
+        public double[] value(double[] center, Segment2D bnd) {
             MixResult mixResult = mix(center, bnd);
-            if (null == output) {
-                output = new double[WithDiffOrderUtil.outputLength2D(getDiffOrder()) * 2];
-            } else {
-                Arrays.fill(output, 0);
-            }
+            double[] output = new double[WithDiffOrderUtil.outputLength2D(getDiffOrder()) * 2];
+
             for (int i = 0; i < mixResult.nodeIds.size(); i++) {
                 int nodeId = mixResult.nodeIds.getQuick(i);
                 double nu = nodesValue.get(nodeId * 2);
@@ -277,6 +273,6 @@ public class WeakformProcessor2D implements NeedPreparation {
         process.processNeumann();
         process.solve();
         PostProcessor pp = process.new PostProcessor();
-        pp.value(new double[]{0.1, 0}, null, null);
+        pp.value(new double[]{0.1, 0}, null);
     }
 }
