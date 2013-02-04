@@ -27,7 +27,7 @@ import net.epsilony.tsmf.util.pair.WithPairComparator;
  * @version 1.0~beta
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class LayeredRangeTree<K, V> {
+public class LayeredRangeTree<K, V> implements RangeSearcher<K, V> {
 
     private TreeNode root;
     private ArrayList<DictComparator<K>> dictComparators;
@@ -48,6 +48,13 @@ public class LayeredRangeTree<K, V> {
     public void rangeSearch(Collection<? super V> results, K from, K to) {
         results.clear();
         root.rangeSearch(results, from, to);
+    }
+
+    @Override
+    public LinkedList<V> rangeSearch(K from, K to) {
+        LinkedList<V> result = new LinkedList<>();
+        rangeSearch(result, from, to);
+        return result;
     }
 
     private void buildTree(List<? extends Comparator<K>> comparators, Collection<? extends WithPair<K, V>> datas) throws IllegalArgumentException {
