@@ -5,15 +5,9 @@
 package net.epsilony.tsmf.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import net.epsilony.tsmf.util.DoubleArrayComparator;
-import net.epsilony.tsmf.util.pair.PairPack;
-import net.epsilony.tsmf.util.pair.WithPair;
-import net.epsilony.tsmf.util.rangesearch.LayeredRangeTree;
 
 /**
  *
@@ -23,16 +17,17 @@ public class Polygon2D implements Iterable<Segment2D> {
 
     public static final int DIM = 2;
     ArrayList<Segment2D> chainsHeads;
-    LayeredRangeTree<double[], Segment2D> lrTree;
-    double maxSegLen;
-    double minSegLen;
 
-    public double getMinSegmentLength() {
-        return minSegLen;
-    }
-
-    public ArrayList<Segment2D> getChainsHeads() {
-        return chainsHeads;
+    public static Polygon2D byCoordChains(double[][][] coordChains) {
+        ArrayList<ArrayList<Node>> nodeChains = new ArrayList<>(coordChains.length);
+        for (double[][] coords : coordChains) {
+            ArrayList<Node> nodes = new ArrayList<>(coords.length);
+            nodeChains.add(nodes);
+            for (double[] coord : coords) {
+                nodes.add(new Node(coord));
+            }
+        }
+        return new Polygon2D(nodeChains);
     }
 
     public Polygon2D(List<? extends List<? extends Node>> nodeChains) {
@@ -57,16 +52,15 @@ public class Polygon2D implements Iterable<Segment2D> {
             chainHead.pred.succ = chainHead;
             chainsHeads.add(chainHead);
         }
-        prepareLRTree();
-        genSegIds();
+
+        refresh();
     }
 
-    public void refresh() {
-        prepareLRTree();
-        genSegIds();
+    private void refresh() {
+        fillSegmentsIds();
     }
 
-    private void genSegIds() {
+    private void fillSegmentsIds() {
         int id = 0;
         for (Segment2D seg : this) {
             seg.setId(id);
@@ -74,40 +68,30 @@ public class Polygon2D implements Iterable<Segment2D> {
         }
     }
 
-    private void prepareLRTree() {
-        double maxLen = 0;
+    public ArrayList<Segment2D> getChainsHeads() {
+        return chainsHeads;
+    }
+
+    public double getMinSegmentLength() {
         double minLen = Double.POSITIVE_INFINITY;
-        LinkedList<WithPair<double[], Segment2D>> midSegPairs = new LinkedList<>();
         for (Segment2D seg : this) {
-            PairPack<double[], Segment2D> midSegPair = new PairPack<>(seg.midPoint(), seg);
             double len = seg.length();
-            if (len > maxLen) {
-                maxLen = len;
-            }
             if (len < minLen) {
                 minLen = len;
             }
-            midSegPairs.add(midSegPair);
         }
-        ArrayList<Comparator<double[]>> comps = new ArrayList<>(2);
-        for (int i = 0; i < DIM; i++) {
-            comps.add(new DoubleArrayComparator(i));
-        }
-        lrTree = new LayeredRangeTree<>(midSegPairs, comps);
-        maxSegLen = maxLen;
-        minSegLen = minLen;
+        return minLen;
     }
 
-    public static Polygon2D byCoordChains(double[][][] coordChains) {
-        ArrayList<ArrayList<Node>> nodeChains = new ArrayList<>(coordChains.length);
-        for (double[][] coords : coordChains) {
-            ArrayList<Node> nodes = new ArrayList<>(coords.length);
-            nodeChains.add(nodes);
-            for (double[] coord : coords) {
-                nodes.add(new Node(coord));
+    public double getMaxSegmentLength() {
+        double maxLen = 0;
+        for (Segment2D seg : this) {
+            double len = seg.length();
+            if (maxLen < len) {
+                maxLen = len;
             }
         }
-        return new Polygon2D(nodeChains);
+        return maxLen;
     }
 
     /**
@@ -179,30 +163,36 @@ public class Polygon2D implements Iterable<Segment2D> {
         return rayCrs == 'i' ? inf : -inf;
     }
 
-    public void rangeSearch(Collection<? super Segment2D> results, double[] from, double[] to) {
-        lrTree.rangeSearch(results, from, to);
+    public Polygon2D fractionize(double lenUpBnd) {
+        if (lenUpBnd <= 0) {
+            throw new IllegalArgumentException("maxLength should be greater than 0 :" + lenUpBnd);
+        }
+        Polygon2D res = new Polygon2D(getVertes());
+        for (Segment2D cHead : res.chainsHeads) {
+            Segment2D seg = cHead;
+            do {
+                while (seg.length() > lenUpBnd) {
+                    seg.bisection();
+                }
+                seg = (Segment2D) seg.succ;
+            } while (seg != cHead);
+        }
+        res.refresh();
+        return res;
     }
 
-    public List<Segment2D> segmentsIntersectingDisc(double[] center, double radius, List<Segment2D> output) {
-        if (null == output) {
-            output = new LinkedList<>();
-        } else {
-            output.clear();
+    public ArrayList<LinkedList<Node>> getVertes() {
+        ArrayList<LinkedList<Node>> res = new ArrayList<>(chainsHeads.size());
+        for (Segment2D cHead : chainsHeads) {
+            LinkedList<Node> vs = new LinkedList<>();
+            res.add(vs);
+            Segment2D seg = cHead;
+            do {
+                vs.add(seg.getHead());
+                seg = (Segment2D) seg.succ;
+            } while (seg != cHead);
         }
-        if (radius < 0) {
-            throw new IllegalArgumentException("Radius is negative!");
-        }
-        double[] from = new double[]{center[0] - radius - maxSegLen / 2, center[1] - radius - maxSegLen / 2};
-        double[] to = new double[]{center[0] + radius + maxSegLen / 2, center[1] + radius + maxSegLen / 2};
-
-        LinkedList<Segment2D> segs = new LinkedList<>();
-        rangeSearch(segs, from, to);
-        for (Segment2D seg : segs) {
-            if (seg.distanceTo(center[0], center[1]) <= radius) {
-                output.add(seg);
-            }
-        }
-        return output;
+        return res;
     }
 
     @Override
@@ -243,58 +233,5 @@ public class Polygon2D implements Iterable<Segment2D> {
             last.pred.succ = last.succ;
             last.succ.pred = last.pred;
         }
-    }
-
-    public double getMaxSegmentLength() {
-        return maxSegLen;
-    }
-
-    public Polygon2D fractionize(double lenUpBnd) {
-        if (lenUpBnd <= 0) {
-            throw new IllegalArgumentException("maxLength should be greater than 0 :" + lenUpBnd);
-        }
-        Polygon2D res = copy(false);
-        for (Segment2D cHead : res.chainsHeads) {
-            Segment2D seg = cHead;
-            do {
-                while (seg.length() > lenUpBnd) {
-                    seg.bisection();
-                }
-                seg = (Segment2D) seg.succ;
-            } while (seg != cHead);
-        }
-        res.refresh();
-        return res;
-    }
-
-    public Polygon2D copy(boolean deep) {
-        ArrayList<LinkedList<Node>> vertes = getVertes();
-        if (deep) {
-            ArrayList<LinkedList<Node>> vertesCopy = new ArrayList<>(vertes.size());
-            for (LinkedList<Node> chain : vertes) {
-                LinkedList<Node> cs = new LinkedList<>();
-                vertesCopy.add(cs);
-                for (Node nd : chain) {
-                    cs.add(new Node(nd.coord, true));
-                }
-            }
-            return new Polygon2D(vertesCopy);
-        } else {
-            return new Polygon2D(vertes);
-        }
-    }
-
-    public ArrayList<LinkedList<Node>> getVertes() {
-        ArrayList<LinkedList<Node>> res = new ArrayList<>(chainsHeads.size());
-        for (Segment2D cHead : chainsHeads) {
-            LinkedList<Node> vs = new LinkedList<>();
-            res.add(vs);
-            Segment2D seg = cHead;
-            do {
-                vs.add(seg.getHead());
-                seg = (Segment2D) seg.succ;
-            } while (seg != cHead);
-        }
-        return res;
     }
 }

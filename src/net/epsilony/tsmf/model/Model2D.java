@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import net.epsilony.tsmf.model.search.LRTreeSegment2DIntersectingSphereSearcher;
 import net.epsilony.tsmf.util.DoubleArrayComparator;
 import net.epsilony.tsmf.util.Math2D;
 import static net.epsilony.tsmf.util.Math2D.cross;
@@ -25,6 +26,7 @@ import net.epsilony.tsmf.util.rangesearch.LayeredRangeTree;
 public class Model2D implements ModelSearcher {
 
     Polygon2D polygon;
+    LRTreeSegment2DIntersectingSphereSearcher segmentsIntersectingSphereSearcher;
     ArrayList<Node> allNodes;
     private LayeredRangeTree<double[], Node> nodesLRTree;
     public final static int DIM = 2;
@@ -53,7 +55,7 @@ public class Model2D implements ModelSearcher {
 
     public ModelSearchResult searchNodesSegments(double[] center, double radius) {
         ModelSearchResult searchResult = initSearchResult();
-        polygon.segmentsIntersectingDisc(center, radius, searchResult.segments);
+        searchResult.segments = segmentsIntersectingSphereSearcher.searchInSphere(center, radius);
         double[] from = new double[]{center[0] - radius, center[1] - radius};
         double[] to = new double[]{center[0] + radius, center[1] + radius};
         nodesLRTree.rangeSearch(searchResult.allNodes, from, to);
@@ -296,6 +298,7 @@ public class Model2D implements ModelSearcher {
 
     public Model2D(Polygon2D polygon, List<Node> spaceNodes, boolean useDisturbSearch) {
         this.polygon = polygon;
+        segmentsIntersectingSphereSearcher = new LRTreeSegment2DIntersectingSphereSearcher(polygon);
         this.spaceNodes = new ArrayList<>(spaceNodes);
         allNodes = new ArrayList<>(spaceNodes);
         LinkedList<Node> segNds = new LinkedList<>();
