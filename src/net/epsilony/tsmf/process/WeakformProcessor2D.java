@@ -14,10 +14,17 @@ import net.epsilony.tsmf.assemblier.WFAssemblier;
 import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
 import net.epsilony.tsmf.model.LinearLagrangeDirichletProcessor;
 import net.epsilony.tsmf.model.Model2D;
-import net.epsilony.tsmf.model.ModelSearchResult;
 import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.Segment2D;
-import net.epsilony.tsmf.model.influence.InfluenceRadsCalc;
+import net.epsilony.tsmf.model.influence.ArrayInfluenceDomianRadiusMapperFactory;
+import net.epsilony.tsmf.model.influence.InfluenceRadiusCalculator;
+import net.epsilony.tsmf.model.influence.InfluenceRadiusMapper;
+import net.epsilony.tsmf.model.search.LRTreeNodesSphereSearcher;
+import net.epsilony.tsmf.model.search.LRTreeSegment2DIntersectingSphereSearcher;
+import net.epsilony.tsmf.model.search.SphereSearcher;
+import net.epsilony.tsmf.model.support_domain.SupportDomainData;
+import net.epsilony.tsmf.model.support_domain.SupportDomainSearcher;
+import net.epsilony.tsmf.model.support_domain.SupportDomainSearcherFactory;
 import net.epsilony.tsmf.shape_func.ShapeFunction;
 import net.epsilony.tsmf.util.NeedPreparation;
 import net.epsilony.tsmf.util.TimoshenkoAnalyticalBeam2D;
@@ -39,7 +46,7 @@ public class WeakformProcessor2D implements NeedPreparation {
     Model2D model;
     ShapeFunction shapeFunction;
     WFAssemblier assemblier;
-    InfluenceRadsCalc inflRadCalc;
+    InfluenceRadiusCalculator inflRadCalc;
     double maxIfluenceRad;
     public static final boolean SUPPORT_COMPLEX_CRITERION = false;
     LinearLagrangeDirichletProcessor lagProcessor;
@@ -49,14 +56,35 @@ public class WeakformProcessor2D implements NeedPreparation {
     private List<TaskUnit> dirichletProcessPoints;
     private List<TaskUnit> neumannProcessPoints;
     private boolean lagDiri;
+    private InfluenceRadiusMapper influenceRadiusMapper;
+    private SphereSearcher<Node> nodesSearcher;
+    private SphereSearcher<Segment2D> segmentSearcher;
+    SupportDomainSearcherFactory supportDomainSearcherFactory;
 
-    public WeakformProcessor2D(Model2D model, InfluenceRadsCalc inflRadCalc, WeakformTask project, ShapeFunction shapeFunction, WFAssemblier assemblier, ConstitutiveLaw constitutiveLaw) {
+    public WeakformProcessor2D(
+            Model2D model,
+            InfluenceRadiusCalculator inflRadCalc,
+            WeakformTask project,
+            ShapeFunction shapeFunction,
+            WFAssemblier assemblier,
+            ConstitutiveLaw constitutiveLaw) {
         this.model = model;
         this.shapeFunction = shapeFunction;
         this.assemblier = assemblier;
         this.inflRadCalc = inflRadCalc;
         this.weakformTask = project;
         this.constitutiveLaw = constitutiveLaw;
+        nodesSearcher = new LRTreeNodesSphereSearcher(model.getAllNodes());
+        segmentSearcher = new LRTreeSegment2DIntersectingSphereSearcher(model.getPolygon());
+        supportDomainSearcherFactory = new SupportDomainSearcherFactory(nodesSearcher, segmentSearcher);
+        influenceRadiusMapper = new ArrayInfluenceDomianRadiusMapperFactory(
+                model,
+                inflRadCalc,
+                supportDomainSearcherFactory.produce())
+                .produce();
+        supportDomainSearcherFactory.setInfluenceDomainRadiusMapper(influenceRadiusMapper);
+        maxIfluenceRad = influenceRadiusMapper.getMaximumInfluenceRadius();
+
     }
 
     public WeakformProcessor2D(WeakformProject pack) {
@@ -86,22 +114,6 @@ public class WeakformProcessor2D implements NeedPreparation {
             sL.setDirichletNodesNums(lagProcessor.getDirichletNodesSize());
         }
         assemblier.prepare();
-    }
-
-    public void prepareInfluenceRads() {
-
-        for (Node nd : model.getSpaceNodes()) {
-            double rad = inflRadCalc.influcenceRadius(nd, null, model);
-            model.setInfluenceRad(nd, rad);
-        }
-
-        for (Segment2D seg : model.getPolygon()) {
-            Node nd = seg.getHead();
-            double rad = inflRadCalc.influcenceRadius(nd, seg, model);
-            model.setInfluenceRad(nd, rad);
-        }
-
-        maxIfluenceRad = model.maxInfluenceRad();
     }
 
     public boolean isAssemblyDirichletByLagrange() {
@@ -175,13 +187,12 @@ public class WeakformProcessor2D implements NeedPreparation {
         for (Node nd : nodes) {
             coords.add(nd.coord);
             ids.add(nd.getId());
-            infRads.add(model.getInfluenceRad(nd));
+            infRads.add(influenceRadiusMapper.getInfluenceRadius(nd));
         }
     }
 
     @Override
     public void prepare() {
-        prepareInfluenceRads();
         prepareAssemblier();
     }
 
@@ -201,15 +212,15 @@ public class WeakformProcessor2D implements NeedPreparation {
         ArrayList<double[]> coords = new ArrayList<>(DEFAULT_CAPACITY);
         TIntArrayList nodesIds = new TIntArrayList(DEFAULT_CAPACITY, -1);
         TDoubleArrayList infRads = new TDoubleArrayList(DEFAULT_CAPACITY);
+        SupportDomainSearcher supportDomainSearcher;
 
         public Mixer() {
             shapeFunction.setDiffOrder(0);
+            supportDomainSearcher = supportDomainSearcherFactory.produce();
         }
 
         public MixResult mix(double[] center, Segment2D bnd) {
-            model.setOnlyCareVisbleNodes(!SUPPORT_COMPLEX_CRITERION);
-            model.setOnlySearchingInfluentialNodes(true);
-            ModelSearchResult searchResult = model.searchModel(center, bnd, maxIfluenceRad);
+            SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain(center, bnd, maxIfluenceRad);
 
             if (SUPPORT_COMPLEX_CRITERION) {
                 throw new UnsupportedOperationException();

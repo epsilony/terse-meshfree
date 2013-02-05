@@ -12,6 +12,8 @@ import net.epsilony.tsmf.model.Model2D;
 import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.Polygon2D;
 import net.epsilony.tsmf.model.Segment2D;
+import net.epsilony.tsmf.model.support_domain.SupportDomainSearcher;
+import net.epsilony.tsmf.model.support_domain.SupportDomainSearcherFactory;
 import net.epsilony.tsmf.util.Math2D;
 import net.epsilony.tsmf.util.TestTool;
 import static org.junit.Assert.*;
@@ -36,7 +38,8 @@ public class EnsureNodesNumTest {
         Segment2D sampleBnd = sampleModel.getPolygon().getChainsHeads().get(0);
         Node sampleNode = sampleBnd.getHead();
         int[] numLowerBounds = new int[]{2, 4, 8, 20};
-
+        SupportDomainSearcherFactory factory = SupportDomainSearcherFactory.layeredRangeTreeBasedFactory(sampleModel.getAllNodes(), sampleModel.getPolygon());
+        SupportDomainSearcher searcher = factory.produce();
         for (boolean onlySpaceNodes : new boolean[]{false, true}) {
             LinkedList<Double> enlargedDistances = new LinkedList<>();
             List<Node> nodes = onlySpaceNodes ? sampleModel.getSpaceNodes() : sampleModel.getAllNodes();
@@ -51,7 +54,7 @@ public class EnsureNodesNumTest {
             boolean getHere = false;
             for (int i = 0; i < numLowerBounds.length; i++) {
                 calc.setNodesNumLowerBound(numLowerBounds[i]);
-                double act = calc.influcenceRadius(sampleNode, sampleBnd, sampleModel);
+                double act = calc.influcenceRadius(sampleNode, sampleBnd, searcher);
                 double exp = enlargedDistances.get(numLowerBounds[i] - 1);
                 assertEquals(exp, act, 1e-10);
                 getHere = true;

@@ -9,8 +9,8 @@ import net.epsilony.tsmf.assemblier.LagrangeWFAssemblier;
 import net.epsilony.tsmf.assemblier.WFAssemblier;
 import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
 import net.epsilony.tsmf.model.Model2D;
-import net.epsilony.tsmf.model.influence.ConstantInfluenceRadCalc;
-import net.epsilony.tsmf.model.influence.InfluenceRadsCalc;
+import net.epsilony.tsmf.model.influence.ConstantInfluenceRadiusCalculator;
+import net.epsilony.tsmf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.tsmf.shape_func.MLS;
 import net.epsilony.tsmf.shape_func.ShapeFunction;
 import net.epsilony.tsmf.util.TimoshenkoAnalyticalBeam2D;
@@ -69,7 +69,7 @@ public class TimoshenkoStandardTask implements WeakformTask {
         ShapeFunction shapeFunc = new MLS();
         ConstitutiveLaw constitutiveLaw = timoBeam.constitutiveLaw();
         WFAssemblier assemblier = new LagrangeWFAssemblier();
-        InfluenceRadsCalc influenceRadsCalc = new ConstantInfluenceRadCalc(influenceRad);
+        InfluenceRadiusCalculator influenceRadsCalc = new ConstantInfluenceRadiusCalculator(influenceRad);
         return new WeakformProject(project, model, influenceRadsCalc, assemblier, shapeFunc, constitutiveLaw);
     }
 }

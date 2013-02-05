@@ -9,8 +9,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import net.epsilony.tsmf.model.ModelSearchResult;
-import net.epsilony.tsmf.model.ModelSearcher;
+import net.epsilony.tsmf.model.support_domain.SupportDomainData;
+import net.epsilony.tsmf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.util.IntIdentityComparator;
@@ -20,7 +20,7 @@ import net.epsilony.tsmf.util.Math2D;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class EnsureNodesNum implements InfluenceRadsCalc {
+public class EnsureNodesNum implements InfluenceRadiusCalculator {
 
     private double initSearchRad;
     private double resultEnlargeRatio = DEFAULT_RESULT_ENLARGE_RATIO;
@@ -119,10 +119,10 @@ public class EnsureNodesNum implements InfluenceRadsCalc {
     }
 
     @Override
-    public double influcenceRadius(Node node, Segment2D seg, ModelSearcher modelSearcher) {
+    public double influcenceRadius(Node node, Segment2D seg, SupportDomainSearcher modelSearcher) {
         double searchRad = initSearchRad;
         do {
-            ModelSearchResult searchResult = modelSearcher.searchModel(node.coord, seg, searchRad);
+            SupportDomainData searchResult = modelSearcher.searchSupportDomain(node.coord, seg, searchRad);
             if (searchResult.visibleNodes.size() >= nodesNumLowerBound) {
                 List<Node> cadidateNodes = onlyCountSpaceNodes
                         ? filterNodesOnSegments(searchResult.visibleNodes, searchResult.segments) : searchResult.visibleNodes;
