@@ -15,7 +15,6 @@ import net.epsilony.tsmf.model.search.LRTreeNodesSphereSearcher;
 import net.epsilony.tsmf.model.search.LRTreeSegment2DIntersectingSphereSearcher;
 import net.epsilony.tsmf.util.IntIdentityComparator;
 import net.epsilony.tsmf.util.Math2D;
-import net.epsilony.tsmf.util.pair.PairPack;
 import net.epsilony.tsmf.util.pair.WithPair;
 import net.epsilony.tsmf.util.pair.WithPairComparator;
 import static org.junit.Assert.*;
@@ -133,7 +132,7 @@ public class SupportDomainSearcherFactoryTest {
             Node exp_nd = p.getKey();
             Segment2D seg = p.getValue();
             assertTrue(
-                    Math2D.isSegmentsIntersecting(seg.head.coord, seg.getRear().coord, center, exp_nd.coord));
+                    Math2D.isSegmentsIntersecting(seg.getHead().coord, seg.getRear().coord, center, exp_nd.coord));
             idx++;
             getHere = true;
         }
