@@ -75,14 +75,18 @@ public abstract class GenericSegment2D<T extends Boundary2D<T, Node>> extends Bo
         return midPoint(null);
     }
 
-    public T bisection() {
-        T seg = newInstance();
-        seg.setHead(new Node(midPoint()));
-        seg.succ = this.succ;
-        seg.pred = getThis();
-        this.succ.pred = seg;
-        this.succ = seg;
-        return seg;
+    public T bisectionAndReturnNewSuccessor() {
+        T newSucc = newInstance();
+        newSucc.setHead(bisectionNode());
+        newSucc.succ = this.succ;
+        newSucc.pred = getThis();
+        this.succ.pred = newSucc;
+        this.succ = newSucc;
+        return newSucc;
+    }
+    
+    protected Node bisectionNode(){
+        return new Node(midPoint());
     }
 
     @Override
