@@ -19,11 +19,11 @@ import net.epsilony.tsmf.model.search.LRTreeNodesSphereSearcher;
 import net.epsilony.tsmf.model.search.LRTreeSegment2DIntersectingSphereSearcher;
 import net.epsilony.tsmf.model.search.SphereSearcher;
 import net.epsilony.tsmf.model.support_domain.SupportDomainSearcherFactory;
-import net.epsilony.tsmf.process.Mixer.MixResult;
 import net.epsilony.tsmf.shape_func.ShapeFunction;
 import net.epsilony.tsmf.util.NeedPreparation;
 import net.epsilony.tsmf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.tsmf.util.matrix.ReverseCuthillMcKeeSolver;
+import net.epsilony.tsmf.util.synchron.SynchronizedIteratorWrapper;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
 
@@ -85,21 +85,28 @@ public class WeakformProcessor2D implements NeedPreparation {
 
     public void process() {
         prepare();
-        processBalance();
-        processNeumann();
-        processDirichlet();
+        Mixer mixer = new Mixer(
+                shapeFunction, supportDomainSearcherFactory.produce(), influenceRadiusMapper, maxIfluenceRad);
+        SynchronizedIteratorWrapper<TaskUnit> balanceIteratorWrapper =
+                new SynchronizedIteratorWrapper<>(balanceProcessPoints.iterator());
+        SynchronizedIteratorWrapper<TaskUnit> neumannIteratorWrapper =
+                new SynchronizedIteratorWrapper<>(neumannProcessPoints.iterator());
+        SynchronizedIteratorWrapper<TaskUnit> dirichletIteratorWrapper =
+                new SynchronizedIteratorWrapper<>(dirichletProcessPoints.iterator());
+        WeakformProcessRunnable runnable = new WeakformProcessRunnable(assemblier, mixer, shapeFunction, lagProcessor,
+                balanceIteratorWrapper, neumannIteratorWrapper, dirichletIteratorWrapper);
+        runnable.run();
     }
-    
+
     @Override
     public void prepare() {
+        balanceProcessPoints = weakformTask.balance();
+        dirichletProcessPoints = weakformTask.dirichlet();
+        neumannProcessPoints = weakformTask.neumann();
         prepareAssemblier();
     }
 
     public void prepareAssemblier() {
-        balanceProcessPoints = weakformTask.balance();
-        dirichletProcessPoints = weakformTask.dirichlet();
-        neumannProcessPoints = weakformTask.neumann();
-
         assemblier.setConstitutiveLaw(constitutiveLaw);
         assemblier.setNodesNum(model.getAllNodes().size());
         boolean dense = model.getAllNodes().size() <= DENSE_MATRIC_SIZE_THRESHOLD;
@@ -115,52 +122,6 @@ public class WeakformProcessor2D implements NeedPreparation {
 
     public boolean isAssemblyDirichletByLagrange() {
         return assemblier instanceof SupportLagrange;
-    }
-
-    public void processBalance() {
-        final int diffOrder = 1;
-
-        List<TaskUnit> points = balanceProcessPoints;
-
-        Mixer mixer = new Mixer(shapeFunction, supportDomainSearcherFactory.produce(), influenceRadiusMapper, maxIfluenceRad);
-        mixer.setDiffOrder(diffOrder);
-
-        shapeFunction.setDiffOrder(diffOrder);
-        for (TaskUnit pt : points) {
-            MixResult mixResult = mixer.mix(pt.coord, pt.seg);
-            assemblier.asmBalance(pt.weight, mixResult.nodeIds, mixResult.shapeFunctionValueLists, pt.value);
-        }
-    }
-
-    public void processNeumann() {
-        final int diffOrder = 0;
-
-        List<TaskUnit> points = neumannProcessPoints;
-
-        Mixer mixer = new Mixer(shapeFunction, supportDomainSearcherFactory.produce(), influenceRadiusMapper, maxIfluenceRad);
-        mixer.setDiffOrder(diffOrder);
-
-        for (TaskUnit pt : points) {
-            MixResult mixResult = mixer.mix(pt.coord, pt.seg);
-            assemblier.asmNeumann(pt.weight, mixResult.nodeIds, mixResult.shapeFunctionValueLists, pt.value);
-        }
-    }
-
-    public void processDirichlet() {
-        final int diffOrder = 0;
-
-        List<TaskUnit> points = dirichletProcessPoints;
-
-        Mixer mixer = new Mixer(shapeFunction, supportDomainSearcherFactory.produce(), influenceRadiusMapper, maxIfluenceRad);
-        mixer.setDiffOrder(diffOrder);
-        boolean lagDiri=isAssemblyDirichletByLagrange();
-        for (TaskUnit pt : points) {
-            MixResult mixResult = mixer.mix(pt.coord, pt.seg);
-            if (lagDiri) {
-                lagProcessor.process(pt, mixResult.nodeIds, mixResult.shapeFunctionValueLists[0]);
-            }
-            assemblier.asmDirichlet(pt.weight, mixResult.nodeIds, mixResult.shapeFunctionValueLists, pt.value, pt.mark);
-        }
     }
 
     public void solve() {
@@ -186,10 +147,7 @@ public class WeakformProcessor2D implements NeedPreparation {
 
     public static void main(String[] args) {
         WeakformProcessor2D process = genTimoshenkoProjectProcess();
-        process.prepare();
-        process.processBalance();
-        process.processDirichlet();
-        process.processNeumann();
+        process.process();
         process.solve();
         PostProcessor pp = process.postProcessor();
         pp.value(new double[]{0.1, 0}, null);

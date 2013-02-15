@@ -62,10 +62,7 @@ public class WeakformProcessor2DTimoshenkoCantileverTest {
     @org.junit.Before
     public void prepareTimoshenkoStandardCantileverPostProcessor() {
         timoProcessor = WeakformProcessor2D.genTimoshenkoProjectProcess();
-        timoProcessor.prepare();
-        timoProcessor.processBalance();
-        timoProcessor.processDirichlet();
-        timoProcessor.processNeumann();
+        timoProcessor.process();
         timoProcessor.solve();
         timoPostProcessor = timoProcessor.postProcessor();
     }
