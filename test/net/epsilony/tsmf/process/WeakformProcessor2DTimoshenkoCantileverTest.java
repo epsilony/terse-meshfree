@@ -67,7 +67,7 @@ public class WeakformProcessor2DTimoshenkoCantileverTest {
         timoProcessor.processDirichlet();
         timoProcessor.processNeumann();
         timoProcessor.solve();
-        timoPostProcessor = new PostProcessor(timoProcessor);
+        timoPostProcessor = timoProcessor.postProcessor();
     }
     public static final double SHRINK = 0.001;
 

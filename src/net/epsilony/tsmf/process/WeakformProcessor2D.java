@@ -4,10 +4,6 @@
  */
 package net.epsilony.tsmf.process;
 
-import gnu.trove.list.array.TDoubleArrayList;
-import gnu.trove.list.array.TIntArrayList;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import net.epsilony.tsmf.assemblier.SupportLagrange;
 import net.epsilony.tsmf.assemblier.WFAssemblier;
@@ -23,6 +19,7 @@ import net.epsilony.tsmf.model.search.LRTreeNodesSphereSearcher;
 import net.epsilony.tsmf.model.search.LRTreeSegment2DIntersectingSphereSearcher;
 import net.epsilony.tsmf.model.search.SphereSearcher;
 import net.epsilony.tsmf.model.support_domain.SupportDomainSearcherFactory;
+import net.epsilony.tsmf.process.Mixer.MixResult;
 import net.epsilony.tsmf.shape_func.ShapeFunction;
 import net.epsilony.tsmf.util.NeedPreparation;
 import net.epsilony.tsmf.util.TimoshenkoAnalyticalBeam2D;
@@ -51,7 +48,6 @@ public class WeakformProcessor2D implements NeedPreparation {
     private List<TaskUnit> balanceProcessPoints;
     private List<TaskUnit> dirichletProcessPoints;
     private List<TaskUnit> neumannProcessPoints;
-    private boolean lagDiri;
     private InfluenceRadiusMapper influenceRadiusMapper;
     private SphereSearcher<Node> nodesSearcher;
     private SphereSearcher<Segment2D> segmentSearcher;
@@ -93,6 +89,11 @@ public class WeakformProcessor2D implements NeedPreparation {
         processNeumann();
         processDirichlet();
     }
+    
+    @Override
+    public void prepare() {
+        prepareAssemblier();
+    }
 
     public void prepareAssemblier() {
         balanceProcessPoints = weakformTask.balance();
@@ -103,7 +104,7 @@ public class WeakformProcessor2D implements NeedPreparation {
         assemblier.setNodesNum(model.getAllNodes().size());
         boolean dense = model.getAllNodes().size() <= DENSE_MATRIC_SIZE_THRESHOLD;
         assemblier.setMatrixDense(dense);
-        lagDiri = isAssemblyDirichletByLagrange();
+        boolean lagDiri = isAssemblyDirichletByLagrange();
         if (lagDiri) {
             lagProcessor = new LinearLagrangeDirichletProcessor(dirichletProcessPoints, model.getAllNodes().size());
             SupportLagrange sL = (SupportLagrange) assemblier;
@@ -121,7 +122,7 @@ public class WeakformProcessor2D implements NeedPreparation {
 
         List<TaskUnit> points = balanceProcessPoints;
 
-        Mixer mixer = new Mixer(this);
+        Mixer mixer = new Mixer(shapeFunction, supportDomainSearcherFactory.produce(), influenceRadiusMapper, maxIfluenceRad);
         mixer.setDiffOrder(diffOrder);
 
         shapeFunction.setDiffOrder(diffOrder);
@@ -136,7 +137,7 @@ public class WeakformProcessor2D implements NeedPreparation {
 
         List<TaskUnit> points = neumannProcessPoints;
 
-        Mixer mixer = new Mixer(this);
+        Mixer mixer = new Mixer(shapeFunction, supportDomainSearcherFactory.produce(), influenceRadiusMapper, maxIfluenceRad);
         mixer.setDiffOrder(diffOrder);
 
         for (TaskUnit pt : points) {
@@ -150,9 +151,9 @@ public class WeakformProcessor2D implements NeedPreparation {
 
         List<TaskUnit> points = dirichletProcessPoints;
 
-        Mixer mixer = new Mixer(this);
+        Mixer mixer = new Mixer(shapeFunction, supportDomainSearcherFactory.produce(), influenceRadiusMapper, maxIfluenceRad);
         mixer.setDiffOrder(diffOrder);
-
+        boolean lagDiri=isAssemblyDirichletByLagrange();
         for (TaskUnit pt : points) {
             MixResult mixResult = mixer.mix(pt.coord, pt.seg);
             if (lagDiri) {
@@ -169,42 +170,8 @@ public class WeakformProcessor2D implements NeedPreparation {
         nodesValue = rcm.solve(mainVector);
     }
 
-    void fromNodesToIdsCoordsInfRads(
-            Collection<? extends Node> nodes,
-            TIntArrayList ids,
-            ArrayList<double[]> coords,
-            TDoubleArrayList infRads) {
-        coords.clear();
-        coords.ensureCapacity(nodes.size());
-        ids.resetQuick();
-        ids.ensureCapacity(nodes.size());
-        infRads.resetQuick();
-        infRads.ensureCapacity(nodes.size());
-        for (Node nd : nodes) {
-            coords.add(nd.coord);
-            ids.add(nd.getId());
-            infRads.add(influenceRadiusMapper.getInfluenceRadius(nd));
-        }
-    }
-
-    @Override
-    public void prepare() {
-        prepareAssemblier();
-    }
-
-    public static class MixResult {
-
-        public TDoubleArrayList[] shapeFunctionValueLists;
-        public TIntArrayList nodeIds;
-
-        public MixResult(TDoubleArrayList[] shapeFunctionValueLists, TIntArrayList nodeIds) {
-            this.shapeFunctionValueLists = shapeFunctionValueLists;
-            this.nodeIds = nodeIds;
-        }
-    }
-
     public PostProcessor postProcessor() {
-        return new PostProcessor(this);
+        return new PostProcessor(shapeFunction, supportDomainSearcherFactory.produce(), influenceRadiusMapper, maxIfluenceRad, nodesValue);
     }
 
     public static WeakformProcessor2D genTimoshenkoProjectProcess() {
@@ -224,7 +191,7 @@ public class WeakformProcessor2D implements NeedPreparation {
         process.processDirichlet();
         process.processNeumann();
         process.solve();
-        PostProcessor pp = new PostProcessor(process);
+        PostProcessor pp = process.postProcessor();
         pp.value(new double[]{0.1, 0}, null);
     }
 }
