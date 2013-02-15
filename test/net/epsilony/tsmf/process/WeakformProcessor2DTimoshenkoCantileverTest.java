@@ -4,7 +4,6 @@
  */
 package net.epsilony.tsmf.process;
 
-import net.epsilony.tsmf.process.WeakformProcessor2D.PostProcessor;
 import net.epsilony.tsmf.util.GenericFunction;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.integration.SimpsonIntegrator;
@@ -57,7 +56,7 @@ public class WeakformProcessor2DTimoshenkoCantileverTest {
         SimpsonIntegrator integrator = new SimpsonIntegrator();
         return integrator.integrate(10000, func, 0, 1);
     }
-    WeakformProcessor2D.PostProcessor timoPostProcessor;
+    PostProcessor timoPostProcessor;
     WeakformProcessor2D timoProcessor;
 
     @org.junit.Before
@@ -68,7 +67,7 @@ public class WeakformProcessor2DTimoshenkoCantileverTest {
         timoProcessor.processDirichlet();
         timoProcessor.processNeumann();
         timoProcessor.solve();
-        timoPostProcessor = timoProcessor.new PostProcessor();
+        timoPostProcessor = new PostProcessor(timoProcessor);
     }
     public static final double SHRINK = 0.001;
 

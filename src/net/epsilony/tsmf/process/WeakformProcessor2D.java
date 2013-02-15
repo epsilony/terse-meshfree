@@ -22,14 +22,10 @@ import net.epsilony.tsmf.model.influence.InfluenceRadiusMapper;
 import net.epsilony.tsmf.model.search.LRTreeNodesSphereSearcher;
 import net.epsilony.tsmf.model.search.LRTreeSegment2DIntersectingSphereSearcher;
 import net.epsilony.tsmf.model.search.SphereSearcher;
-import net.epsilony.tsmf.model.support_domain.SupportDomainData;
-import net.epsilony.tsmf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.tsmf.model.support_domain.SupportDomainSearcherFactory;
 import net.epsilony.tsmf.shape_func.ShapeFunction;
 import net.epsilony.tsmf.util.NeedPreparation;
 import net.epsilony.tsmf.util.TimoshenkoAnalyticalBeam2D;
-import net.epsilony.tsmf.util.WithDiffOrder;
-import net.epsilony.tsmf.util.WithDiffOrderUtil;
 import net.epsilony.tsmf.util.matrix.ReverseCuthillMcKeeSolver;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
@@ -125,7 +121,7 @@ public class WeakformProcessor2D implements NeedPreparation {
 
         List<TaskUnit> points = balanceProcessPoints;
 
-        Mixer mixer = new Mixer();
+        Mixer mixer = new Mixer(this);
         mixer.setDiffOrder(diffOrder);
 
         shapeFunction.setDiffOrder(diffOrder);
@@ -140,7 +136,7 @@ public class WeakformProcessor2D implements NeedPreparation {
 
         List<TaskUnit> points = neumannProcessPoints;
 
-        Mixer mixer = new Mixer();
+        Mixer mixer = new Mixer(this);
         mixer.setDiffOrder(diffOrder);
 
         for (TaskUnit pt : points) {
@@ -154,7 +150,7 @@ public class WeakformProcessor2D implements NeedPreparation {
 
         List<TaskUnit> points = dirichletProcessPoints;
 
-        Mixer mixer = new Mixer();
+        Mixer mixer = new Mixer(this);
         mixer.setDiffOrder(diffOrder);
 
         for (TaskUnit pt : points) {
@@ -207,63 +203,8 @@ public class WeakformProcessor2D implements NeedPreparation {
         }
     }
 
-    public class Mixer implements WithDiffOrder {
-
-        ArrayList<double[]> coords = new ArrayList<>(DEFAULT_CAPACITY);
-        TIntArrayList nodesIds = new TIntArrayList(DEFAULT_CAPACITY, -1);
-        TDoubleArrayList infRads = new TDoubleArrayList(DEFAULT_CAPACITY);
-        SupportDomainSearcher supportDomainSearcher;
-
-        public Mixer() {
-            shapeFunction.setDiffOrder(0);
-            supportDomainSearcher = supportDomainSearcherFactory.produce();
-        }
-
-        public MixResult mix(double[] center, Segment2D bnd) {
-            SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain(center, bnd, maxIfluenceRad);
-
-            if (SUPPORT_COMPLEX_CRITERION) {
-                throw new UnsupportedOperationException();
-            }
-
-            fromNodesToIdsCoordsInfRads(searchResult.visibleNodes, nodesIds, coords, infRads);
-            TDoubleArrayList[] shapeFunctionValueLists = shapeFunction.values(center, coords, infRads, null);
-            return new MixResult(shapeFunctionValueLists, nodesIds);
-        }
-
-        @Override
-        public int getDiffOrder() {
-            return shapeFunction.getDiffOrder();
-        }
-
-        @Override
-        public void setDiffOrder(int diffOrder) {
-            shapeFunction.setDiffOrder(diffOrder);
-        }
-    }
-
-    public class PostProcessor extends Mixer {
-
-        public double[] value(double[] center, Segment2D bnd) {
-            MixResult mixResult = mix(center, bnd);
-            double[] output = new double[WithDiffOrderUtil.outputLength2D(getDiffOrder()) * 2];
-
-            for (int i = 0; i < mixResult.nodeIds.size(); i++) {
-                int nodeId = mixResult.nodeIds.getQuick(i);
-                double nu = nodesValue.get(nodeId * 2);
-                double nv = nodesValue.get(nodeId * 2 + 1);
-                for (int j = 0; j < mixResult.shapeFunctionValueLists.length; j++) {
-                    double sv = mixResult.shapeFunctionValueLists[j].get(i);
-                    output[j * 2] += nu * sv;
-                    output[j * 2 + 1] += nv * sv;
-                }
-            }
-            return output;
-        }
-    }
-
     public PostProcessor postProcessor() {
-        return new PostProcessor();
+        return new PostProcessor(this);
     }
 
     public static WeakformProcessor2D genTimoshenkoProjectProcess() {
@@ -283,7 +224,7 @@ public class WeakformProcessor2D implements NeedPreparation {
         process.processDirichlet();
         process.processNeumann();
         process.solve();
-        PostProcessor pp = process.new PostProcessor();
+        PostProcessor pp = new PostProcessor(process);
         pp.value(new double[]{0.1, 0}, null);
     }
 }
