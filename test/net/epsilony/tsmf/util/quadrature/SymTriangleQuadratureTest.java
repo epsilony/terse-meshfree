@@ -66,7 +66,7 @@ public class SymTriangleQuadratureTest {
                 double exp = -integrateWithSimpson(randPoly, x1, y1, x2, y2)
                         + integrateWithSimpson(randPoly, x1, y1, x3, y3)
                         + integrateWithSimpson(randPoly, x3, y3, x2, y2);
-                assertEquals(exp, act, Math.max(1e-7, 1e-7 * exp));
+                assertEquals(exp, act, Math.max(1e-6, 1e-6 * exp));
             }
         }
     }
