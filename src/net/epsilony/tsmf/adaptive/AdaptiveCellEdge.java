@@ -5,7 +5,6 @@
 package net.epsilony.tsmf.adaptive;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tsmf.model.GenericSegment2D;
 import net.epsilony.tsmf.model.Node;
@@ -50,7 +49,7 @@ public class AdaptiveCellEdge extends GenericSegment2D<AdaptiveCellEdge> {
 
     @Override
     protected Node bisectionNode() {
-        if (numOpposites() == 1) {
+        if (numOpposites() <= 1) {
             return super.bisectionNode();
         } else {
             return getOpposite(0).getHead();
@@ -64,7 +63,7 @@ public class AdaptiveCellEdge extends GenericSegment2D<AdaptiveCellEdge> {
         return true;
     }
 
-    public void mergeSuccessor(AdaptiveCellEdge successor) {
+    public void mergeWithGivenSuccessor(AdaptiveCellEdge successor) {
         if (!isAbleToMerge(successor)) {
             throw new IllegalStateException();
         }
