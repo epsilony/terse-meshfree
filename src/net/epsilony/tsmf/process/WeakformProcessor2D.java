@@ -48,6 +48,9 @@ public class WeakformProcessor2D implements NeedPreparation {
     private List<TaskUnit> balanceProcessPoints;
     private List<TaskUnit> dirichletProcessPoints;
     private List<TaskUnit> neumannProcessPoints;
+    SynchronizedIteratorWrapper<TaskUnit> balanceIteratorWrapper;
+    SynchronizedIteratorWrapper<TaskUnit> neumannIteratorWrapper;
+    SynchronizedIteratorWrapper<TaskUnit> dirichletIteratorWrapper;
     private InfluenceRadiusMapper influenceRadiusMapper;
     private SphereSearcher<Node> nodesSearcher;
     private SphereSearcher<Segment2D> segmentSearcher;
@@ -75,8 +78,6 @@ public class WeakformProcessor2D implements NeedPreparation {
                 supportDomainSearcherFactory.produce())
                 .produce();
         supportDomainSearcherFactory.setInfluenceDomainRadiusMapper(influenceRadiusMapper);
-        maxIfluenceRad = influenceRadiusMapper.getMaximumInfluenceRadius();
-
     }
 
     public WeakformProcessor2D(WeakformProject pack) {
@@ -86,13 +87,7 @@ public class WeakformProcessor2D implements NeedPreparation {
     public void process() {
         prepare();
         Mixer mixer = new Mixer(
-                shapeFunction, supportDomainSearcherFactory.produce(), influenceRadiusMapper, maxIfluenceRad);
-        SynchronizedIteratorWrapper<TaskUnit> balanceIteratorWrapper =
-                new SynchronizedIteratorWrapper<>(balanceProcessPoints.iterator());
-        SynchronizedIteratorWrapper<TaskUnit> neumannIteratorWrapper =
-                new SynchronizedIteratorWrapper<>(neumannProcessPoints.iterator());
-        SynchronizedIteratorWrapper<TaskUnit> dirichletIteratorWrapper =
-                new SynchronizedIteratorWrapper<>(dirichletProcessPoints.iterator());
+                shapeFunction, supportDomainSearcherFactory.produce(), influenceRadiusMapper);
         WeakformProcessRunnable runnable = new WeakformProcessRunnable(assemblier, mixer, shapeFunction, lagProcessor,
                 balanceIteratorWrapper, neumannIteratorWrapper, dirichletIteratorWrapper);
         runnable.run();
@@ -103,21 +98,26 @@ public class WeakformProcessor2D implements NeedPreparation {
         balanceProcessPoints = weakformTask.balance();
         dirichletProcessPoints = weakformTask.dirichlet();
         neumannProcessPoints = weakformTask.neumann();
-        prepareAssemblier();
+        balanceIteratorWrapper =
+                new SynchronizedIteratorWrapper<>(balanceProcessPoints.iterator());
+        neumannIteratorWrapper =
+                new SynchronizedIteratorWrapper<>(neumannProcessPoints.iterator());
+        dirichletIteratorWrapper =
+                new SynchronizedIteratorWrapper<>(dirichletProcessPoints.iterator());
+        prepareAssemblier(assemblier);
     }
 
-    public void prepareAssemblier() {
-        assemblier.setConstitutiveLaw(constitutiveLaw);
-        assemblier.setNodesNum(model.getAllNodes().size());
+    void prepareAssemblier(WFAssemblier wfAssemblier) {
+        wfAssemblier.setConstitutiveLaw(constitutiveLaw);
+        wfAssemblier.setNodesNum(model.getAllNodes().size());
         boolean dense = model.getAllNodes().size() <= DENSE_MATRIC_SIZE_THRESHOLD;
-        assemblier.setMatrixDense(dense);
-        boolean lagDiri = isAssemblyDirichletByLagrange();
-        if (lagDiri) {
+        wfAssemblier.setMatrixDense(dense);
+        if (isAssemblyDirichletByLagrange()) {
             lagProcessor = new LinearLagrangeDirichletProcessor(dirichletProcessPoints, model.getAllNodes().size());
-            SupportLagrange sL = (SupportLagrange) assemblier;
+            SupportLagrange sL = (SupportLagrange) wfAssemblier;
             sL.setDirichletNodesNums(lagProcessor.getDirichletNodesSize());
         }
-        assemblier.prepare();
+        wfAssemblier.prepare();
     }
 
     public boolean isAssemblyDirichletByLagrange() {
@@ -132,7 +132,7 @@ public class WeakformProcessor2D implements NeedPreparation {
     }
 
     public PostProcessor postProcessor() {
-        return new PostProcessor(shapeFunction, supportDomainSearcherFactory.produce(), influenceRadiusMapper, maxIfluenceRad, nodesValue);
+        return new PostProcessor(shapeFunction, supportDomainSearcherFactory.produce(), influenceRadiusMapper, nodesValue);
     }
 
     public static WeakformProcessor2D genTimoshenkoProjectProcess() {

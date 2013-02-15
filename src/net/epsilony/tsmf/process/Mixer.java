@@ -30,13 +30,12 @@ public class Mixer implements WithDiffOrder {
     double maxInfluenceRad;
     InfluenceRadiusMapper influenceRadiusMapper;
 
-    public Mixer(ShapeFunction shapeFunction, SupportDomainSearcher supportDomainSearcher, InfluenceRadiusMapper influenceRadiusMapper, double maxInfluenceRad) {
+    public Mixer(ShapeFunction shapeFunction, SupportDomainSearcher supportDomainSearcher, InfluenceRadiusMapper influenceRadiusMapper) {
         this.shapeFunction = shapeFunction;
         shapeFunction.setDiffOrder(0);
         this.supportDomainSearcher = supportDomainSearcher;
         this.influenceRadiusMapper = influenceRadiusMapper;
-        this.maxInfluenceRad = maxInfluenceRad;
-
+        this.maxInfluenceRad = influenceRadiusMapper.getMaximumInfluenceRadius();
     }
 
     public MixResult mix(double[] center, Segment2D bnd) {

@@ -19,8 +19,8 @@ public class PostProcessor extends Mixer {
 
     Vector nodesValues;
 
-    public PostProcessor(ShapeFunction shapeFunction, SupportDomainSearcher supportDomainSearcher, InfluenceRadiusMapper influenceRadiusMapper, double maxInfluenceRad, Vector nodesValues) {
-        super(shapeFunction, supportDomainSearcher, influenceRadiusMapper, maxInfluenceRad);
+    public PostProcessor(ShapeFunction shapeFunction, SupportDomainSearcher supportDomainSearcher, InfluenceRadiusMapper influenceRadiusMapper, Vector nodesValues) {
+        super(shapeFunction, supportDomainSearcher, influenceRadiusMapper);
         this.nodesValues = nodesValues;
     }
 

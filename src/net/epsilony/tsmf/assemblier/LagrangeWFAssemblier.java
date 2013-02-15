@@ -79,6 +79,11 @@ public class LagrangeWFAssemblier extends PenaltyWFAssemblier implements Support
     }
 
     @Override
+    public int getDirichletNodesNum() {
+        return diriNum;
+    }
+
+    @Override
     public void prepare() {
         initMainMatrixVector(2 * (nodesNum + diriNum));
     }

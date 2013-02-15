@@ -11,4 +11,6 @@ package net.epsilony.tsmf.assemblier;
 public interface SupportLagrange {
 
     public void setDirichletNodesNums(int diriNum);
+
+    public int getDirichletNodesNum();
 }
