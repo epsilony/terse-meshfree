@@ -7,6 +7,7 @@ package net.epsilony.tsmf.assemblier;
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
+import net.epsilony.tsmf.util.synchron.SynchronizedClonable;
 import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
@@ -17,7 +18,7 @@ import no.uib.cipr.matrix.sparse.FlexCompRowMatrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class PenaltyWFAssemblier implements WFAssemblier {
+public class PenaltyWFAssemblier implements WFAssemblier, SynchronizedClonable<WFAssemblier> {
 
     Matrix mainMatrix;
     DenseVector mainVector;
@@ -57,7 +58,9 @@ public class PenaltyWFAssemblier implements WFAssemblier {
     }
 
     @Override
-    public void asmBalance(double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFunVals, double[] volumnForce) {
+    public void asmBalance(
+            double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFunVals,
+            double[] volumnForce) {
         TDoubleArrayList v = shapeFunVals[0];
         TDoubleArrayList v_x = shapeFunVals[1];
         TDoubleArrayList v_y = shapeFunVals[2];
@@ -129,7 +132,9 @@ public class PenaltyWFAssemblier implements WFAssemblier {
     }
 
     @Override
-    public void asmNeumann(double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFunVals, double[] neumannVal) {
+    public void asmNeumann(
+            double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFunVals,
+            double[] neumannVal) {
         DenseVector vec = mainVector;
         double valueX = neumannVal[0] * weight;
         double valueY = neumannVal[1] * weight;
@@ -153,7 +158,9 @@ public class PenaltyWFAssemblier implements WFAssemblier {
     }
 
     @Override
-    public void asmDirichlet(double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFuncVals, double[] dirichletVal, boolean[] dirichletMark) {
+    public void asmDirichlet(
+            double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFuncVals,
+            double[] dirichletVal, boolean[] dirichletMark) {
         double factor = weight * penalty;
         Matrix mat = mainMatrix;
         DenseVector vec = mainVector;
@@ -224,5 +231,10 @@ public class PenaltyWFAssemblier implements WFAssemblier {
     @Override
     public void setMatrixDense(boolean dense) {
         this.dense = dense;
+    }
+
+    @Override
+    public WFAssemblier synchronizeClone() {
+        return new PenaltyWFAssemblier(penalty);
     }
 }

@@ -8,6 +8,7 @@ import gnu.trove.list.array.TDoubleArrayList;
 import java.util.List;
 import net.epsilony.tsmf.util.Math2D;
 import net.epsilony.tsmf.util.WithDiffOrderUtil;
+import net.epsilony.tsmf.util.synchron.SynchronizedClonable;
 import org.ejml.alg.dense.decomposition.lu.LUDecompositionNR;
 import org.ejml.alg.dense.linsol.lu.LinearSolverLu;
 import org.ejml.alg.dense.mult.MatrixVectorMult;
@@ -18,7 +19,7 @@ import org.ejml.ops.CommonOps;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MLS implements ShapeFunction {
+public class MLS implements ShapeFunction, SynchronizedClonable<ShapeFunction> {
 
     public static final int DIMENSION = 2;
     RadialFunction2D weightFunc;
@@ -222,5 +223,10 @@ public class MLS implements ShapeFunction {
             }
         }
         return distsCache;
+    }
+
+    @Override
+    public ShapeFunction synchronizeClone() {
+        return new MLS(weightFunc, basisFunc);
     }
 }

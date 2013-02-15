@@ -15,6 +15,10 @@ import no.uib.cipr.matrix.Matrix;
  */
 public class LagrangeWFAssemblier extends PenaltyWFAssemblier implements SupportLagrange {
 
+    @Override
+    public WFAssemblier synchronizeClone() {
+        return new LagrangeWFAssemblier();
+    }
     int diriNum;
 
     public LagrangeWFAssemblier() {
@@ -22,7 +26,9 @@ public class LagrangeWFAssemblier extends PenaltyWFAssemblier implements Support
     }
 
     @Override
-    public void asmDirichlet(double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFuncVals, double[] dirichletVal, boolean[] dirichletMark) {
+    public void asmDirichlet(
+            double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFuncVals,
+            double[] dirichletVal, boolean[] dirichletMark) {
         Matrix mat = mainMatrix;
         DenseVector vec = mainVector;
 
