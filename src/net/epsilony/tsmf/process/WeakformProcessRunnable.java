@@ -4,11 +4,9 @@
  */
 package net.epsilony.tsmf.process;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import net.epsilony.tsmf.assemblier.SupportLagrange;
 import net.epsilony.tsmf.assemblier.WFAssemblier;
 import net.epsilony.tsmf.model.LinearLagrangeDirichletProcessor;
-import net.epsilony.tsmf.shape_func.ShapeFunction;
 import net.epsilony.tsmf.util.synchron.SynchronizedIteratorWrapper;
 
 /**
@@ -19,26 +17,27 @@ public class WeakformProcessRunnable implements Runnable {
 
     WFAssemblier assemblier;
     Mixer mixer;
-    ShapeFunction shapeFunction;
     LinearLagrangeDirichletProcessor lagProcessor;
     SynchronizedIteratorWrapper<TaskUnit> balanceSynchronizedIterator;
     SynchronizedIteratorWrapper<TaskUnit> neumannSynchronizedIterator;
     SynchronizedIteratorWrapper<TaskUnit> dirichletSynchronizedIterator;
-    AtomicInteger numOfProcessed = new AtomicInteger();
+    WeakformProcessRunnerObserver observer;
 
-    public WeakformProcessRunnable(WFAssemblier assemblier, Mixer mixer, ShapeFunction shapeFunction,
+    public void setObserver(WeakformProcessRunnerObserver observer) {
+        this.observer = observer;
+    }
+
+    public WeakformProcessRunnable(WFAssemblier assemblier, Mixer mixer,
             LinearLagrangeDirichletProcessor lagProcessor,
             SynchronizedIteratorWrapper<TaskUnit> balanceSynchronizedIterator,
             SynchronizedIteratorWrapper<TaskUnit> neumannSynchronizedIterator,
             SynchronizedIteratorWrapper<TaskUnit> dirichletSynchronizedIterator) {
         this.assemblier = assemblier;
         this.mixer = mixer;
-        this.shapeFunction = shapeFunction;
         this.lagProcessor = lagProcessor;
         this.balanceSynchronizedIterator = balanceSynchronizedIterator;
         this.neumannSynchronizedIterator = neumannSynchronizedIterator;
         this.dirichletSynchronizedIterator = dirichletSynchronizedIterator;
-        numOfProcessed.set(0);
     }
 
     public boolean isAssemblyDirichletByLagrange() {
@@ -48,7 +47,6 @@ public class WeakformProcessRunnable implements Runnable {
     public void processBalance() {
         final int diffOrder = 1;
         mixer.setDiffOrder(diffOrder);
-        shapeFunction.setDiffOrder(diffOrder);
         while (true) {
             TaskUnit pt = balanceSynchronizedIterator.nextItem();
             if (pt == null) {
@@ -56,7 +54,9 @@ public class WeakformProcessRunnable implements Runnable {
             }
             Mixer.MixResult mixResult = mixer.mix(pt.coord, pt.seg);
             assemblier.asmBalance(pt.weight, mixResult.nodeIds, mixResult.shapeFunctionValueLists, pt.value);
-            numOfProcessed.incrementAndGet();
+            if (null != observer) {
+                observer.balanceProcessed(this);
+            }
         }
     }
 
@@ -71,7 +71,9 @@ public class WeakformProcessRunnable implements Runnable {
             }
             Mixer.MixResult mixResult = mixer.mix(pt.coord, pt.seg);
             assemblier.asmNeumann(pt.weight, mixResult.nodeIds, mixResult.shapeFunctionValueLists, pt.value);
-            numOfProcessed.incrementAndGet();
+            if (null != observer) {
+                observer.neumannProcessed(this);
+            }
         }
     }
 
@@ -89,12 +91,10 @@ public class WeakformProcessRunnable implements Runnable {
                 lagProcessor.process(pt, mixResult.nodeIds, mixResult.shapeFunctionValueLists[0]);
             }
             assemblier.asmDirichlet(pt.weight, mixResult.nodeIds, mixResult.shapeFunctionValueLists, pt.value, pt.mark);
-            numOfProcessed.incrementAndGet();
+            if (null != observer) {
+                observer.dirichletProcessed(this);
+            }
         }
-    }
-
-    public int getNumberOfProcessed() {
-        return numOfProcessed.get();
     }
 
     @Override

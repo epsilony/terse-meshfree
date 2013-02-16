@@ -4,7 +4,11 @@
  */
 package net.epsilony.tsmf.process;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import net.epsilony.tsmf.assemblier.SupportLagrange;
 import net.epsilony.tsmf.assemblier.WFAssemblier;
 import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
@@ -82,11 +86,68 @@ public class WeakformProcessor2D implements NeedPreparation {
 
     public void process() {
         prepare();
+        if (isActuallyMultiThreadable()) {
+            multiThreadProcess();
+        } else {
+            singleThreadProcess();
+        }
+    }
+
+    private void singleThreadProcess() {
+
         Mixer mixer = new Mixer(
                 shapeFunction, supportDomainSearcherFactory.produce(), influenceRadiusMapper);
-        WeakformProcessRunnable runnable = new WeakformProcessRunnable(assemblier, mixer, shapeFunction, lagProcessor,
+        WeakformProcessRunnable runnable = new WeakformProcessRunnable(assemblier, mixer, lagProcessor,
                 balanceIteratorWrapper, neumannIteratorWrapper, dirichletIteratorWrapper);
         runnable.run();
+    }
+
+    private void multiThreadProcess() {
+        int coreNum = Runtime.getRuntime().availableProcessors();
+        ArrayList<WFAssemblier> assemblierAvators = new ArrayList<>(coreNum);
+        assemblierAvators.add(assemblier);
+        for (int i = 1; i < assemblierAvators.size(); i++) {
+            assemblierAvators.add(assemblier.synchronizeClone());
+        }
+        ExecutorService executor = Executors.newFixedThreadPool(coreNum);
+        for (int i = 0; i < assemblierAvators.size(); i++) {
+            Mixer mixer = new Mixer(
+                    shapeFunction.synchronizeClone(), supportDomainSearcherFactory.produce(), influenceRadiusMapper);
+            WeakformProcessRunnable runnable = new WeakformProcessRunnable(assemblierAvators.get(i), mixer, lagProcessor,
+                    balanceIteratorWrapper, neumannIteratorWrapper, dirichletIteratorWrapper);
+            executor.execute(runnable);
+        }
+
+        executor.shutdown();
+        while (!executor.isTerminated()) {
+            try {
+                executor.awaitTermination(1000, TimeUnit.MICROSECONDS);
+            } catch (InterruptedException ex) {
+                break;
+            }
+        }
+        for (int i = 1; i < assemblierAvators.size(); i++) {
+            assemblier.addToMainMatrix(assemblierAvators.get(i));
+        }
+    }
+
+    public boolean isActuallyMultiThreadable() {
+        if (!isEnableMultiThread()) {
+            return false;
+        }
+        int coreNum = Runtime.getRuntime().availableProcessors();
+        if (coreNum <= 1) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isEnableMultiThread() {
+        return enableMultiThread;
+    }
+
+    public void setEnableMultiThread(boolean enableMultiThread) {
+        this.enableMultiThread = enableMultiThread;
     }
 
     @Override
@@ -136,8 +197,8 @@ public class WeakformProcessor2D implements NeedPreparation {
         int quadDomainSize = 2;
         int quadDegree = 4;
         double inflRads = quadDomainSize * 4.1;
-        TimoshenkoStandardTask tProject = new TimoshenkoStandardTask(timoBeam, quadDomainSize, quadDomainSize, quadDegree);
-        WeakformProcessor2D res = new WeakformProcessor2D(tProject.processPackage(quadDomainSize, inflRads));
+        TimoshenkoStandardTask task = new TimoshenkoStandardTask(timoBeam, quadDomainSize, quadDomainSize, quadDegree);
+        WeakformProcessor2D res = new WeakformProcessor2D(task.processPackage(quadDomainSize, inflRads));
         return res;
     }
 
