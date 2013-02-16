@@ -5,18 +5,18 @@
 package net.epsilony.tsmf.shape_func;
 
 import gnu.trove.list.array.TDoubleArrayList;
-import net.epsilony.tsmf.util.UnivarArrayFunction;
 import net.epsilony.tsmf.util.WithDiffOrder;
 import net.epsilony.tsmf.util.WithDiffOrderUtil;
 import net.epsilony.tsmf.util.common_func.TripleSpline;
+import net.epsilony.tsmf.util.synchron.SynchronizedClonable;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class RadialFunction2D implements WithDiffOrder {
+public class RadialFunction2D implements WithDiffOrder, SynchronizedClonable<RadialFunction2D> {
 
-    UnivarArrayFunction coreFunc;
+    RadialFunctionCore coreFunc;
 
     @Override
     public int getDiffOrder() {
@@ -32,7 +32,7 @@ public class RadialFunction2D implements WithDiffOrder {
         return WithDiffOrderUtil.initOutput(outputs, capacity, 2, getDiffOrder());
     }
 
-    public RadialFunction2D(UnivarArrayFunction coreFunc) {
+    public RadialFunction2D(RadialFunctionCore coreFunc) {
         this.coreFunc = coreFunc;
     }
 
@@ -62,5 +62,10 @@ public class RadialFunction2D implements WithDiffOrder {
             }
         }
         return results;
+    }
+
+    @Override
+    public RadialFunction2D synchronizeClone() {
+        return new RadialFunction2D(coreFunc.synchronizeClone());
     }
 }

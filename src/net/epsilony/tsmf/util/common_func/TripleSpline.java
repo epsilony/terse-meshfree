@@ -5,13 +5,13 @@
 package net.epsilony.tsmf.util.common_func;
 
 import java.util.Arrays;
-import net.epsilony.tsmf.util.UnivarArrayFunction;
+import net.epsilony.tsmf.shape_func.RadialFunctionCore;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class TripleSpline implements UnivarArrayFunction {
+public class TripleSpline implements RadialFunctionCore {
 
     int diffOrder;
 
@@ -52,5 +52,12 @@ public class TripleSpline implements UnivarArrayFunction {
             throw new IllegalArgumentException("only support diffOrder that is 0 or 1, not " + diffOrder);
         }
         this.diffOrder = diffOrder;
+    }
+
+    @Override
+    public RadialFunctionCore synchronizeClone() {
+        TripleSpline result = new TripleSpline();
+        result.setDiffOrder(getDiffOrder());
+        return result;
     }
 }

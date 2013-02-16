@@ -5,14 +5,14 @@
 package net.epsilony.tsmf.util.common_func;
 
 import java.util.Arrays;
-import net.epsilony.tsmf.util.UnivarArrayFunction;
+import net.epsilony.tsmf.shape_func.RadialFunctionCore;
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class Wendland implements UnivarArrayFunction {
+public class Wendland implements RadialFunctionCore {
 
     private static final double[] COEFS_1 = new double[]{1, -1};
     private static final double[] COEFS_1_ORDERS = new double[]{4, 6, 8};
@@ -24,8 +24,10 @@ public class Wendland implements UnivarArrayFunction {
     private static final int[] LEGAL_CONTINUOUS_ORDERS = new int[]{2, 4, 6};
     PolynomialFunction pFunc;
     PolynomialFunction[] pFuncs;
+    private final int continuous;
 
     public Wendland(int continuous) {
+        this.continuous=continuous;
         initWendland(continuous);
     }
 
@@ -90,5 +92,12 @@ public class Wendland implements UnivarArrayFunction {
     @Override
     public void setDiffOrder(int diffOrder) {
         _setDiffOrder(diffOrder);
+    }
+
+    @Override
+    public RadialFunctionCore synchronizeClone() {
+        Wendland result = new Wendland(continuous);
+        result.setDiffOrder(getDiffOrder());
+        return result;
     }
 }
