@@ -22,9 +22,10 @@ import net.epsilony.tsmf.util.WithDiffOrder;
  */
 public class Mixer implements WithDiffOrder {
 
-    ArrayList<double[]> coords = new ArrayList<>(WeakformProcessor2D.DEFAULT_CAPACITY);
-    TIntArrayList nodesIds = new TIntArrayList(WeakformProcessor2D.DEFAULT_CAPACITY, -1);
-    TDoubleArrayList infRads = new TDoubleArrayList(WeakformProcessor2D.DEFAULT_CAPACITY);
+    public static final int DEFAULT_CACHE_CAPACITY = 60;
+    ArrayList<double[]> coords = new ArrayList<>(DEFAULT_CACHE_CAPACITY);
+    TIntArrayList nodesIds = new TIntArrayList(DEFAULT_CACHE_CAPACITY, -1);
+    TDoubleArrayList infRads = new TDoubleArrayList(DEFAULT_CACHE_CAPACITY);
     SupportDomainSearcher supportDomainSearcher;
     ShapeFunction shapeFunction;
     double maxInfluenceRad;

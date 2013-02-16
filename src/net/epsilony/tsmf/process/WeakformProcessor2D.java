@@ -33,15 +33,13 @@ import no.uib.cipr.matrix.Matrix;
  */
 public class WeakformProcessor2D implements NeedPreparation {
 
-    public static final int DEFAULT_CAPACITY = 60;
     public static final int DENSE_MATRIC_SIZE_THRESHOLD = 200;
+    public static final boolean SUPPORT_COMPLEX_CRITERION = false;
+    public static final boolean DEFAULT_ENABLE_MULTITHREAD = true;
     WeakformTask weakformTask;
     Model2D model;
     ShapeFunction shapeFunction;
     WFAssemblier assemblier;
-    InfluenceRadiusCalculator inflRadCalc;
-    double maxIfluenceRad;
-    public static final boolean SUPPORT_COMPLEX_CRITERION = false;
     LinearLagrangeDirichletProcessor lagProcessor;
     ConstitutiveLaw constitutiveLaw;
     DenseVector nodesValue;
@@ -52,9 +50,8 @@ public class WeakformProcessor2D implements NeedPreparation {
     SynchronizedIteratorWrapper<TaskUnit> neumannIteratorWrapper;
     SynchronizedIteratorWrapper<TaskUnit> dirichletIteratorWrapper;
     private InfluenceRadiusMapper influenceRadiusMapper;
-    private SphereSearcher<Node> nodesSearcher;
-    private SphereSearcher<Segment2D> segmentSearcher;
     SupportDomainSearcherFactory supportDomainSearcherFactory;
+    boolean enableMultiThread = DEFAULT_ENABLE_MULTITHREAD;
 
     public WeakformProcessor2D(
             Model2D model,
@@ -66,11 +63,10 @@ public class WeakformProcessor2D implements NeedPreparation {
         this.model = model;
         this.shapeFunction = shapeFunction;
         this.assemblier = assemblier;
-        this.inflRadCalc = inflRadCalc;
         this.weakformTask = project;
         this.constitutiveLaw = constitutiveLaw;
-        nodesSearcher = new LRTreeNodesSphereSearcher(model.getAllNodes());
-        segmentSearcher = new LRTreeSegment2DIntersectingSphereSearcher(model.getPolygon());
+        SphereSearcher<Node> nodesSearcher = new LRTreeNodesSphereSearcher(model.getAllNodes());
+        SphereSearcher<Segment2D> segmentSearcher = new LRTreeSegment2DIntersectingSphereSearcher(model.getPolygon());
         supportDomainSearcherFactory = new SupportDomainSearcherFactory(nodesSearcher, segmentSearcher);
         influenceRadiusMapper = new ArrayInfluenceDomianRadiusMapperFactory(
                 model,
