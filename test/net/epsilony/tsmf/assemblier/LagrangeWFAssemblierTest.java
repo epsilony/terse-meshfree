@@ -8,6 +8,7 @@ import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.tsmf.assemblier.LagrangeWFAssemblier;
 import net.epsilony.tsmf.cons_law.RawConstitutiveLaw;
+import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
 import no.uib.cipr.matrix.MatrixEntry;
@@ -66,7 +67,7 @@ public class LagrangeWFAssemblierTest {
 
         for (boolean upperSym : new boolean[]{true, false}) {
             LagrangeWFAssemblier lag = new LagrangeWFAssemblier();
-            lag.setConstitutiveLaw(new RawConstitutiveLaw(upperSym, null));
+            lag.setConstitutiveLaw(new RawConstitutiveLaw(upperSym, new DenseMatrix(3, 3)));
             lag.setNodesNum(nodesSize);
             lag.setMatrixDense(upperSym);
             lag.setDirichletNodesNums(lagNodesSize);

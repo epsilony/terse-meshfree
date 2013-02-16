@@ -7,10 +7,11 @@ package net.epsilony.tsmf.assemblier;
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
-import net.epsilony.tsmf.util.synchron.SynchronizedClonable;
 import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
+import no.uib.cipr.matrix.MatrixEntry;
+import no.uib.cipr.matrix.UpperSPDDenseMatrix;
 import no.uib.cipr.matrix.UpperSymmDenseMatrix;
 import no.uib.cipr.matrix.sparse.FlexCompRowMatrix;
 
@@ -18,13 +19,14 @@ import no.uib.cipr.matrix.sparse.FlexCompRowMatrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class PenaltyWFAssemblier implements WFAssemblier, SynchronizedClonable<WFAssemblier> {
+public class PenaltyWFAssemblier implements WFAssemblier {
 
     Matrix mainMatrix;
     DenseVector mainVector;
     ConstitutiveLaw constitutiveLaw;
     double penalty;
     boolean dense;
+    private DenseMatrix constitutiveLawMatrixCopy;
 
     public double getPenalty() {
         return penalty;
@@ -118,7 +120,7 @@ public class PenaltyWFAssemblier implements WFAssemblier, SynchronizedClonable<W
     }
 
     private double multConstitutiveLaw(double[] left, double[] right) {
-        Matrix mat = constitutiveLaw.getMatrix();
+        DenseMatrix mat = constitutiveLawMatrixCopy;
         double result = 0;
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -221,6 +223,7 @@ public class PenaltyWFAssemblier implements WFAssemblier, SynchronizedClonable<W
     @Override
     public void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw) {
         this.constitutiveLaw = constitutiveLaw;
+        constitutiveLawMatrixCopy = new DenseMatrix(constitutiveLaw.getMatrix());
     }
 
     @Override
@@ -234,7 +237,21 @@ public class PenaltyWFAssemblier implements WFAssemblier, SynchronizedClonable<W
     }
 
     @Override
-    public WFAssemblier synchronizeClone() {
-        return new PenaltyWFAssemblier(penalty);
+    public PenaltyWFAssemblier synchronizeClone() {
+        PenaltyWFAssemblier result = new PenaltyWFAssemblier(penalty);
+        result.setNodesNum(nodesNum);
+        result.setConstitutiveLaw(constitutiveLaw);
+        result.setMatrixDense(dense);
+        result.prepare();
+        return result;
+    }
+
+    @Override
+    public void addToMainMatrix(WFAssemblier otherAssemblier) {
+        if (otherAssemblier.isUpperSymmertric() != isUpperSymmertric()) {
+            throw new IllegalArgumentException("the assemblier to add in should be with same symmetricity");
+        }
+        Matrix otherMat = otherAssemblier.getMainMatrix();
+        mainMatrix.add(otherMat);
     }
 }
