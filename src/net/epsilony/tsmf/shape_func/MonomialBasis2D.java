@@ -5,7 +5,6 @@
 package net.epsilony.tsmf.shape_func;
 
 import gnu.trove.list.array.TDoubleArrayList;
-import net.epsilony.tsmf.util.WithDiffOrder;
 import net.epsilony.tsmf.util.WithDiffOrderUtil;
 
 /**
@@ -107,5 +106,10 @@ public class MonomialBasis2D implements BasisFunction {
     @Override
     public int basisLength() {
         return basisLength(getMonomialOrder());
+    }
+
+    @Override
+    public BasisFunction synchronizeClone() {
+        return new MonomialBasis2D(monomialOrder);
     }
 }
