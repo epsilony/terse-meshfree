@@ -227,6 +227,8 @@ public class MLS implements ShapeFunction, SynchronizedClonable<ShapeFunction> {
 
     @Override
     public ShapeFunction synchronizeClone() {
-        return new MLS(weightFunc, basisFunc);
+        ShapeFunction result = new MLS(weightFunc.synchronizeClone(), basisFunc.synchronizeClone());
+        result.setDiffOrder(getDiffOrder());
+        return result;
     }
 }

@@ -56,4 +56,11 @@ public class Linear2D implements ShapeFunction {
         double v2 = Math2D.distance(xy, hCoord) / len;
         return v2;
     }
+
+    @Override
+    public ShapeFunction synchronizeClone() {
+        ShapeFunction result = new Linear2D();
+        result.setDiffOrder(getDiffOrder());
+        return result;
+    }
 }
