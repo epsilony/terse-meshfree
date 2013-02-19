@@ -5,6 +5,7 @@
 package net.epsilony.tsmf.util.ui;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
@@ -21,7 +22,7 @@ import javax.swing.plaf.LayerUI;
  *
  * @author epsilon
  */
-public class ModelPanelUI<V extends JPanel> extends LayerUI<V> {
+public class ModelPanelUI<V extends Component> extends LayerUI<V> {
 
     public static boolean defaultShowCoordinateMarker = true;
     MouseDrivenModelTransform physicalTransform = new MouseDrivenModelTransform();
