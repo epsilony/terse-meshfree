@@ -4,6 +4,7 @@
  */
 package net.epsilony.tsmf.util.ui;
 
+import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -60,6 +61,12 @@ public class MouseDrivenModelTransform extends ModelTransform implements MouseLi
             resetToDefault();
             e.getComponent().repaint();
         }
+    }
+    
+    public void addMouseActionListenerTo(Component comp){
+        comp.addMouseListener(this);
+        comp.addMouseMotionListener(this);
+        comp.addMouseWheelListener(this);
     }
 
     private void setOriginTranslateStartPoint(int startX, int startY) {

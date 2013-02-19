@@ -41,9 +41,7 @@ public class BasicModelPanelUI<V extends Component> extends LayerUI<V> {
     @Override
     public void installUI(JComponent c) {
         super.installUI(c);
-        c.addMouseListener(physicalTransform);
-        c.addMouseMotionListener(physicalTransform);
-        c.addMouseWheelListener(physicalTransform);
+        physicalTransform.addMouseActionListenerTo(c);
     }
 
     @Override
