@@ -29,9 +29,9 @@ public class PhysicalModelTransform extends AffineTransform {
 
     public void scaleByCenter(int centerX, int centerY, double scale) {
         AffineTransform tranformBack = new AffineTransform(this);
-        setToTranslation(centerX, centerX);
+        setToTranslation(centerX, centerY);
         scale(scale, scale);
-        translate(-centerX, -centerX);
+        translate(-centerX, -centerY);
         if (Math.abs(getScaleX()) < SCALE_LOWER_LIMITE || Math.abs(getScaleY()) < SCALE_LOWER_LIMITE) {
             setTransform(tranformBack);
         } else {
