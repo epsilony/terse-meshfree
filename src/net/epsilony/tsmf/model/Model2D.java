@@ -5,7 +5,6 @@
 package net.epsilony.tsmf.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tsmf.model.search.LRTreeNodesSphereSearcher;
