@@ -26,6 +26,7 @@ public class MouseDrivenModelTransform extends ModelTransform implements MouseLi
     private double wheelScaleRatio = DEFAULT_WHEEL_SCALE_RATIO;
     private int scaleCenterX;
     private int scaleCenterY;
+    boolean zoomAllNeeded = false;
 
     @Override
     public void mousePressed(MouseEvent e) {
@@ -58,12 +59,12 @@ public class MouseDrivenModelTransform extends ModelTransform implements MouseLi
     @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON2 && e.getClickCount() == 2) {
-            resetToDefault();
+            zoomAllNeeded = true;
             e.getComponent().repaint();
         }
     }
-    
-    public void addMouseActionListenerTo(Component comp){
+
+    public void addMouseActionListenersTo(Component comp) {
         comp.addMouseListener(this);
         comp.addMouseMotionListener(this);
         comp.addMouseWheelListener(this);
@@ -88,6 +89,14 @@ public class MouseDrivenModelTransform extends ModelTransform implements MouseLi
     void scaleByWheel(double clicks) {
         double scale = Math.pow(2, -clicks * wheelScaleRatio);
         scaleByCenter(scaleCenterX, scaleCenterY, scale);
+    }
+
+    public boolean isZoomAllNeeded() {
+        return zoomAllNeeded;
+    }
+
+    public void setZoomAllNeeded(boolean zoomAllNeeded) {
+        this.zoomAllNeeded = zoomAllNeeded;
     }
 
     private boolean isOriginTranslate(MouseEvent e) {
