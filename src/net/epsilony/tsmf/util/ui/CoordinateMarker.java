@@ -36,7 +36,7 @@ public class CoordinateMarker extends ModelDrawerAdater {
     }
 
     @Override
-    public void drawPhysicalModel(Graphics2D g2, AffineTransform physcialToComponentTransform) {
+    public void drawModel(Graphics2D g2, AffineTransform physcialToComponentTransform) {
         Point2D oriOnComponent = physcialToComponentTransform.transform(ORIGIN, null);
         GeneralPath path = new GeneralPath();
         if (strokeWidth > 0) {

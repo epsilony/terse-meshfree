@@ -17,5 +17,5 @@ public interface ModelDrawer {
 
     void setVisible(boolean visible);
 
-    void drawPhysicalModel(Graphics2D g2, AffineTransform physicalToComponent);
+    void drawModel(Graphics2D g2, AffineTransform modelToComponent);
 }

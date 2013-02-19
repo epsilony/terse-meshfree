@@ -25,23 +25,23 @@ import javax.swing.plaf.LayerUI;
 public class BasicModelPanelUI<V extends Component> extends LayerUI<V> {
 
     public static boolean defaultShowCoordinateMarker = true;
-    MouseDrivenModelTransform physicalTransform = new MouseDrivenModelTransform();
-    List<ModelDrawer> pyhsicalModelDrawer = new LinkedList<>();
-    CoordinateMarker coordinateMark = new CoordinateMarker(defaultShowCoordinateMarker);
+    MouseDrivenModelTransform modelTransform = new MouseDrivenModelTransform();
+    List<ModelDrawer> modelDrawers = new LinkedList<>();
+    CoordinateMarker coordinateMarker = new CoordinateMarker(defaultShowCoordinateMarker);
 
     public BasicModelPanelUI(int originX, int originY, double scale) {
-        physicalTransform.setDefault(originX, originY, scale);
-        physicalTransform.resetToDefault();
+        modelTransform.setDefault(originX, originY, scale);
+        modelTransform.resetToDefault();
     }
 
     public AffineTransform getPhysicalTransform() {
-        return physicalTransform;
+        return modelTransform;
     }
 
     @Override
     public void installUI(JComponent c) {
         super.installUI(c);
-        physicalTransform.addMouseActionListenerTo(c);
+        modelTransform.addMouseActionListenerTo(c);
     }
 
     @Override
@@ -49,29 +49,34 @@ public class BasicModelPanelUI<V extends Component> extends LayerUI<V> {
         super.paint(g, c);
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.RED);
-        if (coordinateMark.isVisible()) {
-            coordinateMark.drawPhysicalModel(g2, physicalTransform);
+        if (coordinateMarker.isVisible()) {
+            coordinateMarker.drawModel(g2, modelTransform);
+        }
+        for(ModelDrawer md:modelDrawers){
+            if(md.isVisible()){
+                md.drawModel(g2, modelTransform);
+            }
         }
     }
 
     public CoordinateMarker getCoordinateMark() {
-        return coordinateMark;
+        return coordinateMarker;
     }
 
     public boolean isShowCoordinateMarker() {
-        return coordinateMark.isVisible();
+        return coordinateMarker.isVisible();
     }
 
     public void setShowCoordinateMarker(boolean showCoordinateMark) {
-        coordinateMark.setVisible(showCoordinateMark);
+        coordinateMarker.setVisible(showCoordinateMark);
     }
 
     public void addPysicalModelDrawer(ModelDrawer element) {
-        pyhsicalModelDrawer.add(element);
+        modelDrawers.add(element);
     }
 
     public List<ModelDrawer> getPhysicalModelDrawers() {
-        return pyhsicalModelDrawer;
+        return modelDrawers;
     }
     
     
