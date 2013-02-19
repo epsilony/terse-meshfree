@@ -14,7 +14,7 @@ import java.awt.event.MouseWheelListener;
  *
  * @author epsilon
  */
-public class MouseDrivenPhysicalTransform extends PhysicalModelTransform implements MouseListener, MouseMotionListener, MouseWheelListener {
+public class MouseDrivenModelTransform extends ModelTransform implements MouseListener, MouseMotionListener, MouseWheelListener {
 
     public static final int ORIGIN_TRANSLATE_BUTTON_MASK = MouseEvent.BUTTON2_DOWN_MASK;
     public static final int SCALE_BY_CENTER_BUTTON_MASK = MouseEvent.BUTTON1_DOWN_MASK | MouseEvent.BUTTON3_DOWN_MASK;

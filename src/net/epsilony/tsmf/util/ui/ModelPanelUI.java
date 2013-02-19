@@ -21,14 +21,14 @@ import javax.swing.plaf.LayerUI;
  *
  * @author epsilon
  */
-public class PhysicalModelPanelUI<V extends JPanel> extends LayerUI<V> {
+public class ModelPanelUI<V extends JPanel> extends LayerUI<V> {
 
     public static boolean defaultShowCoordinateMarker = true;
-    MouseDrivenPhysicalTransform physicalTransform = new MouseDrivenPhysicalTransform();
-    List<PhysicalModelDrawer> pyhsicalModelDrawer = new LinkedList<>();
+    MouseDrivenModelTransform physicalTransform = new MouseDrivenModelTransform();
+    List<ModelDrawer> pyhsicalModelDrawer = new LinkedList<>();
     CoordinateMarker coordinateMark = new CoordinateMarker(defaultShowCoordinateMarker);
 
-    public PhysicalModelPanelUI(int originX, int originY, double scale) {
+    public ModelPanelUI(int originX, int originY, double scale) {
         physicalTransform.setDefault(originX, originY, scale);
         physicalTransform.resetToDefault();
     }
@@ -67,11 +67,11 @@ public class PhysicalModelPanelUI<V extends JPanel> extends LayerUI<V> {
         coordinateMark.setVisible(showCoordinateMark);
     }
 
-    public void addPysicalModelDrawer(PhysicalModelDrawer element) {
+    public void addPysicalModelDrawer(ModelDrawer element) {
         pyhsicalModelDrawer.add(element);
     }
 
-    public List<PhysicalModelDrawer> getPhysicalModelDrawers() {
+    public List<ModelDrawer> getPhysicalModelDrawers() {
         return pyhsicalModelDrawer;
     }
     
@@ -89,7 +89,7 @@ public class PhysicalModelPanelUI<V extends JPanel> extends LayerUI<V> {
     public static void createDemoUI() {
         JFrame frame = new JFrame("OriginTransformListener");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        PhysicalModelPanelUI<JPanel> myLayerUI = new PhysicalModelPanelUI<>(10, 180, 1);
+        ModelPanelUI<JPanel> myLayerUI = new ModelPanelUI<>(10, 180, 1);
         JPanel pan = new JPanel();
         frame.add(new JLayer<>(pan, myLayerUI));
         frame.setSize(300, 300);

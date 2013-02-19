@@ -8,7 +8,7 @@ package net.epsilony.tsmf.util.ui;
  *
  * @author epsilon
  */
-public abstract class PhyscialModelDrawerAdater implements PhysicalModelDrawer {
+public abstract class ModelDrawerAdater implements ModelDrawer {
 
     boolean visible;
 

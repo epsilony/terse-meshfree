@@ -11,7 +11,7 @@ import java.awt.geom.AffineTransform;
  *
  * @author epsilon
  */
-public interface PhysicalModelDrawer {
+public interface ModelDrawer {
 
     boolean isVisible();
 

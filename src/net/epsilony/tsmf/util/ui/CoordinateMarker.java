@@ -15,7 +15,7 @@ import java.awt.geom.Point2D;
  *
  * @author epsilon
  */
-public class CoordinateMarker extends PhyscialModelDrawerAdater {
+public class CoordinateMarker extends ModelDrawerAdater {
 
     private static final Point2D ORIGIN = new Point2D.Float(0, 0);
     public static final boolean DEFAULT_VISIBLE = true;

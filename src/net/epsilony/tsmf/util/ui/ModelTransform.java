@@ -10,7 +10,7 @@ import java.awt.geom.AffineTransform;
  *
  * @author epsilon
  */
-public class PhysicalModelTransform extends AffineTransform {
+public class ModelTransform extends AffineTransform {
 
     public static final double SCALE_LOWER_LIMITE = 1e-15;
     private int defaultX;
