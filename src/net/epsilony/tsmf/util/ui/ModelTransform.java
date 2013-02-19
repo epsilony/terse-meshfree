@@ -13,21 +13,27 @@ import java.awt.geom.AffineTransform;
 public class ModelTransform extends AffineTransform {
 
     public static final double SCALE_LOWER_LIMITE = 1e-15;
-    private int defaultX;
-    private int defaultY;
+    /**
+     *
+     * @author epsilon
+     */
+    public static int DEFAULT_ZOOM_ALL_MARGIN = 4;
+    private double defaultOriginX;
+    private double defaultOriginY;
     private double defaultScale;
+    int zoomAllMargin = MouseDrivenModelTransform.DEFAULT_ZOOM_ALL_MARGIN;
 
-    public void unitScaleAndSetOrigin(int originX, int originY) {
+    public void unitScaleAndSetOrigin(double originX, double originY) {
         setToIdentity();
         translate(originX, originY);
         scale(1, -1);
     }
 
-    void translateOrigin(int dx, int dy) {
+    void translateOrigin(double dx, double dy) {
         preConcatenate(AffineTransform.getTranslateInstance(dx, dy));
     }
 
-    public void scaleByCenter(int centerX, int centerY, double scale) {
+    public void scaleByCenter(double centerX, double centerY, double scale) {
         AffineTransform tranformBack = new AffineTransform(this);
         setToTranslation(centerX, centerY);
         scale(scale, scale);
@@ -39,14 +45,14 @@ public class ModelTransform extends AffineTransform {
         }
     }
 
-    public void setDefault(int centerX, int centerY, double scale) {
-        defaultX = centerX;
-        defaultY = centerY;
+    public void setDefaultOriginAndScale(double originX, double originY, double scale) {
+        defaultOriginX = originX;
+        defaultOriginY = originY;
         defaultScale = scale;
     }
 
     public void resetToDefault() {
-        unitScaleAndSetOrigin(defaultX, defaultY);
-        scaleByCenter(0, 0, defaultScale);
+        unitScaleAndSetOrigin(defaultOriginX, defaultOriginY);
+        scale(defaultScale, defaultScale);
     }
 }
