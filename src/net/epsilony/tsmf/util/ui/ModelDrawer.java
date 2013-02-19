@@ -6,6 +6,7 @@ package net.epsilony.tsmf.util.ui;
 
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 
 /**
  *
@@ -16,6 +17,8 @@ public interface ModelDrawer {
     boolean isVisible();
 
     void setVisible(boolean visible);
+
+    Rectangle2D getModelBounds();
 
     void drawModel(Graphics2D g2, AffineTransform modelToComponent);
 }

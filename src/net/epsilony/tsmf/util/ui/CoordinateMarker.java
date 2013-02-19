@@ -7,15 +7,17 @@ package net.epsilony.tsmf.util.ui;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 /**
  *
  * @author epsilon
  */
-public class CoordinateMarker extends ModelDrawerAdater {
+public class CoordinateMarker extends ModelDrawerAdapter {
 
     private static final Point2D ORIGIN = new Point2D.Float(0, 0);
     public static final boolean DEFAULT_VISIBLE = true;
@@ -39,6 +41,7 @@ public class CoordinateMarker extends ModelDrawerAdater {
     public void drawModel(Graphics2D g2, AffineTransform physcialToComponentTransform) {
         Point2D oriOnComponent = physcialToComponentTransform.transform(ORIGIN, null);
         GeneralPath path = new GeneralPath();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         if (strokeWidth > 0) {
             g2.setStroke(new BasicStroke(strokeWidth));
         }
@@ -83,5 +86,10 @@ public class CoordinateMarker extends ModelDrawerAdater {
 
     public void setyAxisColor(Color yAxisColor) {
         this.yAxisColor = yAxisColor;
+    }
+
+    @Override
+    public Rectangle2D getModelBounds() {
+        return null;
     }
 }

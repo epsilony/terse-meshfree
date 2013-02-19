@@ -8,9 +8,9 @@ package net.epsilony.tsmf.util.ui;
  *
  * @author epsilon
  */
-public abstract class ModelDrawerAdater implements ModelDrawer {
+public abstract class ModelDrawerAdapter implements ModelDrawer {
 
-    boolean visible;
+    boolean visible = true;
 
     @Override
     public boolean isVisible() {
