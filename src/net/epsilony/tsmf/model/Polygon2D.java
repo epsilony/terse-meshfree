@@ -95,8 +95,7 @@ public class Polygon2D implements Iterable<Segment2D> {
     }
 
     /**
-     * Originate from:<\br> Joseph O'Rourke, Computational Geometry in C,2ed.
-     * Page 244, Code 7.13
+     * Originate from:<\br> Joseph O'Rourke, Computational Geometry in C,2ed. Page 244, Code 7.13
      *
      * @param x
      * @param y
@@ -215,6 +214,9 @@ public class Polygon2D implements Iterable<Segment2D> {
         public Segment2D next() {
             Segment2D res = seg;
             seg = (Segment2D) seg.succ;
+            if (seg.pred != res) {
+                throw new IllegalStateException("Meet broken Segment2D link, may cause self ring");
+            }
             if (seg == chainsHeads.get(chainId)) {
                 chainId++;
                 if (chainId < chainsHeads.size()) {
