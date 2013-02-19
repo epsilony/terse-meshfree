@@ -22,14 +22,14 @@ import javax.swing.plaf.LayerUI;
  *
  * @author epsilon
  */
-public class ModelPanelUI<V extends Component> extends LayerUI<V> {
+public class BasicModelPanelUI<V extends Component> extends LayerUI<V> {
 
     public static boolean defaultShowCoordinateMarker = true;
     MouseDrivenModelTransform physicalTransform = new MouseDrivenModelTransform();
     List<ModelDrawer> pyhsicalModelDrawer = new LinkedList<>();
     CoordinateMarker coordinateMark = new CoordinateMarker(defaultShowCoordinateMarker);
 
-    public ModelPanelUI(int originX, int originY, double scale) {
+    public BasicModelPanelUI(int originX, int originY, double scale) {
         physicalTransform.setDefault(originX, originY, scale);
         physicalTransform.resetToDefault();
     }
@@ -90,7 +90,7 @@ public class ModelPanelUI<V extends Component> extends LayerUI<V> {
     public static void createDemoUI() {
         JFrame frame = new JFrame("OriginTransformListener");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ModelPanelUI<JPanel> myLayerUI = new ModelPanelUI<>(10, 180, 1);
+        BasicModelPanelUI<JPanel> myLayerUI = new BasicModelPanelUI<>(10, 180, 1);
         JPanel pan = new JPanel();
         frame.add(new JLayer<>(pan, myLayerUI));
         frame.setSize(300, 300);
