@@ -28,12 +28,14 @@ public class BasicModelPanel extends JPanel {
     CoordinateMarker coordinateMarker = new CoordinateMarker(defaultShowCoordinateMarker);
 
     public BasicModelPanel(int originX, int originY, double scale) {
+        prepareMouseDrivenModelTranform(originX, originY, scale);
+        prepareCoordinateMarker();
+    }
+
+    private void prepareMouseDrivenModelTranform(int originX, int originY, double scale) {
         mouseDrivenModelTransform.setDefaultOriginAndScale(originX, originY, scale);
         mouseDrivenModelTransform.resetToDefault();
-        addMouseListener(mouseDrivenModelTransform);
-        addMouseMotionListener(mouseDrivenModelTransform);
-        addMouseWheelListener(mouseDrivenModelTransform);
-        prepareCoordinateMarker();
+        mouseDrivenModelTransform.addMouseActionListenersTo(this);
     }
 
     private void prepareCoordinateMarker() {
