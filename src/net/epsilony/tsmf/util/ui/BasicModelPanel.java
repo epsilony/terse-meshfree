@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JFrame;
@@ -84,7 +85,16 @@ public class BasicModelPanel extends JPanel {
             mouseDrivenModelTransform.setToZoomAll(drawerBoundInModelSpace, getWidth(), getHeight());
             mouseDrivenModelTransform.setZoomAllNeeded(false);
         }
-        for (ModelDrawer md : modelDrawers) {
+        Iterator<ModelDrawer> modelDrawerIterator = modelDrawers.iterator();
+        while (modelDrawerIterator.hasNext()) {
+            ModelDrawer md = modelDrawerIterator.next();
+            if (md instanceof AnimateModelDrawer) {
+                AnimateModelDrawer amd = (AnimateModelDrawer) md;
+                if (amd.getStatus() == AnimationStatus.OVER) {
+                    modelDrawerIterator.remove();
+                    continue;
+                }
+            }
             if (md.isVisible()) {
                 md.drawModel(g2);
             }

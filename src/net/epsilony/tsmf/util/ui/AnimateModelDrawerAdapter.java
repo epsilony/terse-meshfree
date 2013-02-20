@@ -23,7 +23,6 @@ public abstract class AnimateModelDrawerAdapter extends ModelDrawerAdapter imple
     private int appearingCount = 0;
     private int fadingCount = 0;
     Timer timer = new Timer(0, this);
-    AffineTransform modelTransform;
 
     @Override
     public void drawModel(Graphics2D g2) {
@@ -106,7 +105,7 @@ public abstract class AnimateModelDrawerAdapter extends ModelDrawerAdapter imple
             double maxX = modelBounds.getMaxX();
             double maxY = modelBounds.getMaxY();
             double[] transformed = new double[4];
-            modelTransform.transform(new double[]{minX, minY, maxX, maxY}, 0, transformed, 0, 2);
+            getModelToComponentTransform().transform(new double[]{minX, minY, maxX, maxY}, 0, transformed, 0, 2);
             int x0 = (int) Math.floor(Math.min(transformed[0], transformed[2]));
             int y0 = (int) Math.floor(Math.min(transformed[1], transformed[3]));
             int wdith = (int) Math.ceil(Math.abs(transformed[0] - transformed[2]));
