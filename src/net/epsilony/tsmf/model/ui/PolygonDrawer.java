@@ -10,7 +10,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -74,9 +73,9 @@ public class PolygonDrawer extends ModelDrawerAdapter {
     }
 
     @Override
-    public void drawModel(Graphics2D g2, AffineTransform modelToComponent) {
+    public void drawModel(Graphics2D g2) {
         g2.setComposite(AlphaComposite.SrcOver);
-        Shape polygonShape = modelToComponent.createTransformedShape(polygonPath);
+        Shape polygonShape = getModelToComponentTransform().createTransformedShape(polygonPath);
         if (isFilling()) {
             g2.setColor(fillingColor);
             g2.fill(polygonShape);
@@ -148,7 +147,7 @@ public class PolygonDrawer extends ModelDrawerAdapter {
                 Polygon2D polygon = TestTool.samplePolygon(null);
                 PolygonDrawer drawer = new PolygonDrawer();
                 drawer.setPolygon(polygon);
-                basicModelPanel.addAndConnectModelDrawer(drawer);
+                basicModelPanel.addAndSetupModelDrawer(drawer);
                 frame.setVisible(true);
                 basicModelPanel.setZoomAllNeeded(true);
                 frame.getMainPanel().repaint();

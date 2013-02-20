@@ -4,18 +4,11 @@
  */
 package net.epsilony.tsmf.util.ui;
 
-import java.awt.Component;
-import java.awt.geom.AffineTransform;
-
 /**
  *
  * @author epsilon
  */
 public interface AnimateModelDrawer extends ModelDrawer {
-
-    public void setComponent(Component component);
-
-    public void setModelTransform(AffineTransform modelTransform);
 
     public void appear();
 

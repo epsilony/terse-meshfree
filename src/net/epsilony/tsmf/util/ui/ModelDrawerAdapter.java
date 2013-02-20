@@ -4,13 +4,18 @@
  */
 package net.epsilony.tsmf.util.ui;
 
+import java.awt.Component;
+import java.awt.geom.AffineTransform;
+
 /**
  *
  * @author epsilon
  */
 public abstract class ModelDrawerAdapter implements ModelDrawer {
 
-    boolean visible = true;
+    protected boolean visible = true;
+    protected Component component;
+    protected AffineTransform modelToComponentTransform;
 
     @Override
     public boolean isVisible() {
@@ -20,5 +25,25 @@ public abstract class ModelDrawerAdapter implements ModelDrawer {
     @Override
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    @Override
+    public Component getComponent() {
+        return component;
+    }
+
+    @Override
+    public void setComponent(Component component) {
+        this.component = component;
+    }
+
+    @Override
+    public AffineTransform getModelToComponentTransform() {
+        return modelToComponentTransform;
+    }
+
+    @Override
+    public void setModelToComponentTransform(AffineTransform modelToComponentTransform) {
+        this.modelToComponentTransform = modelToComponentTransform;
     }
 }

@@ -8,7 +8,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,14 +32,22 @@ public class BasicModelPanel extends JPanel {
         addMouseListener(mouseDrivenModelTransform);
         addMouseMotionListener(mouseDrivenModelTransform);
         addMouseWheelListener(mouseDrivenModelTransform);
+        prepareCoordinateMarker();
+    }
+
+    private void prepareCoordinateMarker() {
+        coordinateMarker.setModelToComponentTransform(mouseDrivenModelTransform);
+        coordinateMarker.setComponent(this);
     }
 
     public BasicModelPanel() {
         this(0, 0, 1);
     }
 
-    public void addAndConnectModelDrawer(ModelDrawer element) {
+    public void addAndSetupModelDrawer(ModelDrawer element) {
         modelDrawers.add(element);
+        element.setComponent(this);
+        element.setModelToComponentTransform(mouseDrivenModelTransform);
     }
 
     public List<ModelDrawer> getModelDrawers() {
@@ -51,7 +58,7 @@ public class BasicModelPanel extends JPanel {
         mouseDrivenModelTransform.setDefaultOriginAndScale(originX, originY, scale);
     }
 
-    public ModelTransform getModelTransform() {
+    public ModelTransform getModelToComponentTransform() {
         return mouseDrivenModelTransform;
     }
 
@@ -79,11 +86,11 @@ public class BasicModelPanel extends JPanel {
         }
         for (ModelDrawer md : modelDrawers) {
             if (md.isVisible()) {
-                md.drawModel(g2, mouseDrivenModelTransform);
+                md.drawModel(g2);
             }
         }
         if (coordinateMarker.isVisible()) {
-            coordinateMarker.drawModel(g2, mouseDrivenModelTransform);
+            coordinateMarker.drawModel(g2);
         }
     }
 
@@ -115,7 +122,7 @@ public class BasicModelPanel extends JPanel {
         BasicModelPanel myPanel = new BasicModelPanel();
         frame.add(myPanel);
         frame.setSize(300, 300);
-        myPanel.addAndConnectModelDrawer(new ModelDrawerAdapter() {
+        myPanel.addAndSetupModelDrawer(new ModelDrawerAdapter() {
             Rectangle rect = new Rectangle(100, 50);
 
             @Override
@@ -124,9 +131,9 @@ public class BasicModelPanel extends JPanel {
             }
 
             @Override
-            public void drawModel(Graphics2D g2, AffineTransform modelToComponent) {
+            public void drawModel(Graphics2D g2) {
                 g2.setColor(Color.BLACK);
-                g2.draw(modelToComponent.createTransformedShape(rect));
+                g2.draw(getModelToComponentTransform().createTransformedShape(rect));
             }
         });
 

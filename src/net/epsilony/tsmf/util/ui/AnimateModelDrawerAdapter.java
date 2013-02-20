@@ -4,7 +4,6 @@
  */
 package net.epsilony.tsmf.util.ui;
 
-import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,11 +23,11 @@ public abstract class AnimateModelDrawerAdapter extends ModelDrawerAdapter imple
     private int appearingCount = 0;
     private int fadingCount = 0;
     Timer timer = new Timer(0, this);
-    Component component;
     AffineTransform modelTransform;
 
     @Override
-    public void drawModel(Graphics2D g2, AffineTransform modelToComponent) {
+    public void drawModel(Graphics2D g2) {
+        AffineTransform modelToComponent = getModelToComponentTransform();
         switch (status) {
             case OVER:
                 return;
@@ -65,16 +64,6 @@ public abstract class AnimateModelDrawerAdapter extends ModelDrawerAdapter imple
         timer.setDelay(frameGap);
         timer.setRepeats(true);
         timer.start();
-    }
-
-    @Override
-    public void setComponent(Component component) {
-        this.component = component;
-    }
-
-    @Override
-    public void setModelTransform(AffineTransform modelTransform) {
-        this.modelTransform = modelTransform;
     }
 
     @Override

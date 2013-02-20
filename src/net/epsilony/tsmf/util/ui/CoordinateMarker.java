@@ -8,7 +8,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -38,8 +37,8 @@ public class CoordinateMarker extends ModelDrawerAdapter {
     }
 
     @Override
-    public void drawModel(Graphics2D g2, AffineTransform physcialToComponentTransform) {
-        Point2D oriOnComponent = physcialToComponentTransform.transform(ORIGIN, null);
+    public void drawModel(Graphics2D g2) {
+        Point2D oriOnComponent = getModelToComponentTransform().transform(ORIGIN, null);
         GeneralPath path = new GeneralPath();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         if (strokeWidth > 0) {
