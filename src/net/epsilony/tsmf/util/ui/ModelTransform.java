@@ -22,7 +22,7 @@ public class ModelTransform extends AffineTransform {
     private double defaultOriginX;
     private double defaultOriginY;
     private double defaultScale;
-    int zoomAllMargin = MouseDrivenModelTransform.DEFAULT_ZOOM_ALL_MARGIN;
+    private int zoomAllMargin = MouseDrivenModelTransform.DEFAULT_ZOOM_ALL_MARGIN;
 
     public void unitScaleAndSetOrigin(double originX, double originY) {
         setToIdentity();

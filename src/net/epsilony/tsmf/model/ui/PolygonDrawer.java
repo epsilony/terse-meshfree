@@ -14,13 +14,12 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.Polygon2D;
 import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.util.TestTool;
-import net.epsilony.tsmf.util.ui.BasicModelPanelUI;
+import net.epsilony.tsmf.util.ui.BasicModelPanel;
 import net.epsilony.tsmf.util.ui.CommonFrame;
 import net.epsilony.tsmf.util.ui.ModelDrawerAdapter;
 
@@ -143,15 +142,15 @@ public class PolygonDrawer extends ModelDrawerAdapter {
             @Override
             public void run() {
                 CommonFrame frame = new CommonFrame();
-                BasicModelPanelUI<JPanel> basicModelPanelUI = frame.getBasicModelPanelUI();
+                BasicModelPanel basicModelPanel = frame.getBasicModelPanel();
                 frame.setDefaultModelOriginAndScale(10, 500, 1);
                 frame.setSize(800, 600);
                 Polygon2D polygon = TestTool.samplePolygon(null);
                 PolygonDrawer drawer = new PolygonDrawer();
                 drawer.setPolygon(polygon);
-                basicModelPanelUI.addModelDrawer(drawer);
+                basicModelPanel.addAndConnectModelDrawer(drawer);
                 frame.setVisible(true);
-                basicModelPanelUI.setZoomAllNeeded(true);
+                basicModelPanel.setZoomAllNeeded(true);
                 frame.getMainPanel().repaint();
             }
         };

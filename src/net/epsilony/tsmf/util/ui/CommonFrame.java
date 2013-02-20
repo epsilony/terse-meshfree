@@ -5,7 +5,6 @@
 package net.epsilony.tsmf.util.ui;
 
 import javax.swing.JFrame;
-import javax.swing.JLayer;
 import javax.swing.JPanel;
 
 /**
@@ -14,33 +13,35 @@ import javax.swing.JPanel;
  */
 public class CommonFrame extends JFrame {
 
-    BasicModelPanelUI<JPanel> basicModelPanelUI;
-    JPanel mainPanel;
+    BasicModelPanel basicModelPanel;
 
     public CommonFrame() {
-        super();
-        basicModelPanelUI = new BasicModelPanelUI<>();
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainPanel = new JPanel();
-        add(new JLayer<>(mainPanel, basicModelPanelUI));
+        this(new BasicModelPanel());
     }
 
-    public BasicModelPanelUI<JPanel> getBasicModelPanelUI() {
-        return basicModelPanelUI;
+    public CommonFrame(BasicModelPanel basicModelPanelUI) {
+        super();
+        this.basicModelPanel = basicModelPanelUI;
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        add(basicModelPanelUI);
+    }
+
+    public BasicModelPanel getBasicModelPanel() {
+        return basicModelPanel;
     }
 
     public void setDefaultModelOriginAndScale(double originX, double originY, double scale) {
-        basicModelPanelUI.setDefaultModelOriginAndScale(originX, originY, scale);
+        basicModelPanel.setDefaultModelOriginAndScale(originX, originY, scale);
     }
 
     public JPanel getMainPanel() {
-        return mainPanel;
+        return basicModelPanel;
     }
 
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
-        basicModelPanelUI.setZoomAllNeeded(true);
-        mainPanel.repaint();
+        basicModelPanel.setZoomAllNeeded(true);
+        basicModelPanel.repaint();
     }
 }

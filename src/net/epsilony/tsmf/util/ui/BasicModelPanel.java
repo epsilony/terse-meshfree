@@ -5,7 +5,6 @@
 package net.epsilony.tsmf.util.ui;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -13,35 +12,39 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.List;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JLayer;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import javax.swing.plaf.LayerUI;
 
 /**
  *
  * @author epsilon
  */
-public class BasicModelPanelUI<V extends Component> extends LayerUI<V> {
+public class BasicModelPanel extends JPanel {
 
     public static boolean defaultShowCoordinateMarker = true;
     MouseDrivenModelTransform mouseDrivenModelTransform = new MouseDrivenModelTransform();
     List<ModelDrawer> modelDrawers = new LinkedList<>();
     CoordinateMarker coordinateMarker = new CoordinateMarker(defaultShowCoordinateMarker);
 
-    public BasicModelPanelUI(int originX, int originY, double scale) {
+    public BasicModelPanel(int originX, int originY, double scale) {
         mouseDrivenModelTransform.setDefaultOriginAndScale(originX, originY, scale);
         mouseDrivenModelTransform.resetToDefault();
+        addMouseListener(mouseDrivenModelTransform);
+        addMouseMotionListener(mouseDrivenModelTransform);
+        addMouseWheelListener(mouseDrivenModelTransform);
     }
 
-    public BasicModelPanelUI() {
+    public BasicModelPanel() {
         this(0, 0, 1);
     }
 
-    public void addModelDrawer(ModelDrawer element) {
+    public void addAndConnectModelDrawer(ModelDrawer element) {
         modelDrawers.add(element);
+    }
+
+    public List<ModelDrawer> getModelDrawers() {
+        return modelDrawers;
     }
 
     public void setDefaultModelOriginAndScale(double originX, double originY, double scale) {
@@ -57,14 +60,8 @@ public class BasicModelPanelUI<V extends Component> extends LayerUI<V> {
     }
 
     @Override
-    public void installUI(JComponent c) {
-        super.installUI(c);
-        mouseDrivenModelTransform.addMouseActionListenersTo(c);
-    }
-
-    @Override
-    public void paint(Graphics g, JComponent c) {
-        super.paint(g, c);
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
         if (mouseDrivenModelTransform.isZoomAllNeeded()) {
@@ -77,7 +74,7 @@ public class BasicModelPanelUI<V extends Component> extends LayerUI<V> {
                     }
                 }
             }
-            mouseDrivenModelTransform.setToZoomAll(drawerBoundInModelSpace, c.getWidth(), c.getHeight());
+            mouseDrivenModelTransform.setToZoomAll(drawerBoundInModelSpace, getWidth(), getHeight());
             mouseDrivenModelTransform.setZoomAllNeeded(false);
         }
         for (ModelDrawer md : modelDrawers) {
@@ -114,11 +111,11 @@ public class BasicModelPanelUI<V extends Component> extends LayerUI<V> {
     public static void creatDemoFrame() {
         JFrame frame = new JFrame("OriginTransformListener");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        BasicModelPanelUI<JPanel> myLayerUI = new BasicModelPanelUI<>(10, 180, 1);
-        JPanel panel = new JPanel();
-        frame.add(new JLayer<>(panel, myLayerUI));
+
+        BasicModelPanel myPanel = new BasicModelPanel();
+        frame.add(myPanel);
         frame.setSize(300, 300);
-        myLayerUI.addModelDrawer(new ModelDrawerAdapter() {
+        myPanel.addAndConnectModelDrawer(new ModelDrawerAdapter() {
             Rectangle rect = new Rectangle(100, 50);
 
             @Override
@@ -134,7 +131,7 @@ public class BasicModelPanelUI<V extends Component> extends LayerUI<V> {
         });
 
         frame.setVisible(true);
-        myLayerUI.setZoomAllNeeded(true);
-        panel.repaint();
+        myPanel.setZoomAllNeeded(true);
+        myPanel.repaint();
     }
 }
