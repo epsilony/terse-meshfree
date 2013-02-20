@@ -82,4 +82,12 @@ public class ModelTransform extends AffineTransform {
         }
         resetToDefault();
     }
+
+    public int getZoomAllMargin() {
+        return zoomAllMargin;
+    }
+
+    public void setZoomAllMargin(int zoomAllMargin) {
+        this.zoomAllMargin = zoomAllMargin;
+    }
 }
