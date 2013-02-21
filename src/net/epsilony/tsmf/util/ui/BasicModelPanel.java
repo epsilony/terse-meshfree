@@ -7,7 +7,6 @@ package net.epsilony.tsmf.util.ui;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -75,7 +74,7 @@ public class BasicModelPanel extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
 
         if (mouseDrivenModelTransform.isZoomAllNeeded()) {
-            Rectangle2D drawerBoundInModelSpace = new Rectangle();
+            Rectangle2D drawerBoundInModelSpace = new Rectangle2D.Double();
             for (ModelDrawer md : modelDrawers) {
                 if (md.isVisible()) {
                     Rectangle2D mdBounds = md.getModelBounds();
@@ -135,7 +134,7 @@ public class BasicModelPanel extends JPanel {
         frame.add(myPanel);
         frame.setSize(300, 300);
         myPanel.addAndSetupModelDrawer(new ModelDrawerAdapter() {
-            Rectangle rect = new Rectangle(100, 50);
+            Rectangle2D rect = new Rectangle2D.Double(0, 0, 100, 50);
 
             @Override
             public Rectangle2D getModelBounds() {
