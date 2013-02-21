@@ -10,9 +10,7 @@ package net.epsilony.tsmf.util.ui;
  */
 public interface AnimateModelDrawer extends ModelDrawer {
 
-    public void appear();
-
-    public void fade();
+    public void switchStatus(AnimationStatus status);
 
     public AnimationStatus getStatus();
 }

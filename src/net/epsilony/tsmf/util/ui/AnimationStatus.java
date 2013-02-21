@@ -10,5 +10,5 @@ package net.epsilony.tsmf.util.ui;
  */
 public enum AnimationStatus {
 
-    FREEZING, APPEARING, FADDING, OVER;
+    APPEARING, FADING, OVER, INITIATE, FREEZING,;
 }

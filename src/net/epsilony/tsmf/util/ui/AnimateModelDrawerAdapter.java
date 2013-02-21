@@ -4,10 +4,8 @@
  */
 package net.epsilony.tsmf.util.ui;
 
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import javax.swing.Timer;
 
@@ -18,51 +16,25 @@ import javax.swing.Timer;
 public abstract class AnimateModelDrawerAdapter extends ModelDrawerAdapter implements AnimateModelDrawer, ActionListener {
 
     public static final int DEFAULT_FRAME_GAP = 33;
-    AnimationStatus status = AnimationStatus.FREEZING;
-    int frameGap = DEFAULT_FRAME_GAP;
-    private int appearingCount = 0;
-    private int fadingCount = 0;
-    Timer timer = new Timer(0, this);
+    protected AnimationStatus status = AnimationStatus.INITIATE;
+    private AnimationStatus statusToSwitch;
+    protected int millisecondsBetweenFrame = DEFAULT_FRAME_GAP;
+    private long[] frame = new long[2];
+    protected Timer timer = new Timer(0, this);
 
     @Override
-    public void drawModel(Graphics2D g2) {
-        AffineTransform modelToComponent = getModelToComponentTransform();
-        switch (status) {
-            case OVER:
-                return;
-            case FREEZING:
-                drawWhenFreezing(g2, modelToComponent);
-                break;
-            case APPEARING:
-                drawWhenAppearing(g2, modelToComponent);
-                break;
-            case FADDING:
-                drawWhenFading(g2, modelToComponent);
+    public void switchStatus(AnimationStatus statusToSwitch) {
+        this.statusToSwitch = statusToSwitch;
+        if (status != statusToSwitch) {
+            switch (statusToSwitch) {
+                case APPEARING:
+                case FADING:
+                    startTimer();
+                    break;
+                default:
+                    break;
+            }
         }
-    }
-
-    @Override
-    public void appear() {
-        if (status == AnimationStatus.APPEARING) {
-            return;
-        }
-        appearingCount = 0;
-        status = AnimationStatus.APPEARING;
-        timer.setDelay(frameGap);
-        timer.setRepeats(true);
-        timer.start();
-    }
-
-    @Override
-    public void fade() {
-        if (status == AnimationStatus.FADDING) {
-            return;
-        }
-        status = AnimationStatus.FADDING;
-        fadingCount = 0;
-        timer.setDelay(frameGap);
-        timer.setRepeats(true);
-        timer.start();
     }
 
     @Override
@@ -72,26 +44,37 @@ public abstract class AnimateModelDrawerAdapter extends ModelDrawerAdapter imple
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
+        if (statusToSwitch != status) {
+            status = statusToSwitch;
+            switch (status) {
+                case INITIATE:
+                    frame[0] = 0;
+                    frame[1] = 0;
+                    timer.stop();
+                    return;
+                case OVER:
+                case FREEZING:
+                    timer.stop();
+                    return;
+                case APPEARING:
+                case FADING:
+                    break;
+            }
+        }
         switch (status) {
+            case INITIATE:
             case OVER:
-                return;
             case FREEZING:
-                break;
+                return;
             case APPEARING:
-                appearingCount++;
-                if (appearingCount >= getAppearingFrameSize()) {
-                    status = AnimationStatus.FREEZING;
-                    timer.stop();
-                }
+                frame[AnimationStatus.APPEARING.ordinal()]++;
                 break;
-            case FADDING:
-                fadingCount++;
-                if (fadingCount >= getFadingFrameSize()) {
-                    status = AnimationStatus.OVER;
-                    timer.stop();
-                }
+            case FADING:
+                frame[AnimationStatus.FADING.ordinal()]++;
                 break;
         }
+
         callComponentToRepaint();
     }
 
@@ -114,21 +97,24 @@ public abstract class AnimateModelDrawerAdapter extends ModelDrawerAdapter imple
         }
     }
 
-    protected int getAppearingFrameCount() {
-        return appearingCount;
+    protected long getFrame(AnimationStatus status) {
+        if (status != AnimationStatus.APPEARING && status != AnimationStatus.FADING) {
+            throw new IllegalArgumentException();
+        }
+        return frame[status.ordinal()];
     }
 
-    protected int getFadingFrameCount() {
-        return fadingCount;
+    private void startTimer() {
+        timer.setDelay(millisecondsBetweenFrame);
+        timer.setRepeats(true);
+        timer.start();
     }
 
-    abstract protected void drawWhenFreezing(Graphics2D g2, AffineTransform modelToComponent);
+    public int getMillisecondsBetweenFrame() {
+        return millisecondsBetweenFrame;
+    }
 
-    abstract protected void drawWhenAppearing(Graphics2D g2, AffineTransform modelToComponent);
-
-    abstract protected void drawWhenFading(Graphics2D g2, AffineTransform modelToComponent);
-
-    abstract protected int getAppearingFrameSize();
-
-    abstract protected int getFadingFrameSize();
+    public void setMillisecondsBetweenFrame(int millisecondsBetweenFrame) {
+        this.millisecondsBetweenFrame = millisecondsBetweenFrame;
+    }
 }

@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import net.epsilony.tsmf.util.ui.AnimateModelDrawer;
+import net.epsilony.tsmf.util.ui.AnimationStatus;
 import net.epsilony.tsmf.util.ui.CommonFrame;
 import net.epsilony.tsmf.util.ui.ModelDrawer;
 
@@ -40,7 +41,7 @@ public class CirclesAnimateDrawerDemo {
                         }
                         CircleAnimateDrawer animateDrawer = new CircleAnimateDrawer(pt.getX(), pt.getY(), rad);
                         frame.getBasicModelPanel().addAndSetupModelDrawer(animateDrawer);
-                        animateDrawer.appear();
+                        animateDrawer.switchStatus(AnimationStatus.APPEARING);
                     }
                 }
             }
@@ -53,7 +54,7 @@ public class CirclesAnimateDrawerDemo {
                     for (ModelDrawer md : modelDrawers) {
                         if (md instanceof AnimateModelDrawer) {
                             AnimateModelDrawer amd = (AnimateModelDrawer) md;
-                            amd.fade();
+                            amd.switchStatus(AnimationStatus.FADING);
                         }
                     }
                 }
