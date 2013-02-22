@@ -83,9 +83,14 @@ public class BasicModelPanel extends JPanel {
                     }
                 }
             }
-            mouseDrivenModelTransform.setToZoomAll(drawerBoundInModelSpace, getWidth(), getHeight());
+            if (null != boundsOnComponent) {
+                mouseDrivenModelTransform.setToZoomAllByModelBounds(boundsOnComponent, getWidth(), getHeight());
+            } else {
+                mouseDrivenModelTransform.setToZoomAllByModelBounds(getWidth(), getHeight());
+            }
             mouseDrivenModelTransform.setZoomAllNeeded(false);
         }
+
         Iterator<ModelDrawer> modelDrawerIterator = modelDrawers.iterator();
         while (modelDrawerIterator.hasNext()) {
             ModelDrawer md = modelDrawerIterator.next();
@@ -100,6 +105,7 @@ public class BasicModelPanel extends JPanel {
                 md.drawModel(g2);
             }
         }
+
         if (coordinateMarker.isVisible()) {
             coordinateMarker.drawModel(g2);
         }
