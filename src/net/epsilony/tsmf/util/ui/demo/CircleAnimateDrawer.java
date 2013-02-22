@@ -111,8 +111,9 @@ public class CircleAnimateDrawer extends AnimateModelDrawerAdapter {
         long frame = getFrame(FADING);
         double fadeFrameSize = Math.ceil(fadeEnd * (getFrame(APPEARING) + 1) / (double) appearEnd);
         double ratio = 1 - (frame + 1) / fadeFrameSize;
-        if (ratio < 0) {
-            ratio = 0;
+        if (ratio <= 0) {
+            switchStatus(OVER);
+            return;
         }
         Color color = new Color(
                 colorToFade.getRed(),
