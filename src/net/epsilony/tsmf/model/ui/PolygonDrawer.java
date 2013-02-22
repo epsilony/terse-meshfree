@@ -141,16 +141,13 @@ public class PolygonDrawer extends ModelDrawerAdapter {
             @Override
             public void run() {
                 CommonFrame frame = new CommonFrame();
-                BasicModelPanel basicModelPanel = frame.getBasicModelPanel();
-                frame.setDefaultModelOriginAndScale(10, 500, 1);
-                frame.setSize(800, 600);
+                BasicModelPanel basicModelPanel = frame.getMainPanel();
+                basicModelPanel.setPreferredSize(new Dimension(800, 600));
                 Polygon2D polygon = TestTool.samplePolygon(null);
                 PolygonDrawer drawer = new PolygonDrawer();
                 drawer.setPolygon(polygon);
                 basicModelPanel.addAndSetupModelDrawer(drawer);
                 frame.setVisible(true);
-                basicModelPanel.setZoomAllNeeded(true);
-                frame.getMainPanel().repaint();
             }
         };
 

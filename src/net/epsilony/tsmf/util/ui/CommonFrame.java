@@ -4,8 +4,8 @@
  */
 package net.epsilony.tsmf.util.ui;
 
+import java.awt.Dimension;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 /**
  *
@@ -23,10 +23,12 @@ public class CommonFrame extends JFrame {
         super();
         this.basicModelPanel = basicModelPanelUI;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        add(basicModelPanelUI);
+        
+        getContentPane().add(basicModelPanelUI);
+        basicModelPanelUI.setPreferredSize(new Dimension(400, 300));
     }
 
-    public BasicModelPanel getBasicModelPanel() {
+    public BasicModelPanel getMainPanel() {
         return basicModelPanel;
     }
 
@@ -34,14 +36,10 @@ public class CommonFrame extends JFrame {
         basicModelPanel.setDefaultModelOriginAndScale(originX, originY, scale);
     }
 
-    public JPanel getMainPanel() {
-        return basicModelPanel;
-    }
-
     @Override
     public void setVisible(boolean visible) {
-        super.setVisible(visible);
+        pack();
         basicModelPanel.setZoomAllNeeded(true);
-        basicModelPanel.repaint();
+        super.setVisible(visible);
     }
 }

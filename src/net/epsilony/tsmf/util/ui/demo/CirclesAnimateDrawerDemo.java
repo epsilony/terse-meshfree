@@ -35,12 +35,12 @@ public class CirclesAnimateDrawerDemo {
                     if (e.getButton() == MouseEvent.BUTTON1) {
                         Point2D pt = new Point2D.Double(e.getX(), e.getY());
                         try {
-                            frame.getBasicModelPanel().getModelToComponentTransform().inverseTransform(pt, pt);
+                            frame.getMainPanel().getModelToComponentTransform().inverseTransform(pt, pt);
                         } catch (NoninvertibleTransformException ex) {
                             Logger.getLogger(CirclesAnimateDrawerDemo.class.getName()).log(Level.SEVERE, null, ex);
                         }
                         CircleAnimateDrawer animateDrawer = new CircleAnimateDrawer(pt.getX(), pt.getY(), rad);
-                        frame.getBasicModelPanel().addAndSetupModelDrawer(animateDrawer);
+                        frame.getMainPanel().addAndSetupModelDrawer(animateDrawer);
                         animateDrawer.switchStatus(AnimationStatus.APPEARING);
                     }
                 }
@@ -50,7 +50,7 @@ public class CirclesAnimateDrawerDemo {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 if (e.getButton() == MouseEvent.BUTTON3) {
-                    List<ModelDrawer> modelDrawers = frame.getBasicModelPanel().getModelDrawers();
+                    List<ModelDrawer> modelDrawers = frame.getMainPanel().getModelDrawers();
                     for (ModelDrawer md : modelDrawers) {
                         if (md instanceof AnimateModelDrawer) {
                             AnimateModelDrawer amd = (AnimateModelDrawer) md;
