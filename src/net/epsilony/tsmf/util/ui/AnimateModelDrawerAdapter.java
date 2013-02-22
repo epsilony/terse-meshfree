@@ -83,17 +83,8 @@ public abstract class AnimateModelDrawerAdapter extends ModelDrawerAdapter imple
         if (null == modelBounds) {
             component.repaint();
         } else {
-            double minX = modelBounds.getMinX();
-            double minY = modelBounds.getMinY();
-            double maxX = modelBounds.getMaxX();
-            double maxY = modelBounds.getMaxY();
-            double[] transformed = new double[4];
-            getModelToComponentTransform().transform(new double[]{minX, minY, maxX, maxY}, 0, transformed, 0, 2);
-            int x0 = (int) Math.floor(Math.min(transformed[0], transformed[2]));
-            int y0 = (int) Math.floor(Math.min(transformed[1], transformed[3]));
-            int wdith = (int) Math.ceil(Math.abs(transformed[0] - transformed[2]));
-            int height = (int) Math.ceil(Math.abs(transformed[1] - transformed[3]));
-            component.repaint(x0 - 1, y0 - 1, wdith + 2, height + 2);
+            UIUtils.transformRectangle(modelToComponentTransform, modelBounds, modelBounds);
+            UIUtils.repaintRectangle2D(component, modelBounds);
         }
     }
 
