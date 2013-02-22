@@ -16,7 +16,7 @@ import java.util.LinkedList;
 public class RectangleMouseSelector extends MouseAdapter {
 
     private int rectangleSelectStartX, rectangleSelectStartY;
-    LinkedList<RectangleSelectionListener> listeners;
+    LinkedList<RectangleSelectionListener> listeners = new LinkedList<>();
     private boolean inRectangleSelecting = false;
 
     @Override
