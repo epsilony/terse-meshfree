@@ -74,19 +74,23 @@ public class BasicModelPanel extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
 
         if (mouseDrivenModelTransform.isZoomAllNeeded()) {
-            Rectangle2D drawerBoundInModelSpace = new Rectangle2D.Double();
+            Rectangle2D boundsOnComponent = null;
             for (ModelDrawer md : modelDrawers) {
                 if (md.isVisible()) {
-                    Rectangle2D mdBounds = md.getModelBounds();
-                    if (null != mdBounds) {
-                        Rectangle2D.union(drawerBoundInModelSpace, mdBounds, drawerBoundInModelSpace);
+                    Rectangle2D bounds = md.getBoundsInModelSpace();
+                    if (null != bounds) {
+                        if (null == boundsOnComponent) {
+                            boundsOnComponent = new Rectangle2D.Double(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
+                        } else {
+                            Rectangle2D.union(boundsOnComponent, bounds, boundsOnComponent);
+                        }
                     }
                 }
             }
             if (null != boundsOnComponent) {
-                mouseDrivenModelTransform.setToZoomAllByModelBounds(boundsOnComponent, getWidth(), getHeight());
+                mouseDrivenModelTransform.setToZoomAll(boundsOnComponent, getWidth(), getHeight());
             } else {
-                mouseDrivenModelTransform.setToZoomAllByModelBounds(getWidth(), getHeight());
+                mouseDrivenModelTransform.setToZoomAll(getWidth(), getHeight());
             }
             mouseDrivenModelTransform.setZoomAllNeeded(false);
         }

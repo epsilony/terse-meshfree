@@ -57,7 +57,7 @@ public class ModelTransform extends AffineTransform {
         scale(defaultScale, defaultScale);
     }
 
-    public void setToZoomAllByModelBounds(Rectangle2D modelBound, int componentWidth, int componentHeight) {
+    public void setToZoomAll(Rectangle2D modelBound, int componentWidth, int componentHeight) {
         UIUtils.tidyRectangle2D(modelBound, modelBound);
         double modelWidth = modelBound.getWidth();
         double modelHeight = modelBound.getHeight();
@@ -84,7 +84,7 @@ public class ModelTransform extends AffineTransform {
         resetToDefault();
     }
 
-    void setToZoomAllByModelBounds(int componentWidth, int componentHeight) {
+    void setToZoomAll(int componentWidth, int componentHeight) {
         setDefaultOriginAndScale(componentWidth / 2, componentHeight / 2, 1);
         resetToDefault();
     }
