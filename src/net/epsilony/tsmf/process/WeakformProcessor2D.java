@@ -12,7 +12,6 @@ import java.util.concurrent.TimeUnit;
 import net.epsilony.tsmf.assemblier.SupportLagrange;
 import net.epsilony.tsmf.assemblier.WFAssemblier;
 import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
-import net.epsilony.tsmf.model.LinearLagrangeDirichletProcessor;
 import net.epsilony.tsmf.model.Model2D;
 import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.Segment2D;

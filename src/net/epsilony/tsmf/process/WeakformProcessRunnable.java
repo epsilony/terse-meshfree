@@ -6,7 +6,6 @@ package net.epsilony.tsmf.process;
 
 import net.epsilony.tsmf.assemblier.SupportLagrange;
 import net.epsilony.tsmf.assemblier.WFAssemblier;
-import net.epsilony.tsmf.model.LinearLagrangeDirichletProcessor;
 import net.epsilony.tsmf.util.synchron.SynchronizedIteratorWrapper;
 
 /**

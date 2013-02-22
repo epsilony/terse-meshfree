@@ -2,13 +2,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package net.epsilony.tsmf.model;
+package net.epsilony.tsmf.process;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import java.util.Arrays;
 import java.util.List;
-import net.epsilony.tsmf.process.TaskUnit;
+import net.epsilony.tsmf.model.Node;
+import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.shape_func.Linear2D;
 
 /**
