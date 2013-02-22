@@ -26,6 +26,7 @@ public class MouseDrivenModelTransform extends ModelTransform implements MouseLi
     private double wheelScaleRatio = DEFAULT_WHEEL_SCALE_RATIO;
     private int scaleCenterX;
     private int scaleCenterY;
+    private int scaleLastDragY;
     boolean zoomAllNeeded = false;
 
     @Override
@@ -33,7 +34,7 @@ public class MouseDrivenModelTransform extends ModelTransform implements MouseLi
         if (isOriginTranslate(e)) {
             setOriginTranslateStartPoint(e.getX(), e.getY());
         } else if (isScaleByCenter(e)) {
-            setScaleCenter(e.getX(), e.getY());
+            startScale(e.getX(), e.getY());
         }
     }
 
@@ -51,7 +52,7 @@ public class MouseDrivenModelTransform extends ModelTransform implements MouseLi
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        setScaleCenter(e.getX(), e.getY());
+        startScale(e.getX(), e.getY());
         scaleByWheel(e.getWheelRotation());
         e.getComponent().repaint();
     }
@@ -75,13 +76,15 @@ public class MouseDrivenModelTransform extends ModelTransform implements MouseLi
         translateStartY = startY;
     }
 
-    private void setScaleCenter(int x, int y) {
+    private void startScale(int x, int y) {
         scaleCenterX = x;
         scaleCenterY = y;
+        scaleLastDragY = y;
     }
 
     void scaleByDrag(int y) {
-        int dy = y - scaleCenterY;
+        int dy = y - scaleLastDragY;
+        scaleLastDragY = y;
         double scale = Math.pow(2, -dy * dragScaleRatio);
         scaleByCenter(scaleCenterX, scaleCenterY, scale);
     }
