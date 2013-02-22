@@ -4,6 +4,7 @@
  */
 package net.epsilony.tsmf.util.ui;
 
+import com.sun.crypto.provider.RC2Cipher;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -88,7 +89,7 @@ public class CoordinateMarker extends ModelDrawerAdapter {
     }
 
     @Override
-    public Rectangle2D getModelBounds() {
+    public Rectangle2D getBoundsInModelSpace() {
         return null;
     }
 }

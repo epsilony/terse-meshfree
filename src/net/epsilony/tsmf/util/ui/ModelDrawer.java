@@ -18,8 +18,8 @@ public interface ModelDrawer {
     boolean isVisible();
 
     void setVisible(boolean visible);
-
-    Rectangle2D getModelBounds();
+    
+    Rectangle2D getBoundsInModelSpace();
 
     void setModelToComponentTransform(AffineTransform modelToComponentTransform);
 

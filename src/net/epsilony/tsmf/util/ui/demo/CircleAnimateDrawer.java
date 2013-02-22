@@ -128,7 +128,7 @@ public class CircleAnimateDrawer extends AnimateModelDrawerAdapter {
     }
 
     @Override
-    public Rectangle2D getModelBounds() {
+    public Rectangle2D getBoundsInModelSpace() {
         return new Ellipse2D.Double(x0 - maxRad, y0 - maxRad, maxRad * 2, maxRad * 2).getBounds2D();
     }
 

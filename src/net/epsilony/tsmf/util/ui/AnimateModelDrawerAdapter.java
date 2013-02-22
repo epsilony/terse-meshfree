@@ -79,12 +79,12 @@ public abstract class AnimateModelDrawerAdapter extends ModelDrawerAdapter imple
     }
 
     private void callComponentToRepaint() {
-        Rectangle2D modelBounds = getModelBounds();
-        if (null == modelBounds) {
+        Rectangle2D bounds = getBoundsInModelSpace();
+        if (null == bounds) {
             component.repaint();
         } else {
-            UIUtils.transformRectangle(modelToComponentTransform, modelBounds, modelBounds);
-            UIUtils.repaintRectangle2D(component, modelBounds);
+            UIUtils.transformAndTidyRectangle(modelToComponentTransform, bounds, bounds);
+            UIUtils.repaintRectangle2D(component, bounds);
         }
     }
 
