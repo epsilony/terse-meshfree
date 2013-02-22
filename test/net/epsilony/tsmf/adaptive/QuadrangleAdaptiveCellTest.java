@@ -32,13 +32,6 @@ public class QuadrangleAdaptiveCellTest {
     public QuadrangleAdaptiveCell[][] genSampleGrid() {
         double[] ys=TestTool.linSpace(3, 0, 4);
         double[] xs=TestTool.linSpace(0, 3, 4);
-        double[][][] gridCoords=new double[ys.length][xs.length][2];
-        for(int i=0;i<gridCoords.length;i++){
-            for(int j=0;j<gridCoords[i].length;j++){
-                gridCoords[i][j][0]=xs[j];
-                gridCoords[i][j][1]=ys[i];
-            }
-        }
-        return QuadrangleAdaptiveCellFactory.byCoordGrid(gridCoords);
+        return QuadrangleAdaptiveCellFactory.byCoordGrid(xs,ys);
     }
 }

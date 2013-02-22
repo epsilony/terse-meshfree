@@ -12,12 +12,12 @@ import net.epsilony.tsmf.model.Node;
  */
 public class QuadrangleAdaptiveCellFactory {
 
-    public static QuadrangleAdaptiveCell[][] byCoordGrid(double[][][] grid) {
+    public static QuadrangleAdaptiveCell[][] byCoordGrid(double[] xs, double[] ys) {
 
-        int numRow = grid.length-1;
-        int numCol = grid[0].length-1;
+        int numRow = ys.length - 1;
+        int numCol = xs.length - 1;
         QuadrangleAdaptiveCell[][] result = new QuadrangleAdaptiveCell[numRow][numCol];
-        Node[][] nodeGrid = coordsToNodes(grid);
+        Node[][] nodeGrid = xysToNodes(xs, ys);
         for (int rowIndex = 0; rowIndex < numRow; rowIndex++) {
             QuadrangleAdaptiveCell[] resultRow = result[rowIndex];
             for (int colIndex = 0; colIndex < resultRow.length; colIndex++) {
@@ -51,13 +51,11 @@ public class QuadrangleAdaptiveCellFactory {
         }
     }
 
-    private static Node[][] coordsToNodes(double[][][] grid) {
-        Node[][] result = new Node[grid.length][];
+    private static Node[][] xysToNodes(double[] xs, double[] ys) {
+        Node[][] result = new Node[ys.length][xs.length];
         for (int i = 0; i < result.length; i++) {
-            double[][] gridRow = grid[i];
-            result[i] = new Node[gridRow.length];
-            for (int j = 0; j < gridRow.length; j++) {
-                result[i][j] = new Node(gridRow[j]);
+            for (int j = 0; j < result[i].length; j++) {
+                result[i][j] = new Node(xs[j], ys[i]);
             }
         }
         return result;
