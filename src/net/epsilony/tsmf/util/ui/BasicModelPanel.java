@@ -4,16 +4,13 @@
  */
 package net.epsilony.tsmf.util.ui;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 /**
  *
@@ -125,41 +122,5 @@ public class BasicModelPanel extends JPanel {
 
     public void setShowCoordinateMarker(boolean showCoordinateMark) {
         coordinateMarker.setVisible(showCoordinateMark);
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                creatDemoFrame();
-            }
-        });
-    }
-
-    public static void creatDemoFrame() {
-        JFrame frame = new JFrame("OriginTransformListener");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        BasicModelPanel myPanel = new BasicModelPanel();
-        frame.add(myPanel);
-        frame.setSize(300, 300);
-        myPanel.addAndSetupModelDrawer(new ModelDrawerAdapter() {
-            Rectangle2D rect = new Rectangle2D.Double(0, 0, 100, 50);
-
-            @Override
-            public Rectangle2D getModelBounds() {
-                return rect;
-            }
-
-            @Override
-            public void drawModel(Graphics2D g2) {
-                g2.setColor(Color.BLACK);
-                g2.draw(getModelToComponentTransform().createTransformedShape(rect));
-            }
-        });
-
-        frame.setVisible(true);
-        myPanel.setZoomAllNeeded(true);
-        myPanel.repaint();
     }
 }
