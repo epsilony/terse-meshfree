@@ -78,7 +78,7 @@ public class QuadrangleAdaptiveCell implements AdaptiveCell<QuadrangleAdaptiveCe
             children[i].edges[(i + 1) % NUM_OF_EDGES].opposites.add(
                     children[(i + 1) % NUM_OF_EDGES].edges[(i + 3) % NUM_OF_EDGES]);
             children[(i + 1) % NUM_OF_EDGES].edges[(i + 3) % NUM_OF_EDGES].opposites.add(
-                    children[i].edges[(i + 3) % NUM_OF_EDGES]);
+                    children[i].edges[(i + 1) % NUM_OF_EDGES]);
         }
     }
 
@@ -128,5 +128,9 @@ public class QuadrangleAdaptiveCell implements AdaptiveCell<QuadrangleAdaptiveCe
     @Override
     public QuadrangleAdaptiveCell[] getChildren() {
         return children;
+    }
+
+    public AdaptiveCellEdge[] getEdges() {
+        return edges;
     }
 }
