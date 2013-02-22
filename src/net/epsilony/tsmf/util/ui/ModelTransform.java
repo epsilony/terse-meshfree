@@ -13,12 +13,12 @@ import java.awt.geom.Rectangle2D;
  */
 public class ModelTransform extends AffineTransform {
 
-    public static final double SCALE_LOWER_LIMITE = 1e-15;
+    public static final double SCALE_LOWER_LIMITE = Double.MIN_VALUE;
     /**
      *
      * @author epsilon
      */
-    public static int DEFAULT_ZOOM_ALL_MARGIN = 4;
+    public static int DEFAULT_ZOOM_ALL_MARGIN = 10;
     private double defaultOriginX;
     private double defaultOriginY;
     private double defaultScale;
