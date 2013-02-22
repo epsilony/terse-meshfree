@@ -14,16 +14,17 @@ import java.awt.geom.Rectangle2D;
  */
 public class UIUtils {
 
-    public static Rectangle2D transformRectangle(AffineTransform transform, Rectangle2D src, Rectangle2D dst) {
+    public static Rectangle2D transformAndTidyRectangle(AffineTransform transform, Rectangle2D src, Rectangle2D dst) {
         if (null == dst) {
             dst = new Rectangle2D.Double();
         }
         double[] points = new double[]{
-            src.getX(), src.getY(),};
-        transform.transform(points, 0, points, 0, 1);
+            src.getMinX(),src.getMinY(),src.getMaxX(),src.getMaxY()};
+        transform.transform(points, 0, points, 0, 2);
         dst.setRect(
                 points[0], points[1],
-                transform.getScaleX() * src.getWidth(), transform.getScaleY() * src.getHeight());
+                points[2]-points[0],points[3]-points[1]);
+        tidyRectangle2D(dst, dst);
         return dst;
     }
 
