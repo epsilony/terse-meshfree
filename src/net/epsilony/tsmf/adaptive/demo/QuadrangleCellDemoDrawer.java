@@ -12,8 +12,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.List;
 import net.epsilony.tsmf.adaptive.AdaptiveCellEdge;
 import net.epsilony.tsmf.adaptive.QuadrangleAdaptiveCell;
 import net.epsilony.tsmf.model.ui.NodeDrawer;
@@ -26,8 +25,12 @@ import net.epsilony.tsmf.util.ui.SingleModelShapeDrawer;
  */
 public class QuadrangleCellDemoDrawer extends SingleModelShapeDrawer {
 
+    public static double DEFAULT_OPPOSITE_MARK_LENGTH = 5;
+    public static Color DEFAULT_OPPOSITE_MARK_COLOR = Color.RED;
     QuadrangleAdaptiveCell cell;
     private NodeDrawer nodeDrawer = new NodeDrawer(null);
+    private double oppositeMarkLength = DEFAULT_OPPOSITE_MARK_LENGTH;
+    private Color oppositeMarkColor = DEFAULT_OPPOSITE_MARK_COLOR;
 
     public QuadrangleCellDemoDrawer(QuadrangleAdaptiveCell cell) {
         _setQuadrangleAdaptiveCell(cell);
@@ -70,7 +73,33 @@ public class QuadrangleCellDemoDrawer extends SingleModelShapeDrawer {
         for (AdaptiveCellEdge edge : cell.getEdges()) {
             nodeDrawer.setNode(edge.getHead());
             nodeDrawer.drawModel(g2);
+            drawEdgeOpposite(g2, edge);
         }
+    }
+
+    private void drawEdgeOpposite(Graphics2D g2, AdaptiveCellEdge edge) {
+        List<AdaptiveCellEdge> opposites = edge.getOpposites();
+        if (null == opposites) {
+            return;
+        }
+        double[] headCoord = edge.getHead().coord;
+        double[] rearCoord = edge.getRear().coord;
+        double[] midPoint = Math2D.pointOnSegment(headCoord, rearCoord, 0.5, null);
+        modelToComponentTransform.transform(midPoint, 0, midPoint, 0, 1);
+        double[] edgeVec = Math2D.subs(rearCoord, headCoord, null);
+        Math2D.normalize(edgeVec, edgeVec);
+        double[] markVec = new double[]{-edgeVec[1], edgeVec[0]};
+        Math2D.scale(markVec, oppositeMarkLength, markVec);
+        GeneralPath path = new GeneralPath();
+
+        g2.setColor(oppositeMarkColor);
+        for (AdaptiveCellEdge opp : opposites) {
+            double[] oppositeMid = Math2D.pointOnSegment(opp.getHead().coord, opp.getRear().coord, 0.5, null);
+            modelToComponentTransform.transform(oppositeMid, 0, oppositeMid, 0, 1);
+            path.moveTo(midPoint[0] + markVec[0], midPoint[1] + markVec[1]);
+            path.lineTo(oppositeMid[0], oppositeMid[1]);
+        }
+        g2.draw(path);
     }
 
     @Override
