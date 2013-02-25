@@ -11,6 +11,7 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.NoninvertibleTransformException;
+import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.util.List;
 import net.epsilony.tsmf.adaptive.AdaptiveCellEdge;
@@ -87,10 +88,14 @@ public class QuadrangleCellDemoDrawer extends SingleModelShapeDrawer {
         double[] midPoint = Math2D.pointOnSegment(headCoord, rearCoord, 0.5, null);
         modelToComponentTransform.transform(midPoint, 0, midPoint, 0, 1);
         double[] edgeVec = Math2D.subs(rearCoord, headCoord, null);
-        Math2D.normalize(edgeVec, edgeVec);
         double[] markVec = new double[]{-edgeVec[1], edgeVec[0]};
+        modelToComponentTransform.transform(markVec, 0, markVec, 0, 1);
+        double[] origin = new double[]{0, 0};
+        modelToComponentTransform.transform(origin, 0, origin, 0, 1);
+        Math2D.subs(markVec, origin, markVec);
+        Math2D.normalize(markVec, markVec);
         Math2D.scale(markVec, oppositeMarkLength, markVec);
-        GeneralPath path = new GeneralPath();
+        Path2D path = new Path2D.Double();
 
         g2.setColor(oppositeMarkColor);
         for (AdaptiveCellEdge opp : opposites) {
