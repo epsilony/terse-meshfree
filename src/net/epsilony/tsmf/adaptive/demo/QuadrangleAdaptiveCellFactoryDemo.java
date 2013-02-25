@@ -10,12 +10,16 @@ import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.NoninvertibleTransformException;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JCheckBox;
 import javax.swing.SwingUtilities;
+import net.epsilony.tsmf.adaptive.AdaptiveCell;
+import net.epsilony.tsmf.adaptive.AdaptiveUtils;
 import net.epsilony.tsmf.adaptive.QuadrangleAdaptiveCell;
 import net.epsilony.tsmf.adaptive.QuadrangleAdaptiveCellFactory;
 import net.epsilony.tsmf.model.ui.NodeDrawer;
@@ -56,9 +60,11 @@ public class QuadrangleAdaptiveCellFactoryDemo {
             }
         }
 
-        JCheckBox checkbox = new JCheckBox("debug", false);
-        ClickToFission clickToFission = new ClickToFission(mainPanel, checkbox);
-        frame.getContentPane().add(checkbox);
+        JCheckBox debugBox = new JCheckBox("debug", false);
+        JCheckBox recursiveBox = new JCheckBox("recursively", true);
+        ClickToFission clickToFission = new ClickToFission(mainPanel, debugBox, recursiveBox);
+        frame.getContentPane().add(debugBox);
+        frame.getContentPane().add(recursiveBox);
         frame.setLayout(new FlowLayout());
         mainPanel.setPreferredSize(new Dimension(800, 600));
         frame.setVisible(true);
@@ -67,11 +73,13 @@ public class QuadrangleAdaptiveCellFactoryDemo {
     public static class ClickToFission extends MouseAdapter {
 
         BasicModelPanel basicPanel;
-        private final JCheckBox checkbox;
+        private final JCheckBox debugCheckBox;
+        private final JCheckBox recursivelyFissionCheckBox;
 
-        public ClickToFission(BasicModelPanel basicPanel, JCheckBox checkBox) {
+        public ClickToFission(BasicModelPanel basicPanel, JCheckBox debugCheckBox, JCheckBox recursivelyFissionCheckBox) {
             prepare(basicPanel);
-            this.checkbox = checkBox;
+            this.debugCheckBox = debugCheckBox;
+            this.recursivelyFissionCheckBox = recursivelyFissionCheckBox;
         }
 
         private void prepare(BasicModelPanel basicPanel) {
@@ -81,7 +89,7 @@ public class QuadrangleAdaptiveCellFactoryDemo {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            if (checkbox.isSelected()) {
+            if (debugCheckBox.isSelected()) {
                 System.out.println("here = ");
             }
             List<ModelDrawer> modelDrawers = basicPanel.getModelDrawers();
@@ -92,14 +100,7 @@ public class QuadrangleAdaptiveCellFactoryDemo {
                     QuadrangleAdaptiveCell cell = quadDrawer.getCell();
                     try {
                         if (cell.getChildren() == null && quadDrawer.isComponentPointInside(e.getX(), e.getY())) {
-                            if (cell.isAbleToFissionToChildren()) {
-                                cell.fissionToChildren();
-                                QuadrangleAdaptiveCell[] children = cell.getChildren();
-                                for (QuadrangleAdaptiveCell child : children) {
-                                    newDrawers.add(new QuadrangleCellDemoDrawer(child));
-                                }
-                                basicPanel.repaint();
-                            }
+                            fission(cell, newDrawers);
                         }
                     } catch (NoninvertibleTransformException ex) {
                         Logger.getLogger(QuadrangleAdaptiveCellFactoryDemo.class.getName()).log(Level.SEVERE, null, ex);
@@ -108,6 +109,25 @@ public class QuadrangleAdaptiveCellFactoryDemo {
             }
             for (ModelDrawer nd : newDrawers) {
                 basicPanel.addAndSetupModelDrawer(nd);
+            }
+            if (newDrawers.size() > 0) {
+                basicPanel.repaint();
+            }
+        }
+
+        private void fission(AdaptiveCell cell, Collection<ModelDrawer> newDrawers) {
+            LinkedList<AdaptiveCell> newCells = new LinkedList<>();
+
+            if (recursivelyFissionCheckBox.isSelected()) {
+                AdaptiveUtils.recursivelyFission(cell, newCells);
+            } else if (cell.isAbleToFissionToChildren()) {
+
+                cell.fissionToChildren();
+                newCells.addAll(Arrays.asList(cell.getChildren()));
+            }
+
+            for (AdaptiveCell newCell : newCells) {
+                newDrawers.add(new QuadrangleCellDemoDrawer((QuadrangleAdaptiveCell) newCell));
             }
         }
     }
