@@ -66,14 +66,15 @@ public class QuadrangleAdaptiveCellFactory {
             throw new IllegalArgumentException();
         }
         QuadrangleAdaptiveCell result = new QuadrangleAdaptiveCell();
-        result.edges = new AdaptiveCellEdge[QuadrangleAdaptiveCell.NUM_OF_EDGES];
+        AdaptiveCellEdge[] edges = new AdaptiveCellEdge[QuadrangleAdaptiveCell.NUM_OF_EDGES];
         for (int i = 0; i < counterClockwiseVetes.length; i++) {
-            result.edges[i] = new AdaptiveCellEdge(counterClockwiseVetes[i]);
+            edges[i] = new AdaptiveCellEdge(counterClockwiseVetes[i]);
         }
         for (int i = 0; i < counterClockwiseVetes.length; i++) {
-            result.edges[i].succ = result.edges[(i + 1) % counterClockwiseVetes.length];
-            result.edges[(i + 1) % counterClockwiseVetes.length].pred = result.edges[i];
+            edges[i].succ = edges[(i + 1) % counterClockwiseVetes.length];
+            edges[(i + 1) % counterClockwiseVetes.length].pred = edges[i];
         }
+        result.setEdges(edges);
         return result;
     }
 }

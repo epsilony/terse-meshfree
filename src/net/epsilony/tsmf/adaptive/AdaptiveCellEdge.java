@@ -17,6 +17,7 @@ public class AdaptiveCellEdge extends GenericSegment2D<AdaptiveCellEdge> {
 
     public static final int DEFAULT_MAX_SIZE_OF_OPPOSITES = 2;
     public List<AdaptiveCellEdge> opposites = new ArrayList<>(DEFAULT_MAX_SIZE_OF_OPPOSITES);
+    AdaptiveCell owner;
 
     public AdaptiveCellEdge() {
     }
@@ -90,6 +91,14 @@ public class AdaptiveCellEdge extends GenericSegment2D<AdaptiveCellEdge> {
 
     public List<AdaptiveCellEdge> getOpposites() {
         return opposites;
+    }
+
+    public AdaptiveCell getOwner() {
+        return owner;
+    }
+
+    public void setOwner(AdaptiveCell owner) {
+        this.owner = owner;
     }
 
     public void addOpposite(int index, AdaptiveCellEdge element) {

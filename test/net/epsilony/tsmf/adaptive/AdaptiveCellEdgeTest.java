@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tsmf.model.Node;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *

@@ -17,13 +17,8 @@ public class QuadrangleAdaptiveCell implements AdaptiveCell {
     public static final int NUM_OF_CHILDREN = 4;
     QuadrangleAdaptiveCell[] children;
     AdaptiveCellEdge[] edges;
-    
-    public QuadrangleAdaptiveCell(){
-        
-    }
-    
-    private QuadrangleAdaptiveCell(AdaptiveCellEdge[] edges) {
-        this.edges = edges;
+
+    public QuadrangleAdaptiveCell() {
     }
 
     @Override
@@ -60,7 +55,8 @@ public class QuadrangleAdaptiveCell implements AdaptiveCell {
                 newChildEdges[j].succ = newChildEdges[(j + 1) % NUM_OF_EDGES];
                 newChildEdges[(j + 1) % NUM_OF_EDGES].pred = newChildEdges[j];
             }
-            children[i] = new QuadrangleAdaptiveCell(newChildEdges);
+            children[i] = new QuadrangleAdaptiveCell();
+            children[i].setEdges(newChildEdges);
         }
     }
 
@@ -132,5 +128,15 @@ public class QuadrangleAdaptiveCell implements AdaptiveCell {
 
     public AdaptiveCellEdge[] getEdges() {
         return edges;
+    }
+
+    public void setEdges(AdaptiveCellEdge[] edges) {
+        if (edges.length != NUM_OF_EDGES) {
+            throw new IllegalArgumentException("number of input edges must be " + NUM_OF_EDGES);
+        }
+        this.edges = edges;
+        for (AdaptiveCellEdge eg : edges) {
+            eg.setOwner(this);
+        }
     }
 }
