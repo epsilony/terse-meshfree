@@ -64,6 +64,13 @@ public class AdaptiveCellEdge extends GenericSegment2D<AdaptiveCellEdge> {
         return true;
     }
 
+    public AdaptiveCellEdge findOneBisectionObstructor() {
+        if (numOpposites() == 1 && getOpposite(0).numOpposites() > 1) {
+            return getOpposite(0);
+        }
+        return null;
+    }
+
     public void mergeWithGivenSuccessor(AdaptiveCellEdge successor) {
         if (!isAbleToMerge(successor)) {
             throw new IllegalStateException();
