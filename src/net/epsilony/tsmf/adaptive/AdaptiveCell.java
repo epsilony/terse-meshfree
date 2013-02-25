@@ -13,7 +13,9 @@ public interface AdaptiveCell {
     void fissionToChildren();
 
     boolean isAbleToFissionToChildren();
-
+    
+    AdaptiveCell findOneFissionObstrutor();
+    
     void fusionFromChildren();
 
     boolean isAbleToFusionFromChildren();

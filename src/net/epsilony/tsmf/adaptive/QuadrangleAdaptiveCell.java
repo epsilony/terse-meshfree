@@ -90,6 +90,19 @@ public class QuadrangleAdaptiveCell implements AdaptiveCell {
         }
         return true;
     }
+    
+        @Override
+    public AdaptiveCell findOneFissionObstrutor() {
+        if (null != children) {
+            throw new IllegalStateException();
+        }
+        for (AdaptiveCellEdge eg : edges) {
+            if (!eg.isAbleToBisection()) {
+                return eg.findOneBisectionObstructor().getOwner();
+            }
+        }
+        return null;
+    }
 
     @Override
     public void fusionFromChildren() {
