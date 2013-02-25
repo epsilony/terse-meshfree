@@ -8,7 +8,7 @@ package net.epsilony.tsmf.adaptive;
  *
  * @author epsilon
  */
-public interface AdaptiveCell<T extends AdaptiveCell<T>> {
+public interface AdaptiveCell {
 
     void fissionToChildren();
 
@@ -18,5 +18,5 @@ public interface AdaptiveCell<T extends AdaptiveCell<T>> {
 
     boolean isAbleToFusionFromChildren();
 
-    T[] getChildren();
+    AdaptiveCell[] getChildren();
 }

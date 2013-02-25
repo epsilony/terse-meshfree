@@ -11,7 +11,7 @@ import net.epsilony.tsmf.util.Math2D;
  *
  * @author epsilon
  */
-public class QuadrangleAdaptiveCell implements AdaptiveCell<QuadrangleAdaptiveCell> {
+public class QuadrangleAdaptiveCell implements AdaptiveCell {
 
     public static final int NUM_OF_EDGES = 4;
     public static final int NUM_OF_CHILDREN = 4;
