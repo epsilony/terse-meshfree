@@ -45,4 +45,14 @@ public class Math2DTest {
         double[] act = Math2D.intersectionPoint(inputs[0], inputs[1], inputs[2], inputs[3], null);
         assertArrayEquals(exp, act, 1e-13);
     }
+
+    @Test
+    public void testNormailize() {
+        double[] sample = new double[]{-3, 4};
+        double[] exp = new double[]{-3 / 5d, 4 / 5d};
+        double[] act = Math2D.normalize(sample, null);
+        double[] act2 = Math2D.normalize(sample, sample);
+        assertArrayEquals(exp, act, 1e-15);
+        assertArrayEquals(exp, act2, 1e-15);
+    }
 }

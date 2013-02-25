@@ -20,6 +20,16 @@ public class Math2D {
         return x1 * x2 + y1 * y2;
     }
 
+    public static double measureLength(double[] vec) {
+        return Math.sqrt(dot(vec, vec));
+    }
+
+    public static double[] normalize(double[] vec, double[] result) {
+        double length = measureLength(vec);
+        result = scale(vec, 1 / length, result);
+        return result;
+    }
+
     public static double cross(double[] v1, double[] v2) {
         return v1[0] * v2[1] - v1[1] * v2[0];
     }
@@ -56,6 +66,15 @@ public class Math2D {
 
     public static double[] distanceAndPartDiffs(double[] xy, double[] to, double[] results) {
         return distanceAndPartDiffs(xy[0], xy[1], to[0], to[1], results);
+    }
+
+    public static double[] scale(double[] vec, double scale, double[] result) {
+        if (null == result) {
+            result = new double[2];
+        }
+        result[0] = vec[0] * scale;
+        result[1] = vec[1] * scale;
+        return result;
     }
 
     public static double[] subs(double[] v1, double[] v2, double[] results) {
@@ -132,16 +151,16 @@ public class Math2D {
         double deltaAy = rearA[1] - headA[1];
         double deltaBx = rearB[0] - headB[0];
         double deltaBy = rearB[1] - headB[1];
-        
+
         double crossDelta = cross(deltaAx, deltaAy, deltaBx, deltaBy);
         if (crossDelta == 0) {
             throw new IllegalArgumentException("the two segments are colinear or parrallel or one of them has zero length:\n\t"
                     + "SegA :" + Arrays.toString(headA) + "-" + Arrays.toString(rearA) + "\n\t"
                     + "SegB :" + Arrays.toString(headB) + "-" + Arrays.toString(rearB));
         }
-        
+
         double uA = cross(headB[0] - headA[0], headB[1] - headA[1], deltaBx, deltaBy) / crossDelta;
-        
+
         return pointOnSegment(headA, rearA, uA, result);
     }
 }
