@@ -4,7 +4,6 @@
  */
 package net.epsilony.tsmf.util.ui;
 
-import com.sun.crypto.provider.RC2Cipher;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;

@@ -6,6 +6,7 @@ package net.epsilony.tsmf.adaptive;
 
 import java.util.Arrays;
 import java.util.Collection;
+import net.epsilony.tsmf.util.Math2D;
 
 /**
  *
@@ -46,5 +47,21 @@ public class AdaptiveUtils {
                 _recursivelyFission(cell.findOneFissionObstrutor(), newCell);
             }
         } while (true);
+    }
+
+    public static boolean isPointRestrictlyInsideCell(AdaptiveCell cell, double x, double y) {
+        for (AdaptiveCellEdge edge : cell.getEdges()) {
+            double[] headCoord = edge.getHead().coord;
+            double[] rearCoord = edge.getRear().coord;
+            double cross = Math2D.cross(
+                    rearCoord[0] - headCoord[0],
+                    rearCoord[1] - headCoord[1],
+                    x - headCoord[0],
+                    y - headCoord[1]);
+            if (cross <= 0) {
+                return false;
+            }
+        }
+        return true;
     }
 }

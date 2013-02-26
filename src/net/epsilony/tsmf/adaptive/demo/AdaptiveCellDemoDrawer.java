@@ -16,6 +16,7 @@ import java.awt.geom.Point2D;
 import java.util.List;
 import net.epsilony.tsmf.adaptive.AdaptiveCell;
 import net.epsilony.tsmf.adaptive.AdaptiveCellEdge;
+import net.epsilony.tsmf.adaptive.AdaptiveUtils;
 import net.epsilony.tsmf.adaptive.QuadrangleAdaptiveCell;
 import net.epsilony.tsmf.model.ui.NodeDrawer;
 import net.epsilony.tsmf.util.Math2D;
@@ -134,21 +135,8 @@ public class AdaptiveCellDemoDrawer extends SingleModelShapeDrawer {
             return false;
         }
         Point2D pt;
-
         pt = modelToComponentTransform.inverseTransform(new Point2D.Double(x, y), null);
 
-        for (AdaptiveCellEdge edge : edges) {
-            double[] headCoord = edge.getHead().coord;
-            double[] rearCoord = edge.getRear().coord;
-            double cross = Math2D.cross(
-                    rearCoord[0] - headCoord[0],
-                    rearCoord[1] - headCoord[1],
-                    pt.getX() - headCoord[0],
-                    pt.getY() - headCoord[1]);
-            if (cross <= 0) {
-                return false;
-            }
-        }
-        return true;
+        return AdaptiveUtils.isPointRestrictlyInsideCell(cell, pt.getX(), pt.getY());
     }
 }
