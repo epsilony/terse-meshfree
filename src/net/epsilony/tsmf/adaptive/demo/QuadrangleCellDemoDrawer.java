@@ -26,12 +26,13 @@ import net.epsilony.tsmf.util.ui.SingleModelShapeDrawer;
  */
 public class QuadrangleCellDemoDrawer extends SingleModelShapeDrawer {
 
-    public static double DEFAULT_OPPOSITE_MARK_LENGTH = 5;
+    public static double DEFAULT_OPPOSITE_MARK_LENGTH = 15;
     public static Color DEFAULT_OPPOSITE_MARK_COLOR = Color.RED;
     QuadrangleAdaptiveCell cell;
     private NodeDrawer nodeDrawer = new NodeDrawer(null);
     private double oppositeMarkLength = DEFAULT_OPPOSITE_MARK_LENGTH;
     private Color oppositeMarkColor = DEFAULT_OPPOSITE_MARK_COLOR;
+    public static boolean showOppositeMarks = true;
 
     public QuadrangleCellDemoDrawer(QuadrangleAdaptiveCell cell) {
         _setQuadrangleAdaptiveCell(cell);
@@ -74,7 +75,9 @@ public class QuadrangleCellDemoDrawer extends SingleModelShapeDrawer {
         for (AdaptiveCellEdge edge : cell.getEdges()) {
             nodeDrawer.setNode(edge.getHead());
             nodeDrawer.drawModel(g2);
-            drawEdgeOpposite(g2, edge);
+            if (showOppositeMarks) {
+                drawEdgeOpposite(g2, edge);
+            }
         }
     }
 
