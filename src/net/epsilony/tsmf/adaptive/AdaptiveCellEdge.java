@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.epsilony.tsmf.model.GenericSegment2D;
 import net.epsilony.tsmf.model.Node;
+import net.epsilony.tsmf.util.Math2D;
 
 /**
  *
@@ -15,8 +16,8 @@ import net.epsilony.tsmf.model.Node;
  */
 public class AdaptiveCellEdge extends GenericSegment2D<AdaptiveCellEdge> {
 
-    public static final int DEFAULT_MAX_SIZE_OF_OPPOSITES = 2;
-    public List<AdaptiveCellEdge> opposites = new ArrayList<>(DEFAULT_MAX_SIZE_OF_OPPOSITES);
+    public static int MAX_SIZE_RATIO_TO_OPPOSITES = 2;
+    public List<AdaptiveCellEdge> opposites = new ArrayList<>(MAX_SIZE_RATIO_TO_OPPOSITES);
     AdaptiveCell owner;
 
     public AdaptiveCellEdge() {
@@ -35,8 +36,12 @@ public class AdaptiveCellEdge extends GenericSegment2D<AdaptiveCellEdge> {
         if (!isAbleToBisection()) {
             throw new IllegalStateException();
         }
+        if (MAX_SIZE_RATIO_TO_OPPOSITES > 2) {
+            return bisectionAndReturnNewSuccessorWithHighSizeRatioLimit();
+        }
+        
         AdaptiveCellEdge newSucc = super.bisectionAndReturnNewSuccessor();
-
+        
         if (numOpposites() == 1) {
             getOpposite(0).addOpposite(0, newSucc);
             newSucc.addOpposite(0, getOpposite(0));
@@ -48,18 +53,64 @@ public class AdaptiveCellEdge extends GenericSegment2D<AdaptiveCellEdge> {
         return newSucc;
     }
 
+    private AdaptiveCellEdge bisectionAndReturnNewSuccessorWithHighSizeRatioLimit() {
+        AdaptiveCellEdge newSucc = super.bisectionAndReturnNewSuccessor();
+        
+        if (numOpposites() == 1) {
+            int index = getOpposite(0).opposites.indexOf(this);
+            getOpposite(0).addOpposite(index, newSucc);
+            newSucc.addOpposite(0, getOpposite(0));
+        } else {
+            List<AdaptiveCellEdge> oppositesBak = opposites;
+            opposites = new ArrayList<>(MAX_SIZE_RATIO_TO_OPPOSITES);
+            boolean succOpposite = false;
+            Node newMidNode = getRear();
+            for (AdaptiveCellEdge oppEdge : oppositesBak) {
+                if (oppEdge.getRear() == newMidNode) {
+                    succOpposite = true;
+                }
+                if (succOpposite) {
+                    oppEdge.setOpposite(0, newSucc);
+                    newSucc.addOpposite(oppEdge);
+                } else {
+                    oppEdge.setOpposite(0, this);
+                    addOpposite(oppEdge);
+                }
+            }
+        }
+        return newSucc;
+    }
+
     @Override
     protected Node bisectionNode() {
         if (numOpposites() <= 1) {
             return super.bisectionNode();
+        } else if (numOpposites() == MAX_SIZE_RATIO_TO_OPPOSITES) {
+            return getOpposite(MAX_SIZE_RATIO_TO_OPPOSITES / 2 - 1).getHead();
         } else {
-            return getOpposite(0).getHead();
+            double[] midPoint = Math2D.pointOnSegment(head.coord, getRear().coord, 0.5, null);
+            Node midNode = null;
+            double lengthErr = length() / (1 + MAX_SIZE_RATIO_TO_OPPOSITES);
+            for (int i = 0; i < numOpposites() - 1; i++) {
+                if (Math2D.distance(midPoint, opposites.get(i).getHead().coord) < lengthErr) {
+                    midNode = opposites.get(i).getHead();
+                    break;
+                }
+            }
+            return midNode;
         }
     }
 
     public boolean isAbleToBisection() {
-        if (numOpposites() == 1 && getOpposite(0).numOpposites() > 1) {
-            return false;
+        if (numOpposites() == 1) {
+            AdaptiveCellEdge opposite = getOpposite(0);
+            if (opposite.numOpposites() >= MAX_SIZE_RATIO_TO_OPPOSITES) {
+                return false;
+            } else if (MAX_SIZE_RATIO_TO_OPPOSITES == 2) {
+                return true;
+            } else if (opposite.length() / length() > MAX_SIZE_RATIO_TO_OPPOSITES - 0.1) {
+                return false;
+            }
         }
         return true;
     }
@@ -103,6 +154,10 @@ public class AdaptiveCellEdge extends GenericSegment2D<AdaptiveCellEdge> {
 
     public void addOpposite(int index, AdaptiveCellEdge element) {
         opposites.add(index, element);
+    }
+
+    public void addOpposite(AdaptiveCellEdge oppositeEdge) {
+        opposites.add(oppositeEdge);
     }
 
     public AdaptiveCellEdge removeOpposite(int index) {
