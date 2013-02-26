@@ -20,6 +20,7 @@ import net.epsilony.tsmf.adaptive.QuadrangleAdaptiveCell;
 import net.epsilony.tsmf.model.ui.NodeDrawer;
 import net.epsilony.tsmf.util.Math2D;
 import net.epsilony.tsmf.util.ui.SingleModelShapeDrawer;
+import net.epsilony.tsmf.util.ui.UIUtils;
 
 /**
  *
@@ -93,10 +94,7 @@ public class AdaptiveCellDemoDrawer extends SingleModelShapeDrawer {
         modelToComponentTransform.transform(midPoint, 0, midPoint, 0, 1);
         double[] edgeVec = Math2D.subs(rearCoord, headCoord, null);
         double[] markVec = new double[]{-edgeVec[1], edgeVec[0]};
-        modelToComponentTransform.transform(markVec, 0, markVec, 0, 1);
-        double[] origin = new double[]{0, 0};
-        modelToComponentTransform.transform(origin, 0, origin, 0, 1);
-        Math2D.subs(markVec, origin, markVec);
+        UIUtils.transformVector(modelToComponentTransform, markVec, markVec);
         Math2D.normalize(markVec, markVec);
         Math2D.scale(markVec, oppositeMarkLength, markVec);
         Path2D path = new Path2D.Double();

@@ -14,16 +14,18 @@ import java.awt.geom.Rectangle2D;
  */
 public class UIUtils {
 
+    private static final double[] ZERO2D = new double[]{0, 0};
+
     public static Rectangle2D transformAndTidyRectangle(AffineTransform transform, Rectangle2D src, Rectangle2D dst) {
         if (null == dst) {
             dst = new Rectangle2D.Double();
         }
         double[] points = new double[]{
-            src.getMinX(),src.getMinY(),src.getMaxX(),src.getMaxY()};
+            src.getMinX(), src.getMinY(), src.getMaxX(), src.getMaxY()};
         transform.transform(points, 0, points, 0, 2);
         dst.setRect(
                 points[0], points[1],
-                points[2]-points[0],points[3]-points[1]);
+                points[2] - points[0], points[3] - points[1]);
         tidyRectangle2D(dst, dst);
         return dst;
     }
@@ -66,5 +68,17 @@ public class UIUtils {
             dst.setRect(dstX, dstY, dstWidth, dstHeight);
         }
         return dst;
+    }
+
+    public static double[] transformVector(AffineTransform transform, double[] vec, double[] result) {
+        if (null == result) {
+            result = new double[]{2};
+        }
+        transform.transform(vec, 0, result, 0, 1);
+        double[] transformedOrigin = new double[2];
+        transform.transform(ZERO2D, 0, transformedOrigin, 0, 1);
+        result[0] = result[0] - transformedOrigin[0];
+        result[1] = result[1] - transformedOrigin[1];
+        return result;
     }
 }
