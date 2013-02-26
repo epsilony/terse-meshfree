@@ -21,4 +21,6 @@ public interface AdaptiveCell {
     boolean isAbleToFusionFromChildren();
 
     AdaptiveCell[] getChildren();
+
+    public AdaptiveCellEdge[] getEdges();
 }

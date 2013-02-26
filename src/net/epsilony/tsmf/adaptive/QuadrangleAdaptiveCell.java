@@ -139,6 +139,7 @@ public class QuadrangleAdaptiveCell implements AdaptiveCell {
         return children;
     }
 
+    @Override
     public AdaptiveCellEdge[] getEdges() {
         return edges;
     }
