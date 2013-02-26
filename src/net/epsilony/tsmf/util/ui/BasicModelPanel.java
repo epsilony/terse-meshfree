@@ -19,10 +19,11 @@ public class BasicModelPanel extends JPanel {
     MouseDrivenModelTransform mouseDrivenModelTransform = new MouseDrivenModelTransform();
     List<ModelDrawer> modelDrawers = new LinkedList<>();
     CoordinateMarker coordinateMarker = new CoordinateMarker(defaultShowCoordinateMarker);
+    ScaleIndicator scaleIndicator = new ScaleIndicator();
 
     public BasicModelPanel(int originX, int originY, double scale) {
         prepareMouseDrivenModelTranform(originX, originY, scale);
-        prepareCoordinateMarker();
+        prepareCoordinateMarkerAndScaleIndicator();
     }
 
     private void prepareMouseDrivenModelTranform(int originX, int originY, double scale) {
@@ -31,9 +32,11 @@ public class BasicModelPanel extends JPanel {
         mouseDrivenModelTransform.addMouseActionListenersTo(this);
     }
 
-    private void prepareCoordinateMarker() {
+    private void prepareCoordinateMarkerAndScaleIndicator() {
         coordinateMarker.setModelToComponentTransform(mouseDrivenModelTransform);
         coordinateMarker.setComponent(this);
+        scaleIndicator.setModelToComponentTransform(mouseDrivenModelTransform);
+        scaleIndicator.setComponent(this);
     }
 
     public BasicModelPanel() {
@@ -106,6 +109,10 @@ public class BasicModelPanel extends JPanel {
 
         if (coordinateMarker.isVisible()) {
             coordinateMarker.drawModel(g2);
+        }
+        
+        if (scaleIndicator.isVisible()){
+            scaleIndicator.drawModel(g2);
         }
     }
 
