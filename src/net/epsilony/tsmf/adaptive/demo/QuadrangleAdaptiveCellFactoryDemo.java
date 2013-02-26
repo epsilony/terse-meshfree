@@ -58,7 +58,7 @@ public class QuadrangleAdaptiveCellFactoryDemo {
         NodeDrawer.DEFAULT_COLOR = nodeColor;
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[i].length; j++) {
-                mainPanel.addAndSetupModelDrawer(new QuadrangleCellDemoDrawer(cells[i][j]));
+                mainPanel.addAndSetupModelDrawer(new AdaptiveCellDemoDrawer(cells[i][j]));
             }
         }
 
@@ -67,7 +67,7 @@ public class QuadrangleAdaptiveCellFactoryDemo {
         showOppositesBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                QuadrangleCellDemoDrawer.showOppositeMarks = showOppositesBox.isSelected();
+                AdaptiveCellDemoDrawer.showOppositeMarks = showOppositesBox.isSelected();
                 mainPanel.repaint();
             }
         });
@@ -104,9 +104,9 @@ public class QuadrangleAdaptiveCellFactoryDemo {
             List<ModelDrawer> modelDrawers = basicPanel.getModelDrawers();
             LinkedList<ModelDrawer> newDrawers = new LinkedList<>();
             for (ModelDrawer md : modelDrawers) {
-                if (md instanceof QuadrangleCellDemoDrawer) {
-                    QuadrangleCellDemoDrawer quadDrawer = (QuadrangleCellDemoDrawer) md;
-                    QuadrangleAdaptiveCell cell = quadDrawer.getCell();
+                if (md instanceof AdaptiveCellDemoDrawer) {
+                    AdaptiveCellDemoDrawer quadDrawer = (AdaptiveCellDemoDrawer) md;
+                    AdaptiveCell cell = quadDrawer.getCell();
                     try {
                         if (cell.getChildren() == null && quadDrawer.isComponentPointInside(e.getX(), e.getY())) {
                             fission(cell, newDrawers);
@@ -136,7 +136,7 @@ public class QuadrangleAdaptiveCellFactoryDemo {
             }
 
             for (AdaptiveCell newCell : newCells) {
-                newDrawers.add(new QuadrangleCellDemoDrawer((QuadrangleAdaptiveCell) newCell));
+                newDrawers.add(new AdaptiveCellDemoDrawer((QuadrangleAdaptiveCell) newCell));
             }
         }
     }

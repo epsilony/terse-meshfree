@@ -14,6 +14,7 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.util.List;
+import net.epsilony.tsmf.adaptive.AdaptiveCell;
 import net.epsilony.tsmf.adaptive.AdaptiveCellEdge;
 import net.epsilony.tsmf.adaptive.QuadrangleAdaptiveCell;
 import net.epsilony.tsmf.model.ui.NodeDrawer;
@@ -24,17 +25,17 @@ import net.epsilony.tsmf.util.ui.SingleModelShapeDrawer;
  *
  * @author epsilon
  */
-public class QuadrangleCellDemoDrawer extends SingleModelShapeDrawer {
+public class AdaptiveCellDemoDrawer extends SingleModelShapeDrawer {
 
     public static double DEFAULT_OPPOSITE_MARK_LENGTH = 15;
     public static Color DEFAULT_OPPOSITE_MARK_COLOR = Color.RED;
-    QuadrangleAdaptiveCell cell;
+    AdaptiveCell cell;
     private NodeDrawer nodeDrawer = new NodeDrawer(null);
     private double oppositeMarkLength = DEFAULT_OPPOSITE_MARK_LENGTH;
     private Color oppositeMarkColor = DEFAULT_OPPOSITE_MARK_COLOR;
     public static boolean showOppositeMarks = true;
 
-    public QuadrangleCellDemoDrawer(QuadrangleAdaptiveCell cell) {
+    public AdaptiveCellDemoDrawer(AdaptiveCell cell) {
         _setQuadrangleAdaptiveCell(cell);
     }
 
@@ -42,7 +43,7 @@ public class QuadrangleCellDemoDrawer extends SingleModelShapeDrawer {
         _setQuadrangleAdaptiveCell(cell);
     }
 
-    protected final void _setQuadrangleAdaptiveCell(QuadrangleAdaptiveCell cell) {
+    protected final void _setQuadrangleAdaptiveCell(AdaptiveCell cell) {
         this.cell = cell;
         Shape shape = null;
         AdaptiveCellEdge[] edges = cell.getEdges();
@@ -122,7 +123,7 @@ public class QuadrangleCellDemoDrawer extends SingleModelShapeDrawer {
         nodeDrawer.setModelToComponentTransform(modelToComponentTransform);
     }
 
-    public QuadrangleAdaptiveCell getCell() {
+    public AdaptiveCell getCell() {
         return cell;
     }
 
