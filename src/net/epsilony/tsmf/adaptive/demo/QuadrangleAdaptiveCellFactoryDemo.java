@@ -7,6 +7,8 @@ package net.epsilony.tsmf.adaptive.demo;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.NoninvertibleTransformException;
@@ -47,7 +49,7 @@ public class QuadrangleAdaptiveCellFactoryDemo {
         CommonFrame frame = new CommonFrame();
         QuadrangleAdaptiveCell[][] cells = QuadrangleAdaptiveCellFactory.byCoordGrid(
                 TestTool.linSpace(0, 200, 10), TestTool.linSpace(100, 0, 5));
-        BasicModelPanel mainPanel = frame.getMainPanel();
+        final BasicModelPanel mainPanel = frame.getMainPanel();
         Color nodeColor = NodeDrawer.DEFAULT_COLOR;
         nodeColor = new Color(
                 nodeColor.getRed(),
@@ -60,10 +62,17 @@ public class QuadrangleAdaptiveCellFactoryDemo {
             }
         }
 
-        JCheckBox debugBox = new JCheckBox("debug", false);
         JCheckBox recursiveBox = new JCheckBox("recursively", true);
-        ClickToFission clickToFission = new ClickToFission(mainPanel, debugBox, recursiveBox);
-        frame.getContentPane().add(debugBox);
+        final JCheckBox showOppositesBox = new JCheckBox("opposites", true);
+        showOppositesBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                QuadrangleCellDemoDrawer.showOppositeMarks = showOppositesBox.isSelected();
+                mainPanel.repaint();
+            }
+        });
+        ClickToFission clickToFission = new ClickToFission(mainPanel, recursiveBox);
+        frame.getContentPane().add(showOppositesBox);
         frame.getContentPane().add(recursiveBox);
         frame.setLayout(new FlowLayout());
         mainPanel.setPreferredSize(new Dimension(800, 600));
@@ -73,12 +82,12 @@ public class QuadrangleAdaptiveCellFactoryDemo {
     public static class ClickToFission extends MouseAdapter {
 
         BasicModelPanel basicPanel;
-        private final JCheckBox debugCheckBox;
         private final JCheckBox recursivelyFissionCheckBox;
 
-        public ClickToFission(BasicModelPanel basicPanel, JCheckBox debugCheckBox, JCheckBox recursivelyFissionCheckBox) {
+        public ClickToFission(
+                BasicModelPanel basicPanel,
+                JCheckBox recursivelyFissionCheckBox) {
             prepare(basicPanel);
-            this.debugCheckBox = debugCheckBox;
             this.recursivelyFissionCheckBox = recursivelyFissionCheckBox;
         }
 
@@ -89,8 +98,8 @@ public class QuadrangleAdaptiveCellFactoryDemo {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            if (debugCheckBox.isSelected()) {
-                System.out.println("here = ");
+            if (e.getButton() != MouseEvent.BUTTON1 || e.getClickCount() != 1) {
+                return;
             }
             List<ModelDrawer> modelDrawers = basicPanel.getModelDrawers();
             LinkedList<ModelDrawer> newDrawers = new LinkedList<>();
