@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.util.quadrature;
 
 import gnu.trove.list.array.TDoubleArrayList;

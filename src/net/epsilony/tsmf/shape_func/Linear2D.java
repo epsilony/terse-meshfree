@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.shape_func;
 
 import gnu.trove.list.array.TDoubleArrayList;
@@ -10,7 +7,7 @@ import net.epsilony.tsmf.util.Math2D;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class Linear2D implements ShapeFunction {
 

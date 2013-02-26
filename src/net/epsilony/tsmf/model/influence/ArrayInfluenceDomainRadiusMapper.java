@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.model.influence;
 
 import gnu.trove.list.array.TDoubleArrayList;
@@ -12,7 +9,7 @@ import net.epsilony.tsmf.util.pair.WithPair;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class ArrayInfluenceDomainRadiusMapper implements InfluenceRadiusMapper {
 

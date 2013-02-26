@@ -1,21 +1,18 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.adaptive;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public interface AdaptiveCell {
 
     void fissionToChildren();
 
     boolean isAbleToFissionToChildren();
-    
+
     AdaptiveCell findOneFissionObstrutor();
-    
+
     void fusionFromChildren();
 
     boolean isAbleToFusionFromChildren();

@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.model.support_domain;
 
 import net.epsilony.tsmf.model.Node;
@@ -10,7 +7,7 @@ import net.epsilony.tsmf.model.search.SphereSearcher;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class RawSupportDomainSearcher implements SupportDomainSearcher {
 

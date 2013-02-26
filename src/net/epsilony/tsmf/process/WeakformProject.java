@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.process;
 
 import net.epsilony.tsmf.assemblier.WFAssemblier;
@@ -12,7 +9,7 @@ import net.epsilony.tsmf.shape_func.ShapeFunction;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class WeakformProject {
 

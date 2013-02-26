@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.process;
 
 import net.epsilony.tsmf.model.Segment2D;
@@ -9,7 +6,7 @@ import net.epsilony.tsmf.util.quadrature.QuadraturePoint;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class TaskUnit extends QuadraturePoint {
 

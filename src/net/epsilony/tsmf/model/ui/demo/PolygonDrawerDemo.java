@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.model.ui.demo;
 
 import javax.swing.SwingUtilities;
@@ -15,7 +12,7 @@ import net.epsilony.tsmf.util.ui.CommonFrame;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class PolygonDrawerDemo {
 

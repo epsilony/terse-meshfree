@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.util.quadrature;
 
 import java.util.Iterator;
@@ -9,7 +6,7 @@ import net.epsilony.tsmf.util.ArrvarFunction;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class QuadrangleQuadrature implements Iterable<QuadraturePoint> {
 

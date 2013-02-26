@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.util.ui;
 
 import java.awt.event.ActionEvent;
@@ -11,7 +8,7 @@ import javax.swing.Timer;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public abstract class AnimateModelDrawerAdapter extends ModelDrawerAdapter implements AnimateModelDrawer, ActionListener {
 

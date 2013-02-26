@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.util.ui.demo;
 
 import java.awt.Color;
@@ -16,7 +13,7 @@ import net.epsilony.tsmf.util.ui.ModelDrawerAdapter;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class BasicModelPanelDemo {
     public static void main(String[] args) {

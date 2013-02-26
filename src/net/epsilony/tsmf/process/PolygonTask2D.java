@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.process;
 
 import java.util.Collection;
@@ -16,7 +13,7 @@ import net.epsilony.tsmf.util.quadrature.Segment2DQuadrature;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class PolygonTask2D implements WeakformTask {
 

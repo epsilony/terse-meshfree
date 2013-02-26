@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.util;
 
 import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
@@ -9,7 +6,7 @@ import net.epsilony.tsmf.cons_law.IsoElastic2D;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class TimoshenkoAnalyticalBeam2D {
 

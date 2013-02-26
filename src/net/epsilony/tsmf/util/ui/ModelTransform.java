@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.util.ui;
 
 import java.awt.geom.AffineTransform;
@@ -9,14 +6,14 @@ import java.awt.geom.Rectangle2D;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class ModelTransform extends AffineTransform {
 
     public static final double SCALE_LOWER_LIMITE = Double.MIN_VALUE;
     /**
      *
-     * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
      */
     public static int DEFAULT_ZOOM_ALL_MARGIN = 10;
     private double defaultOriginX;

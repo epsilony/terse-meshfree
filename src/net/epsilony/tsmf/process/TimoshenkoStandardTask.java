@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.process;
 
 import java.util.List;
@@ -17,7 +14,7 @@ import net.epsilony.tsmf.util.TimoshenkoAnalyticalBeam2D;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class TimoshenkoStandardTask implements WeakformTask {
 
