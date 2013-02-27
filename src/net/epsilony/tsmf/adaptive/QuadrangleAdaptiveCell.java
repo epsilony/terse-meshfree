@@ -8,7 +8,7 @@ import net.epsilony.tsmf.util.Math2D;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class QuadrangleAdaptiveCell extends AdaptiveCellAdapter {
+public class QuadrangleAdaptiveCell extends AdaptiveCellAdapter<QuadrangleAdaptiveCell> {
 
     public static final int NUM_OF_EDGES = 4;
     public static final int NUM_OF_CHILDREN = 4;

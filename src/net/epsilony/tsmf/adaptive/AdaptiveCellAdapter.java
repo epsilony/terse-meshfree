@@ -1,16 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.adaptive;
 
 /**
  *
  * @author epsilon
  */
-public abstract class AdaptiveCellAdapter implements AdaptiveCell {
+public abstract class AdaptiveCellAdapter<T extends AdaptiveCellAdapter> implements AdaptiveCell {
 
-    QuadrangleAdaptiveCell[] children;
+    T[] children;
     AdaptiveCellEdge[] edges;
 
     protected void bisectionAllEdges() {
@@ -33,7 +30,7 @@ public abstract class AdaptiveCellAdapter implements AdaptiveCell {
     }
 
     @Override
-    public QuadrangleAdaptiveCell[] getChildren() {
+    public T[] getChildren() {
         return children;
     }
 
