@@ -81,8 +81,8 @@ public abstract class GenericSegment2D<T extends Boundary2D<T, Node>> extends Bo
         this.succ = newSucc;
         return newSucc;
     }
-    
-    protected Node bisectionNode(){
+
+    protected Node bisectionNode() {
         return new Node(midPoint());
     }
 
@@ -102,5 +102,27 @@ public abstract class GenericSegment2D<T extends Boundary2D<T, Node>> extends Bo
         double dy = xy[1] - headCoord[1];
         double cross = Math2D.cross(dhrX, dhrY, dx, dy);
         return cross > 0 ? true : false;
+    }
+
+    public double[] outNormal() {
+        double[] result = Math2D.subs(getRear().coord, head.coord, null);
+        Math2D.normalize(result, result);
+        return result;
+    }
+
+    public double[] getHeadCoord() {
+        return head.coord;
+    }
+
+    public double[] getRearCoord() {
+        return getRear().coord;
+    }
+
+    public void setHeadCoord(double[] coord) {
+        head.coord = coord;
+    }
+
+    public void setRearCoord(double[] coord) {
+        getRear().coord = coord;
     }
 }
