@@ -67,11 +67,8 @@ public class QuadrangleAdaptiveCellFactory {
         for (int i = 0; i < counterClockwiseVetes.length; i++) {
             edges[i] = new AdaptiveCellEdge(counterClockwiseVetes[i]);
         }
-        for (int i = 0; i < counterClockwiseVetes.length; i++) {
-            edges[i].succ = edges[(i + 1) % counterClockwiseVetes.length];
-            edges[(i + 1) % counterClockwiseVetes.length].pred = edges[i];
-        }
         result.setEdges(edges);
+        result.linkEdges();
         return result;
     }
 }

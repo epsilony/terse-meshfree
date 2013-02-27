@@ -20,22 +20,15 @@ public class QuadrangleAdaptiveCell extends AdaptiveCellAdapter<QuadrangleAdapti
     protected void createChildrenFromBisectionedEdges() {
         Node centerNode = centerNodeForFission(edges);
         children = new QuadrangleAdaptiveCell[NUM_OF_CHILDREN];
-        AdaptiveCellEdge[] newSuccEdges = new AdaptiveCellEdge[NUM_OF_EDGES];
-        for (int i = 0; i < edges.length; i++) {
-            newSuccEdges[i] = edges[i].succ;
-        }
         for (int i = 0; i < children.length; i++) {
             AdaptiveCellEdge[] newChildEdges = new AdaptiveCellEdge[NUM_OF_EDGES];
             newChildEdges[i] = edges[i];
-            newChildEdges[(i + 3) % NUM_OF_EDGES] = newSuccEdges[(i + 3) % NUM_OF_EDGES];
+            newChildEdges[(i + 3) % NUM_OF_EDGES] = edges[i].pred;
             newChildEdges[(i + 1) % NUM_OF_EDGES] = new AdaptiveCellEdge(edges[i].getRear());
             newChildEdges[(i + 2) % NUM_OF_EDGES] = new AdaptiveCellEdge(centerNode);
-            for (int j = 0; j < newChildEdges.length; j++) {
-                newChildEdges[j].succ = newChildEdges[(j + 1) % NUM_OF_EDGES];
-                newChildEdges[(j + 1) % NUM_OF_EDGES].pred = newChildEdges[j];
-            }
             children[i] = new QuadrangleAdaptiveCell();
             children[i].setEdges(newChildEdges);
+            children[i].linkEdges();
         }
     }
 

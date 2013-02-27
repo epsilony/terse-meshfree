@@ -79,6 +79,14 @@ public abstract class AdaptiveCellAdapter<T extends AdaptiveCellAdapter> impleme
         }
     }
 
+    protected void linkEdges() {
+        final int numOfEdges = getNumOfEdges();
+        for (int i = 0; i < edges.length; i++) {
+            edges[i].succ = edges[(i + 1) % numOfEdges];
+            edges[(i + 1) % numOfEdges].pred = edges[i];
+        }
+    }
+
     abstract protected int getNumOfEdges();
 
     abstract protected int getNumOfChildren();
