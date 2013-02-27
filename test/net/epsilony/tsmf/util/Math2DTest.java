@@ -52,4 +52,12 @@ public class Math2DTest {
         assertArrayEquals(exp, act, 1e-15);
         assertArrayEquals(exp, act2, 1e-15);
     }
+
+    @Test
+    public void testCos() {
+        double[] sample = new double[]{Math.sqrt(3), 1, 0, 15};
+        double exp = 0.5;
+        double act = Math2D.cos(sample[0], sample[1], sample[2], sample[3]);
+        assertEquals(exp, act, 1e-15);
+    }
 }
