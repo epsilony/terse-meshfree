@@ -9,11 +9,13 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import javax.swing.JCheckBox;
 import net.epsilony.tsmf.adaptive.AdaptiveCell;
 import net.epsilony.tsmf.model.ui.NodeDrawer;
 import net.epsilony.tsmf.util.ui.BasicModelPanel;
 import net.epsilony.tsmf.util.ui.CommonFrame;
+import net.epsilony.tsmf.util.ui.ModelDrawer;
 
 /**
  *
@@ -28,6 +30,12 @@ public abstract class AbstractAdaptiveCellDemo {
         Color nodeColor = NodeDrawer.DEFAULT_COLOR;
         nodeColor = new Color(nodeColor.getRed(), nodeColor.getGreen(), nodeColor.getBlue(), nodeColor.getAlpha() / 4);
         NodeDrawer.DEFAULT_COLOR = nodeColor;
+        List<ModelDrawer> extraDrawers = getExtraDrawers();
+        if (null != extraDrawers) {
+            for (ModelDrawer dr : extraDrawers) {
+                mainPanel.addAndSetupModelDrawer(dr);
+            }
+        }
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[i].length; j++) {
                 mainPanel.addAndSetupModelDrawer(new AdaptiveCellDemoDrawer(cells[i][j]));
@@ -51,5 +59,8 @@ public abstract class AbstractAdaptiveCellDemo {
     }
 
     protected abstract AdaptiveCell[][] genCells();
-    
+
+    protected List<ModelDrawer> getExtraDrawers() {
+        return null;
+    }
 }
