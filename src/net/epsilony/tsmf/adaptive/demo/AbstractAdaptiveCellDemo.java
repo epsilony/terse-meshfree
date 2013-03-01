@@ -1,4 +1,7 @@
-/* (c) Copyright by Man YUAN */
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package net.epsilony.tsmf.adaptive.demo;
 
 import java.awt.Color;
@@ -7,46 +10,29 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JCheckBox;
-import javax.swing.SwingUtilities;
-import net.epsilony.tsmf.adaptive.QuadrangleAdaptiveCell;
-import net.epsilony.tsmf.adaptive.QuadrangleAdaptiveCellFactory;
+import net.epsilony.tsmf.adaptive.AdaptiveCell;
 import net.epsilony.tsmf.model.ui.NodeDrawer;
-import net.epsilony.tsmf.util.TestTool;
 import net.epsilony.tsmf.util.ui.BasicModelPanel;
 import net.epsilony.tsmf.util.ui.CommonFrame;
 
 /**
  *
- * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
+ * @author epsilon
  */
-public class QuadrangleAdaptiveCellFactoryDemo {
+public abstract class AbstractAdaptiveCellDemo {
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                createDemoUI();
-            }
-        });
-    }
-
-    public static void createDemoUI() {
+    public void createDemoUI() {
         CommonFrame frame = new CommonFrame();
-        QuadrangleAdaptiveCell[][] cells = QuadrangleAdaptiveCellFactory.byCoordGrid(
-                TestTool.linSpace(0, 200, 10), TestTool.linSpace(100, 0, 5));
+        AdaptiveCell[][] cells = genCells();
         final BasicModelPanel mainPanel = frame.getMainPanel();
         Color nodeColor = NodeDrawer.DEFAULT_COLOR;
-        nodeColor = new Color(
-                nodeColor.getRed(),
-                nodeColor.getGreen(),
-                nodeColor.getBlue(), nodeColor.getAlpha() / 4);
+        nodeColor = new Color(nodeColor.getRed(), nodeColor.getGreen(), nodeColor.getBlue(), nodeColor.getAlpha() / 4);
         NodeDrawer.DEFAULT_COLOR = nodeColor;
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells[i].length; j++) {
                 mainPanel.addAndSetupModelDrawer(new AdaptiveCellDemoDrawer(cells[i][j]));
             }
         }
-
         JCheckBox recursiveBox = new JCheckBox("recursively", true);
         final JCheckBox showOppositesBox = new JCheckBox("opposites", true);
         showOppositesBox.addActionListener(new ActionListener() {
@@ -63,4 +49,7 @@ public class QuadrangleAdaptiveCellFactoryDemo {
         mainPanel.setPreferredSize(new Dimension(800, 600));
         frame.setVisible(true);
     }
+
+    protected abstract AdaptiveCell[][] genCells();
+    
 }
