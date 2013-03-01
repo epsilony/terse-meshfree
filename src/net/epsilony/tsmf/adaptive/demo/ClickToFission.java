@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.adaptive.demo;
 
 import java.awt.event.MouseAdapter;
@@ -21,7 +18,7 @@ import net.epsilony.tsmf.util.ui.ModelDrawer;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class ClickToFission extends MouseAdapter {
     BasicModelPanel basicPanel;

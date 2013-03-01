@@ -3,7 +3,7 @@ package net.epsilony.tsmf.adaptive;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public abstract class AdaptiveCellAdapter<T extends AdaptiveCellAdapter> implements AdaptiveCell {
 
