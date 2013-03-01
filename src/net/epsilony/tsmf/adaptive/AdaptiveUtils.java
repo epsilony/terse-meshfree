@@ -61,4 +61,9 @@ public class AdaptiveUtils {
         }
         return true;
     }
+    
+    public static void link(AdaptiveCellEdge e1,AdaptiveCellEdge e2){
+        e1.addOpposite(e2);
+        e2.addOpposite(e1);
+    }
 }
