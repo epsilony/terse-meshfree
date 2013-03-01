@@ -28,7 +28,6 @@ public class QuadrangleAdaptiveCell extends AdaptiveCellAdapter<QuadrangleAdapti
             newChildEdges[(i + 2) % NUM_OF_EDGES] = new AdaptiveCellEdge(centerNode);
             children[i] = new QuadrangleAdaptiveCell();
             children[i].setEdges(newChildEdges);
-            children[i].linkEdges();
         }
     }
 

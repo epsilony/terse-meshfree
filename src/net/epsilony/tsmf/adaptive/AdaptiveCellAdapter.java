@@ -77,9 +77,10 @@ public abstract class AdaptiveCellAdapter<T extends AdaptiveCellAdapter> impleme
         for (AdaptiveCellEdge eg : edges) {
             eg.setOwner(this);
         }
+        linkEdges();
     }
 
-    protected void linkEdges() {
+    private void linkEdges() {
         final int numOfEdges = getNumOfEdges();
         for (int i = 0; i < edges.length; i++) {
             edges[i].succ = edges[(i + 1) % numOfEdges];
