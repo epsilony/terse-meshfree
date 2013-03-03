@@ -2,7 +2,6 @@
 package net.epsilony.tsmf.adaptive;
 
 import net.epsilony.tsmf.util.TestTool;
-import org.junit.Test;
 
 /**
  *

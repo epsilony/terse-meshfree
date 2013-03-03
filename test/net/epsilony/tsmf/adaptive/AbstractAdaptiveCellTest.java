@@ -2,6 +2,7 @@
 package net.epsilony.tsmf.adaptive;
 
 import java.awt.geom.Rectangle2D;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -15,12 +16,14 @@ import net.epsilony.tsmf.util.DoubleArrayComparator;
 import net.epsilony.tsmf.util.Math2D;
 import net.epsilony.tsmf.util.pair.WithPairComparator;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
+@Ignore
 public abstract class AbstractAdaptiveCellTest {
 
     public abstract AdaptiveCell[][] genSampleGrid();
@@ -85,7 +88,7 @@ public abstract class AbstractAdaptiveCellTest {
                 break;
             }
         }
-        System.out.println("has fissioned = " + hasFissioned);
+        assertTrue(hasFissioned);
         return result;
     }
 
@@ -177,6 +180,9 @@ public abstract class AbstractAdaptiveCellTest {
 
     @Test
     public void testFission() {
+        if (Modifier.isAbstract(getClass().getModifiers())) {
+            return;
+        }
         System.out.println(this.getClass() + "test fission");
         for (int maxRatio : new int[]{2, 4}) {
             AdaptiveCellEdge.MAX_SIZE_RATIO_TO_OPPOSITES = maxRatio;
