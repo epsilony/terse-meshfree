@@ -3,7 +3,7 @@ package net.epsilony.tsmf.adaptive;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.epsilony.tsmf.model.GenericSegment2D;
+import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.util.Math2D;
 
@@ -11,7 +11,7 @@ import net.epsilony.tsmf.util.Math2D;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class AdaptiveCellEdge extends GenericSegment2D<AdaptiveCellEdge> {
+public class AdaptiveCellEdge extends Segment2D {
 
     public static int MAX_SIZE_RATIO_TO_OPPOSITES = 2;
     public List<AdaptiveCellEdge> opposites = new ArrayList<>(MAX_SIZE_RATIO_TO_OPPOSITES);
@@ -36,9 +36,9 @@ public class AdaptiveCellEdge extends GenericSegment2D<AdaptiveCellEdge> {
         if (MAX_SIZE_RATIO_TO_OPPOSITES > 2) {
             return bisectionAndReturnNewSuccessorWithHighSizeRatioLimit();
         }
-        
-        AdaptiveCellEdge newSucc = super.bisectionAndReturnNewSuccessor();
-        
+
+        AdaptiveCellEdge newSucc = (AdaptiveCellEdge) super.bisectionAndReturnNewSuccessor();
+
         if (numOpposites() == 1) {
             getOpposite(0).addOpposite(0, newSucc);
             newSucc.addOpposite(0, getOpposite(0));
@@ -51,8 +51,8 @@ public class AdaptiveCellEdge extends GenericSegment2D<AdaptiveCellEdge> {
     }
 
     private AdaptiveCellEdge bisectionAndReturnNewSuccessorWithHighSizeRatioLimit() {
-        AdaptiveCellEdge newSucc = super.bisectionAndReturnNewSuccessor();
-        
+        AdaptiveCellEdge newSucc = (AdaptiveCellEdge) super.bisectionAndReturnNewSuccessor();
+
         if (numOpposites() == 1) {
             int index = getOpposite(0).opposites.indexOf(this);
             getOpposite(0).addOpposite(index, newSucc);
@@ -117,7 +117,7 @@ public class AdaptiveCellEdge extends GenericSegment2D<AdaptiveCellEdge> {
             throw new IllegalStateException();
         }
         this.succ = successor.succ;
-        this.succ.pred = this;
+        this.succ.setPred(this);
         if (numOpposites() == 0) {
             return;
         }
@@ -175,7 +175,30 @@ public class AdaptiveCellEdge extends GenericSegment2D<AdaptiveCellEdge> {
     }
 
     @Override
-    protected AdaptiveCellEdge getThis() {
-        return this;
+    public AdaptiveCellEdge getPred() {
+        return (AdaptiveCellEdge) super.getPred(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void setPred(AdaptiveCellEdge pred) {
+        super.setPred(pred); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setPred(Segment2D pred) {
+        super.setPred((AdaptiveCellEdge) pred);
+    }
+
+    @Override
+    public AdaptiveCellEdge getSucc() {
+        return (AdaptiveCellEdge) super.getSucc(); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setSucc(Segment2D succ) {
+        super.setSucc((AdaptiveCellEdge) succ); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void setSucc(AdaptiveCellEdge succ) {
+        super.setSucc(succ);
     }
 }

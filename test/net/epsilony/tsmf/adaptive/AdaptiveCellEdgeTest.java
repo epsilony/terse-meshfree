@@ -36,13 +36,13 @@ public class AdaptiveCellEdgeTest {
                 sampleSideOppsitesIndes, oppositeSideOppositedIndes);
         AdaptiveCellEdge sampleEdge = sampleData.sampleSideEdges.get(0);
         AdaptiveCellEdge newSucc = sampleEdge.bisectionAndReturnNewSuccessor();
-        assertTrue(newSucc == sampleEdge.succ);
+        assertTrue(newSucc == sampleEdge.getSucc());
         assertTrue(newSucc.numOpposites() == 1);
         assertTrue(sampleEdge.numOpposites() == 1);
         assertTrue(newSucc.getOpposite(0) == sampleData.oppositeSideEdges.get(0));
         assertTrue(sampleEdge.getOpposite(0) == sampleData.oppositeSideEdges.get(1));
-        assertTrue(sampleData.sampleSideEdges.get(1) == newSucc.succ);
-        assertTrue(sampleData.sampleSideEdges.get(1).pred == newSucc);
+        assertTrue(sampleData.sampleSideEdges.get(1) == newSucc.getSucc());
+        assertTrue(sampleData.sampleSideEdges.get(1).getPred() == newSucc);
         assertTrue(sampleData.oppositeSideEdges.get(0).numOpposites() == 1);
         assertTrue(sampleData.oppositeSideEdges.get(1).numOpposites() == 1);
         assertTrue(sampleData.oppositeSideEdges.get(0).getOpposite(0) == newSucc);
@@ -70,10 +70,10 @@ public class AdaptiveCellEdgeTest {
         assertTrue(sampleEdge.getOpposite(0) == sampleData.oppositeSideEdges.get(1));
         assertTrue(newSucc.numOpposites() == 1);
         assertTrue(newSucc.getOpposite(0) == sampleEdge.getOpposite(0));
-        assertTrue(newSucc.succ == sampleData.sampleSideEdges.get(1));
-        assertTrue(sampleData.sampleSideEdges.get(1).pred == newSucc);
-        assertTrue(newSucc.pred == sampleEdge);
-        assertTrue(sampleEdge.succ == newSucc);
+        assertTrue(newSucc.getSucc() == sampleData.sampleSideEdges.get(1));
+        assertTrue(sampleData.sampleSideEdges.get(1).getPred() == newSucc);
+        assertTrue(newSucc.getPred() == sampleEdge);
+        assertTrue(sampleEdge.getSucc() == newSucc);
     }
 
     public void testBisectionOneOppositeToABiggerOne() {
@@ -212,8 +212,8 @@ public class AdaptiveCellEdgeTest {
             edges.add(new AdaptiveCellEdge(nodes[headIndes[i]]));
         }
         for (int i = 0; i < headIndes.length - 1; i++) {
-            edges.get(i).succ = edges.get(i + 1);
-            edges.get(i + 1).pred = edges.get(i);
+            edges.get(i).setSucc(edges.get(i + 1));
+            edges.get(i + 1).setPred(edges.get(i));
         }
         return edges;
     }

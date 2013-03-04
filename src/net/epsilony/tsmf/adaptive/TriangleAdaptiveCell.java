@@ -20,16 +20,16 @@ public class TriangleAdaptiveCell extends AdaptiveCellAdapter<TriangleAdaptiveCe
             AdaptiveCellEdge[] childEdges = new AdaptiveCellEdge[NUM_OF_EDGES];
             childEdges[i] = edges[i];
             childEdges[(i + 1) % NUM_OF_EDGES] = new AdaptiveCellEdge(edges[i].getRear());
-            childEdges[(i + 2) % NUM_OF_EDGES] = edges[i].pred;
+            childEdges[(i + 2) % NUM_OF_EDGES] = edges[i].getPred();
             cell.setEdges(childEdges);
         }
 
         children[3] = new TriangleAdaptiveCell();
         children[3].setEdges(new AdaptiveCellEdge[]{
-                    new AdaptiveCellEdge(children[0].edges[2].getHead()),
-                    new AdaptiveCellEdge(children[1].edges[0].getHead()),
-                    new AdaptiveCellEdge(children[2].edges[1].getHead())
-                });
+            new AdaptiveCellEdge(children[0].edges[2].getHead()),
+            new AdaptiveCellEdge(children[1].edges[0].getHead()),
+            new AdaptiveCellEdge(children[2].edges[1].getHead())
+        });
     }
 
     @Override

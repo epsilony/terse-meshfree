@@ -27,7 +27,7 @@ public class Segment2DQuadratureTest {
         };
 
         Segment2D seg = new Segment2D(new Node(1, -1));
-        seg.succ = new Segment2D(new Node(-2, 3));
+        seg.setSucc(new Segment2D(new Node(-2, 3)));
         double exp = 5 * val;
         boolean getHere = false;
         for (int deg = 1; deg < GaussLegendre.MAXPOINTS * 2 - 1; deg++) {
@@ -49,7 +49,7 @@ public class Segment2DQuadratureTest {
         };
 
         Segment2D seg = new Segment2D(new Node(1, 2));
-        seg.succ = new Segment2D(new Node(-2, 6));
+        seg.setSucc(new Segment2D(new Node(-2, 6)));
         double exp = -2.5;
         boolean getHere = false;
         for (int deg = 1; deg < GaussLegendre.MAXPOINTS * 2 - 1; deg++) {
@@ -71,7 +71,7 @@ public class Segment2DQuadratureTest {
         };
 
         Segment2D seg = new Segment2D(new Node(1, 2));
-        seg.succ = new Segment2D(new Node(-2, 6));
+        seg.setSucc(new Segment2D(new Node(-2, 6)));
         double exp = 20;
         boolean getHere = false;
         for (int deg = 1; deg < GaussLegendre.MAXPOINTS * 2 - 1; deg++) {
