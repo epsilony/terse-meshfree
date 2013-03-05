@@ -23,7 +23,7 @@ public class PolygonDrawerDemo {
         BasicModelPanel mainPanel = frame.getMainPanel();
         mainPanel.addAndSetupModelDrawer(polygonDrawer);
         for (Segment2D seg : polygon) {
-            mainPanel.addAndSetupModelDrawer(new NodeDrawer(seg.head));
+            mainPanel.addAndSetupModelDrawer(new NodeDrawer(seg.getHead()));
         }
         frame.setVisible(true);
     }

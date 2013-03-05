@@ -12,7 +12,7 @@ public class Segment2D implements IntIdentity {
 
     protected Segment2D pred;
     protected Segment2D succ;
-    public Node head;
+    protected Node head;
     public int id;
 
     public Segment2D() {
