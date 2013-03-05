@@ -13,6 +13,15 @@ public class Node implements IntIdentity, WithPair<double[], Node> {
 
     public double[] coord;
     public int id;
+    protected Object data;
+
+    public Object getData() {
+        return data;
+    }
+
+    public void setData(Object data) {
+        this.data = data;
+    }
 
     @Override
     public int getId() {
