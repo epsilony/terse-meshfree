@@ -10,6 +10,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
+import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tsmf.adaptive.AdaptiveCell;
 import net.epsilony.tsmf.adaptive.AdaptiveCellEdge;
@@ -82,8 +83,8 @@ public class AdaptiveCellDemoDrawer extends SingleModelShapeDrawer {
     }
 
     private void drawEdgeOpposite(Graphics2D g2, AdaptiveCellEdge edge) {
-        List<AdaptiveCellEdge> opposites = edge.getOpposites();
-        if (null == opposites) {
+
+        if (edge.numOpposites() == 0) {
             return;
         }
         double[] headCoord = edge.getHead().coord;
@@ -98,7 +99,8 @@ public class AdaptiveCellDemoDrawer extends SingleModelShapeDrawer {
         Path2D path = new Path2D.Double();
 
         g2.setColor(oppositeMarkColor);
-        for (AdaptiveCellEdge opp : opposites) {
+        for (int i = 0; i < edge.numOpposites(); i++) {
+            AdaptiveCellEdge opp = edge.getOpposite(i);
             double[] oppositeMid = Math2D.pointOnSegment(opp.getHead().coord, opp.getRear().coord, 0.5, null);
             modelToComponentTransform.transform(oppositeMid, 0, oppositeMid, 0, 1);
             path.moveTo(midPoint[0] + markVec[0], midPoint[1] + markVec[1]);

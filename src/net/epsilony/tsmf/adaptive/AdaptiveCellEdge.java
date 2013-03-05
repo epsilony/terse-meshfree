@@ -2,6 +2,7 @@
 package net.epsilony.tsmf.adaptive;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.model.Node;
@@ -14,8 +15,8 @@ import net.epsilony.tsmf.util.Math2D;
 public class AdaptiveCellEdge extends Segment2D {
 
     public static int MAX_SIZE_RATIO_TO_OPPOSITES = 2;
-    public List<AdaptiveCellEdge> opposites = new ArrayList<>(MAX_SIZE_RATIO_TO_OPPOSITES);
-    AdaptiveCell owner;
+    protected List<AdaptiveCellEdge> opposites = new ArrayList<>(MAX_SIZE_RATIO_TO_OPPOSITES);
+    protected AdaptiveCell owner;
 
     public AdaptiveCellEdge() {
     }
@@ -137,10 +138,6 @@ public class AdaptiveCellEdge extends Segment2D {
         }
     }
 
-    public List<AdaptiveCellEdge> getOpposites() {
-        return opposites;
-    }
-
     public AdaptiveCell getOwner() {
         return owner;
     }
@@ -200,5 +197,9 @@ public class AdaptiveCellEdge extends Segment2D {
 
     public void setSucc(AdaptiveCellEdge succ) {
         super.setSucc(succ);
+    }
+
+    public void addOppositesTo(Collection<? super AdaptiveCellEdge> output) {
+        output.addAll(opposites);
     }
 }
