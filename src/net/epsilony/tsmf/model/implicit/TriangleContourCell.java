@@ -46,6 +46,17 @@ public class TriangleContourCell extends TriangleAdaptiveCell {
         return getEdges()[index];
     }
 
+    public Segment2D getContourDestinationEdge() {
+        if (status < 0) {
+            throw new IllegalStateException("status haven't been updated");
+        }
+        int index = STATUS_CONTOUR_DEST_EDGE_INDEX_MAP[status];
+        if (index < 0) {
+            return null;
+        }
+        return getEdges()[index];
+    }
+
     public TriangleContourCell nextContourCell() {
         if (status < 0) {
             throw new IllegalStateException("status haven't been updated");
@@ -54,7 +65,11 @@ public class TriangleContourCell extends TriangleAdaptiveCell {
         if (index < 0) {
             return null;
         }
-        if (getEdges()[index].numOpposites() != 1) {
+        int numOpposites = getEdges()[index].numOpposites();
+        if (numOpposites == 0) {
+            return null;
+        }
+        if (numOpposites > 1) {
             throw new IllegalStateException("Unsupported");
         }
         return (TriangleContourCell) getEdges()[index].getOpposite(0).getOwner();
