@@ -2,6 +2,8 @@
 package net.epsilony.tsmf.util;
 
 import java.awt.geom.Rectangle2D;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -19,5 +21,11 @@ public class MiscellaneousUtils {
         double height = Math.abs(rect.getHeight());
         result.setRect(x, y, width, height);
         return result;
+    }
+
+    public static <T> void addToList(T[][] array, List<? super T> dst) {
+        for (int i = 0; i < array.length; i++) {
+            dst.addAll(Arrays.asList(array[i]));
+        }
     }
 }
