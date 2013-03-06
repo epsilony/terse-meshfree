@@ -1,0 +1,70 @@
+/* (c) Copyright by Man YUAN */
+package net.epsilony.tsmf.model.implicit;
+
+import net.epsilony.tsmf.adaptive.TriangleAdaptiveCell;
+import net.epsilony.tsmf.model.Segment2D;
+
+/**
+ *
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
+ */
+public class TriangleContourCell extends TriangleAdaptiveCell {
+
+    private static final int[] STATUS_CONTOUR_SRC_EDGE_INDEX_MAP = new int[]{-1, 0, 1, 1, 2, 0, 2, -1};
+    private static final int[] STATUS_CONTOUR_DEST_EDGE_INDEX_MAP = new int[]{-1, 2, 0, 2, 1, 1, 0, -1};
+    boolean visited = false;
+    private int status = -1;
+
+    public boolean isVisited() {
+        return visited;
+    }
+
+    public void setVisited(boolean polygonized) {
+        this.visited = polygonized;
+    }
+
+    public void updateStatus(double contourLevel) {
+        double w = 1;
+        status = 0;
+        for (int i = 0; i < getEdges().length; i++) {
+            double[] funcValues = getNodeValue(i);
+            if (funcValues[0] >= contourLevel) {
+                status += w;
+            }
+            w *= 2;
+        }
+    }
+
+    public Segment2D getContourSourceEdge() {
+        if (status < 0) {
+            throw new IllegalStateException("status haven't been updated");
+        }
+        int index = STATUS_CONTOUR_SRC_EDGE_INDEX_MAP[status];
+        if (index < 0) {
+            return null;
+        }
+        return getEdges()[index];
+    }
+
+    public TriangleContourCell nextContourCell() {
+        if (status < 0) {
+            throw new IllegalStateException("status haven't been updated");
+        }
+        int index = STATUS_CONTOUR_DEST_EDGE_INDEX_MAP[status];
+        if (index < 0) {
+            return null;
+        }
+        if (getEdges()[index].numOpposites() != 1) {
+            throw new IllegalStateException("Unsupported");
+        }
+        return (TriangleContourCell) getEdges()[index].getOpposite(0).getOwner();
+    }
+
+    public double[] getNodeValue(int index) {
+        return (double[]) getEdges()[index].getHead().getData();
+    }
+
+    public void setNodeValue(int index, double[] value) {
+        getEdges()[index].getHead().setData(value);
+    }
+}
