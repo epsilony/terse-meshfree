@@ -7,8 +7,8 @@ package net.epsilony.tsmf.adaptive;
  */
 public abstract class AdaptiveCellAdapter<T extends AdaptiveCellAdapter> implements AdaptiveCell {
 
-    T[] children;
-    AdaptiveCellEdge[] edges;
+    protected T[] children;
+    protected AdaptiveCellEdge[] edges;
 
     protected void bisectionAllEdges() {
         for (int i = 0; i < edges.length; i++) {
