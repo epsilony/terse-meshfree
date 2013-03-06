@@ -211,7 +211,7 @@ public class Polygon2D implements Iterable<Segment2D> {
         public Segment2D next() {
             Segment2D res = seg;
             seg = (Segment2D) seg.succ;
-            if (seg.pred != res) {
+            if (seg.pred != res || seg.pred == seg) {
                 throw new IllegalStateException("Meet broken Segment2D link, may cause self ring");
             }
             if (seg == chainsHeads.get(chainId)) {
