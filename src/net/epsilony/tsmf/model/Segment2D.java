@@ -167,4 +167,9 @@ public class Segment2D implements IntIdentity {
     public void setId(int id) {
         this.id = id;
     }
+
+    public static void link(Segment2D asPred, Segment2D asSucc) {
+        asPred.succ = asSucc;
+        asSucc.pred = asPred;
+    }
 }
