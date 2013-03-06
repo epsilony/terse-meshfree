@@ -84,9 +84,9 @@ public class Segment2D implements IntIdentity {
 
     @Override
     public String toString() {
-        Node rear = getRear();
-        String rearStr = null == rear ? "NULL" : rear.toString();
-        return String.format("Segment2D(%d)[h:(%s), r:(%s)]", id, head, rearStr);
+        String rearStr = (null == succ || null == getRear()) ? "NULL" : getRear().toString();
+        String headStr = (null == head) ? "NULL" : head.toString();
+        return String.format("Segment2D(%d)[h:(%s), r:(%s)]", id, headStr, rearStr);
     }
 
     public boolean isStrictlyAtLeft(double[] xy) {
