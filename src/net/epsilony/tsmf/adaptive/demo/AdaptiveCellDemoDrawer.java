@@ -10,8 +10,6 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
-import java.util.LinkedList;
-import java.util.List;
 import net.epsilony.tsmf.adaptive.AdaptiveCell;
 import net.epsilony.tsmf.adaptive.AdaptiveCellEdge;
 import net.epsilony.tsmf.adaptive.AdaptiveUtils;

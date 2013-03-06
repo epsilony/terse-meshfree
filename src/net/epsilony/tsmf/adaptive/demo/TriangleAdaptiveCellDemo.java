@@ -23,7 +23,7 @@ public class TriangleAdaptiveCellDemo extends AbstractAdaptiveCellDemo {
 
     @Override
     protected AdaptiveCell[][] genCells() {
-        return TriangleAdaptiveCellFactory.coverRectangle(TRIANGLE_COVERY_RANGE, TRIANGLE_EDGE_LENGTH);
+        return new TriangleAdaptiveCellFactory().coverRectangle(TRIANGLE_COVERY_RANGE, TRIANGLE_EDGE_LENGTH);
     }
 
     public static void main(String[] args) {

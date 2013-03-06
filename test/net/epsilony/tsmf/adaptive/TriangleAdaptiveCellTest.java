@@ -16,7 +16,7 @@ public class TriangleAdaptiveCellTest extends AbstractAdaptiveCellTest {
 
     @Override
     public AdaptiveCell[][] genSampleGrid() {
-        return TriangleAdaptiveCellFactory.coverRectangle(rectangle, edgeLength);
+        return new TriangleAdaptiveCellFactory().coverRectangle(rectangle, edgeLength);
     }
 
     @Override

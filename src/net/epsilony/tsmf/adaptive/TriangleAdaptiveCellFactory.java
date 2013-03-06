@@ -11,7 +11,7 @@ import net.epsilony.tsmf.util.MiscellaneousUtils;
  */
 public class TriangleAdaptiveCellFactory {
 
-    public static TriangleAdaptiveCell[][] coverRectangle(Rectangle2D rectangle, double edgeLength) {
+    public TriangleAdaptiveCell[][] coverRectangle(Rectangle2D rectangle, double edgeLength) {
         rectangle = MiscellaneousUtils.tidy(rectangle, null);
         final double SQRT_3 = Math.sqrt(3);
         double x0 = rectangle.getX() - edgeLength / 4;
@@ -32,7 +32,7 @@ public class TriangleAdaptiveCellFactory {
         return triangles;
     }
 
-    private static Node[][] genVertes(double x0, double y0, int numRows, int numCols, double edgeLength) {
+    private Node[][] genVertes(double x0, double y0, int numRows, int numCols, double edgeLength) {
         final double SQRT_3 = Math.sqrt(3);
         Node[][] result = new Node[numRows][numCols];
         for (int i = 0; i < result.length; i++) {
@@ -46,7 +46,7 @@ public class TriangleAdaptiveCellFactory {
         return result;
     }
 
-    private static TriangleAdaptiveCell[][] genTriangles(Node[][] nodes) {
+    private TriangleAdaptiveCell[][] genTriangles(Node[][] nodes) {
         TriangleAdaptiveCell[][] triangleCells = new TriangleAdaptiveCell[nodes.length - 1][(nodes[0].length - 1) * 2];
         for (int i = 0; i < nodes.length - 1; i++) {
             int rowMod = i % 2;
@@ -57,7 +57,7 @@ public class TriangleAdaptiveCellFactory {
                         new AdaptiveCellEdge(nodes[i][j / 2 + rowMod]),
                         new AdaptiveCellEdge(nodes[i + 1][j / 2 + 1]),
                         new AdaptiveCellEdge(nodes[i + 1][j / 2])};
-                    TriangleAdaptiveCell cell = new TriangleAdaptiveCell();
+                    TriangleAdaptiveCell cell = newTriangleAdaptiveCellInstance();
                     cell.setEdges(edges);
                     triangleRow[j] = cell;
                 } else {
@@ -66,7 +66,7 @@ public class TriangleAdaptiveCellFactory {
                         new AdaptiveCellEdge(nodes[i][j / 2]),
                         new AdaptiveCellEdge(nodes[i][j / 2 + 1])
                     };
-                    TriangleAdaptiveCell cell = new TriangleAdaptiveCell();
+                    TriangleAdaptiveCell cell = newTriangleAdaptiveCellInstance();
                     cell.setEdges(edges);
                     triangleRow[j] = cell;
                 }
@@ -75,7 +75,11 @@ public class TriangleAdaptiveCellFactory {
         return triangleCells;
     }
 
-    private static void linkTrianglesOpposites(TriangleAdaptiveCell[][] triangles) {
+    protected TriangleAdaptiveCell newTriangleAdaptiveCellInstance() {
+        return new TriangleAdaptiveCell();
+    }
+
+    private void linkTrianglesOpposites(TriangleAdaptiveCell[][] triangles) {
         for (int i = 0; i < triangles.length; i++) {
             final int rowMod = i % 2;
             for (int j = 0; j < triangles[i].length - 1; j++) {
