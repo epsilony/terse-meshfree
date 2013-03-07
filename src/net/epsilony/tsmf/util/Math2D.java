@@ -2,6 +2,8 @@
 package net.epsilony.tsmf.util;
 
 import java.util.Arrays;
+import java.util.Iterator;
+import net.epsilony.tsmf.model.Segment2D;
 
 /**
  *
@@ -163,5 +165,47 @@ public class Math2D {
 
     public static double cos(double x1, double y1, double x2, double y2) {
         return (x1 * x2 + y1 * y2) / (Math.sqrt(x1 * x1 + y1 * y1) * Math.sqrt(x2 * x2 + y2 * y2));
+    }
+
+    public static boolean isAnticlockwise(Iterable<double[]> simplePolygonVertes) {
+        Iterator<double[]> iter = simplePolygonVertes.iterator();
+        double[] firstSegmentHead = iter.next();
+        double[] firstSegmentRear = iter.next();
+        double[] p1;
+        double[] p2 = firstSegmentHead;
+        double[] p3 = firstSegmentRear;
+        double angle = 0;
+        int tailRun = 2;
+        while (true) {
+            p1 = p2;
+            p2 = p3;
+            if (iter.hasNext()) {
+                p3 = iter.next();
+            } else {
+                if (tailRun <= 0) {
+                    break;
+                }
+                if (tailRun == 2) {
+                    p3=firstSegmentHead;
+                } else {
+                    p3=firstSegmentRear;
+                }
+                tailRun--;
+            }
+            double v1x = p2[0] - p1[0];
+            double v1y = p2[1] - p1[1];
+            double v2x = p3[0] - p2[0];
+            double v2y = p3[1] - p2[1];
+            double deltaAngle = deltaAngle(v1x, v1y, v2x, v2y);
+            angle += deltaAngle;
+        }
+        return angle > 0;
+    }
+
+    public static  double deltaAngle(double v1x, double v1y, double v2x, double v2y) {
+        double crossValue = cross(v1x, v1y, v2x, v2y);
+        double cosineValue = cos(v1x, v1y, v2x, v2y);
+        double deltaAngle = Math.acos(cosineValue) * Math.signum(crossValue);
+        return deltaAngle;
     }
 }

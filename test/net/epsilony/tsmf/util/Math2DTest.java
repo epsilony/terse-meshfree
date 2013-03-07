@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.util;
 
+import java.util.Arrays;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -59,5 +60,14 @@ public class Math2DTest {
         double exp = 0.5;
         double act = Math2D.cos(sample[0], sample[1], sample[2], sample[3]);
         assertEquals(exp, act, 1e-15);
+    }
+
+    @Test
+    public void testIsClockWise() {
+        double[][] points = new double[][]{{0, 0}, {1, 0}, {0.4, 0.4}, {0.8, 1}};
+        boolean exp = true;
+        boolean act = Math2D.isAnticlockwise(Arrays.asList(points));
+
+        assertEquals(exp, act);
     }
 }
