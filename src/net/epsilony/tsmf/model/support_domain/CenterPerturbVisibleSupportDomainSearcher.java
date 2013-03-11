@@ -16,7 +16,7 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
 
     private double perterbDistanceRatio;
     private double minVertexDistanceRatio;
-    private static double DEFAULT_PERTURB_DISTANCE_RATION = 1e-6;  //perturb distance vs segment length
+    private static double DEFAULT_PERTURB_DISTANCE_RATIO = 1e-6;  //perturb distance vs segment length
     // The mininum angle of adjacency segments of polygon. If no angle is less
     // than below, PertubtionSearchMethod works well.
     // Note that the angle of a crack tip is nearly 2pi which is very large.
@@ -24,7 +24,7 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
 
     public CenterPerturbVisibleSupportDomainSearcher(SupportDomainSearcher supportDomainSearcher, boolean ignoreInvisibleNodesInformation) {
         super(supportDomainSearcher, ignoreInvisibleNodesInformation);
-        perterbDistanceRatio = DEFAULT_PERTURB_DISTANCE_RATION;
+        perterbDistanceRatio = DEFAULT_PERTURB_DISTANCE_RATIO;
         double minAngle = DEFAULT_ALLOWABLE_ANGLE;
         minVertexDistanceRatio = perterbDistanceRatio / Math.tan(minAngle);
     }
