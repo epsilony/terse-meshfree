@@ -19,11 +19,17 @@ public class RawSupportDomainSearcher implements SupportDomainSearcher {
         this.segmentSearcher = segmentSearcher;
     }
 
+    public RawSupportDomainSearcher(SphereSearcher<Node> nodesSearcher) {
+        this(nodesSearcher, null);
+    }
+
     @Override
     public SupportDomainData searchSupportDomain(double[] center, Segment2D bndOfCenter, double radius) {
         SupportDomainData result = new SupportDomainData();
         result.allNodes = nodesSearcher.searchInSphere(center, radius);
-        result.segments = segmentSearcher.searchInSphere(center, radius);
+        if (null != segmentSearcher) {
+            result.segments = segmentSearcher.searchInSphere(center, radius);
+        }
         return result;
     }
 }
