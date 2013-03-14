@@ -3,7 +3,7 @@ package net.epsilony.tsmf.adaptive;
 
 import java.awt.geom.Rectangle2D;
 import net.epsilony.tsmf.model.Node;
-import net.epsilony.tsmf.util.MiscellaneousUtils;
+import net.epsilony.tsmf.util.ui.UIUtils;
 
 /**
  *
@@ -12,7 +12,7 @@ import net.epsilony.tsmf.util.MiscellaneousUtils;
 public class TriangleAdaptiveCellFactory {
 
     public TriangleAdaptiveCell[][] coverRectangle(Rectangle2D rectangle, double edgeLength) {
-        rectangle = MiscellaneousUtils.tidy(rectangle, null);
+        rectangle = UIUtils.tidyRectangle2D(rectangle, null);
         final double SQRT_3 = Math.sqrt(3);
         double x0 = rectangle.getX() - edgeLength / 4;
         double y0 = rectangle.getY() - edgeLength * SQRT_3 / 4;

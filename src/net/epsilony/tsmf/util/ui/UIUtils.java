@@ -36,35 +36,16 @@ public class UIUtils {
                 (int) Math.ceil(rect.getHeight()) + 1);
     }
 
-    public static Rectangle2D tidyRectangle2D(Rectangle2D src, Rectangle2D dst) {
-        double x = src.getX();
-        double y = src.getY();
-        double width = src.getWidth();
-        double height = src.getHeight();
-        if (src == dst && width >= 0 && height >= 0) {
-            return dst;
+    public static Rectangle2D tidyRectangle2D(Rectangle2D src, Rectangle2D result) {
+        if (null == result) {
+            result = new Rectangle2D.Double();
         }
-        double dstX, dstY, dstWidth, dstHeight;
-        if (width >= 0) {
-            dstX = x;
-            dstWidth = width;
-        } else {
-            dstX = x + width;
-            dstWidth = -width;
-        }
-        if (height >= 0) {
-            dstY = y;
-            dstHeight = height;
-        } else {
-            dstY = y + height;
-            dstHeight = -height;
-        }
-        if (null == dst) {
-            dst = new Rectangle2D.Double(dstX, dstY, dstWidth, dstHeight);
-        } else {
-            dst.setRect(dstX, dstY, dstWidth, dstHeight);
-        }
-        return dst;
+        double x = Math.min(src.getX(), src.getX() + src.getWidth());
+        double y = Math.min(src.getY(), src.getY() + src.getHeight());
+        double width = Math.abs(src.getWidth());
+        double height = Math.abs(src.getHeight());
+        result.setRect(x, y, width, height);
+        return result;
     }
 
     public static double[] transformVector(AffineTransform transform, double[] vec, double[] result) {
