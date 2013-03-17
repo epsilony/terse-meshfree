@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.util.ui;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
@@ -24,6 +25,7 @@ public class BasicModelPanel extends JPanel {
     public BasicModelPanel(int originX, int originY, double scale) {
         prepareMouseDrivenModelTranform(originX, originY, scale);
         prepareCoordinateMarkerAndScaleIndicator();
+        prepareWhiteBackground();
     }
 
     private void prepareMouseDrivenModelTranform(int originX, int originY, double scale) {
@@ -37,6 +39,11 @@ public class BasicModelPanel extends JPanel {
         coordinateMarker.setComponent(this);
         scaleIndicator.setModelToComponentTransform(mouseDrivenModelTransform);
         scaleIndicator.setComponent(this);
+    }
+
+    private void prepareWhiteBackground() {
+        setOpaque(true);
+        setBackground(Color.WHITE);
     }
 
     public BasicModelPanel() {
@@ -110,8 +117,8 @@ public class BasicModelPanel extends JPanel {
         if (coordinateMarker.isVisible()) {
             coordinateMarker.drawModel(g2);
         }
-        
-        if (scaleIndicator.isVisible()){
+
+        if (scaleIndicator.isVisible()) {
             scaleIndicator.drawModel(g2);
         }
     }
