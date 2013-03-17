@@ -53,8 +53,12 @@ public class Polygon2D implements Iterable<Segment2D> {
         refresh();
     }
 
-    public Polygon2D(LinkedList<Segment2D> chainsHeads) {
+    public Polygon2D() {
+    }
+
+    public void setChainsHeads(List<? extends Segment2D> chainsHeads) {
         this.chainsHeads = new ArrayList<>(chainsHeads);
+        refresh();
     }
 
     private void refresh() {
