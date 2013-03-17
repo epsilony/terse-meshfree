@@ -19,9 +19,9 @@ public class SingleModelShapeDrawer extends ModelDrawerAdapter {
 
     public static boolean DEFAULT_FILLING;
     public static Color DEFAULT_LINE_COLOR = Color.BLACK;
-    public static Color DEFAULT_FILLING_COLOR = Color.LIGHT_GRAY;
+    public static Color DEFAULT_FILLING_COLOR = Color.YELLOW;
     public static double DEFAULT_LINE_ALPHA = 1;
-    public static double DEFAULT_FILLING_ALPHA = 0.4;
+    public static double DEFAULT_FILLING_ALPHA = 0.1;
     public static float DEFAULT_LINE_WIDTH = 0.5f;
     double fillingAlpha = DEFAULT_FILLING_ALPHA;
     Color fillingColor = DEFAULT_FILLING_COLOR;
@@ -71,7 +71,11 @@ public class SingleModelShapeDrawer extends ModelDrawerAdapter {
         g2.setComposite(AlphaComposite.SrcOver);
         Shape polygonShape = getModelToComponentTransform().createTransformedShape(getShape());
         if (isFilling()) {
-            g2.setColor(fillingColor);
+            g2.setColor(
+                    new Color(fillingColor.getRed(),
+                    fillingColor.getGreen(),
+                    fillingColor.getBlue(),
+                    (int) (fillingColor.getAlpha() * fillingAlpha)));
             g2.fill(polygonShape);
         }
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
