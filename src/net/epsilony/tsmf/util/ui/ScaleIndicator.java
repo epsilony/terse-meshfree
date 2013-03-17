@@ -18,11 +18,11 @@ public class ScaleIndicator extends ModelDrawerAdapter {
 
     public static double DEFAULT_MARGIN = 15;
     public static double DEFAULT_LENGTH_RATIO = 0.628;
-    public static Color DEFAULT_COLOR = Color.ORANGE;
+    public static Color DEFAULT_COLOR = Color.GREEN;
     public static float DEFAULT_LING_WIDTH = 1;
     public static double DEFAULT_MIN_GAP_LENGTH = 30;
     public static double DEFAULT_TICK_LENGTH = 8;
-    public static final int FONT_SIZE = 10;
+    public static final int FONT_SIZE = 12;
     public static final Font FONT = Font.decode("Monospace " + FONT_SIZE);
     double margin = DEFAULT_MARGIN;
     double lengthRatio = DEFAULT_LENGTH_RATIO;
