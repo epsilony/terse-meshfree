@@ -65,7 +65,7 @@ public class TriangleContourBuilderTest {
                 double[] rearCoord = seg.getRearCoord();
                 actArea += 0.5 * Math2D.cross(rearCoord[0] - headCoord[0], rearCoord[1] - headCoord[1],
                         x0 - headCoord[0], y0 - headCoord[1]);
-                seg = seg.getSucc();
+                seg = (LinearSegment2D) seg.getSucc();
             } while (seg != head);
             assertEquals(expArea, actArea, Math.abs(expArea) * errRatio);
         }

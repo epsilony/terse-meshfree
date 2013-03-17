@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import net.epsilony.tsmf.model.LinearSegment2D;
 import net.epsilony.tsmf.model.Node;
+import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.util.Math2D;
 
 /**
@@ -173,30 +174,22 @@ public class AdaptiveCellEdge extends LinearSegment2D {
 
     @Override
     public AdaptiveCellEdge getPred() {
-        return (AdaptiveCellEdge) super.getPred(); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void setPred(AdaptiveCellEdge pred) {
-        super.setPred(pred); //To change body of generated methods, choose Tools | Templates.
+        return (AdaptiveCellEdge) super.getPred();
     }
 
     @Override
-    public void setPred(LinearSegment2D pred) {
+    public void setPred(Segment2D pred) {
         super.setPred((AdaptiveCellEdge) pred);
     }
 
     @Override
     public AdaptiveCellEdge getSucc() {
-        return (AdaptiveCellEdge) super.getSucc(); //To change body of generated methods, choose Tools | Templates.
+        return (AdaptiveCellEdge) super.getSucc();
     }
 
     @Override
-    public void setSucc(LinearSegment2D succ) {
-        super.setSucc((AdaptiveCellEdge) succ); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void setSucc(AdaptiveCellEdge succ) {
-        super.setSucc(succ);
+    public void setSucc(Segment2D succ) {
+        super.setSucc((AdaptiveCellEdge) succ);
     }
 
     public void addOppositesTo(Collection<? super AdaptiveCellEdge> output) {

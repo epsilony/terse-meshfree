@@ -71,10 +71,10 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
         LinearSegment2D bndNeighbor = null;
         double[] bndNeighborFurtherPoint = null;
         if (center == bnd.getHead().coord) {
-            bndNeighbor = bnd.getPred();
+            bndNeighbor = (LinearSegment2D) bnd.getPred();
             bndNeighborFurtherPoint = bndNeighbor.getHead().coord;
         } else if (center == bnd.getRear().coord) {
-            bndNeighbor = bnd.getSucc();
+            bndNeighbor = (LinearSegment2D) bnd.getSucc();
             bndNeighborFurtherPoint = bndNeighbor.getRear().coord;
         }
 

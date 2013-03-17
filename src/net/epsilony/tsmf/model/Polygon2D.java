@@ -46,7 +46,7 @@ public class Polygon2D implements Iterable<LinearSegment2D> {
                 seg = succ;
             }
             chainHead.pred = seg.pred;
-            chainHead.pred.succ = chainHead;
+            chainHead.pred.setSucc(chainHead);
             chainsHeads.add(chainHead);
         }
 
@@ -234,11 +234,11 @@ public class Polygon2D implements Iterable<LinearSegment2D> {
 
         @Override
         public void remove() {
-            if (last.pred.pred == last.succ) {
+            if (last.pred.getPred() == last.succ) {
                 throw new IllegalStateException("The chain is only a triangle, and no segments can be removed!");
             }
-            last.pred.succ = last.succ;
-            last.succ.pred = last.pred;
+            last.pred.setSucc(last.succ);
+            last.succ.setPred(last.pred);
         }
     }
 }

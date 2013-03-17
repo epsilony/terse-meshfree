@@ -2,7 +2,7 @@
 package net.epsilony.tsmf.model.util;
 
 import java.util.Iterator;
-import net.epsilony.tsmf.model.LinearSegment2D;
+import net.epsilony.tsmf.model.Segment2D;
 
 /**
  *
@@ -10,9 +10,9 @@ import net.epsilony.tsmf.model.LinearSegment2D;
  */
 public class SegmentHeadCoordIterable implements Iterable<double[]> {
 
-    private LinearSegment2D head;
+    private Segment2D head;
 
-    public SegmentHeadCoordIterable(LinearSegment2D head) {
+    public SegmentHeadCoordIterable(Segment2D head) {
         this.head = head;
     }
 
@@ -23,7 +23,7 @@ public class SegmentHeadCoordIterable implements Iterable<double[]> {
 
     private class SegmentHeadCoordinateIterator implements Iterator<double[]> {
 
-        LinearSegment2D nextSegment = head;
+        Segment2D nextSegment = head;
 
         @Override
         public boolean hasNext() {

@@ -1,21 +1,13 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.model;
 
-import net.epsilony.tsmf.util.IntIdentity;
 import net.epsilony.tsmf.util.Math2D;
-import net.epsilony.tsmf.util.UnivarArrayFunction;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class LinearSegment2D implements IntIdentity, UnivarArrayFunction {
-
-    protected LinearSegment2D pred;
-    protected LinearSegment2D succ;
-    protected Node head;
-    public int id;
-    protected int diffOrder = 0;
+public class LinearSegment2D extends AbstractSegment2D {
 
     public LinearSegment2D() {
     }
@@ -24,6 +16,7 @@ public class LinearSegment2D implements IntIdentity, UnivarArrayFunction {
         this.head = head;
     }
 
+    @Override
     public double distanceTo(double x, double y) {
         double[] v1 = getHead().coord;
         double[] v2 = getRear().coord;
@@ -70,12 +63,13 @@ public class LinearSegment2D implements IntIdentity, UnivarArrayFunction {
         return midPoint(null);
     }
 
+    @Override
     public LinearSegment2D bisectionAndReturnNewSuccessor() {
         LinearSegment2D newSucc = newInstance();
         newSucc.setHead(bisectionNode());
         newSucc.succ = this.succ;
         newSucc.pred = this;
-        this.succ.pred = newSucc;
+        this.succ.setPred(newSucc);
         this.succ = newSucc;
         return newSucc;
     }
@@ -108,66 +102,8 @@ public class LinearSegment2D implements IntIdentity, UnivarArrayFunction {
         return result;
     }
 
-    public double[] getHeadCoord() {
-        return head.coord;
-    }
-
-    public double[] getRearCoord() {
-        return getRear().coord;
-    }
-
-    public void setHeadCoord(double[] coord) {
-        head.coord = coord;
-    }
-
-    public void setRearCoord(double[] coord) {
-        getRear().coord = coord;
-    }
-
     protected LinearSegment2D newInstance() {
         return new LinearSegment2D();
-    }
-
-    public LinearSegment2D getPred() {
-        return pred;
-    }
-
-    public void setPred(LinearSegment2D pred) {
-        this.pred = pred;
-    }
-
-    public LinearSegment2D getSucc() {
-        return succ;
-    }
-
-    public void setSucc(LinearSegment2D succ) {
-        this.succ = succ;
-    }
-
-    public Node getHead() {
-        return head;
-    }
-
-    public void setHead(Node head) {
-        this.head = head;
-    }
-
-    public Node getRear() {
-        return succ.getHead();
-    }
-
-    public void setRear(Node rear) {
-        succ.setHead(rear);
-    }
-
-    @Override
-    public int getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(int id) {
-        this.id = id;
     }
 
     public static void link(LinearSegment2D asPred, LinearSegment2D asSucc) {
@@ -188,18 +124,5 @@ public class LinearSegment2D implements IntIdentity, UnivarArrayFunction {
             results[3] = rearCoord[1] - headCoord[1];
         }
         return results;
-    }
-
-    @Override
-    public int getDiffOrder() {
-        return diffOrder;
-    }
-
-    @Override
-    public void setDiffOrder(int diffOrder) {
-        if (diffOrder < 0 || diffOrder > 1) {
-            throw new UnsupportedOperationException("Only support 0 and 1, not :" + diffOrder);
-        }
-        this.diffOrder = diffOrder;
     }
 }

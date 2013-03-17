@@ -31,7 +31,7 @@ public class PolygonDrawer extends SingleModelShapeDrawer {
 
             LinearSegment2D seg = chainHead;
             do {
-                seg = seg.getSucc();
+                seg = (LinearSegment2D) seg.getSucc();
                 nd = seg.getHead();
                 path.lineTo(nd.coord[0], nd.coord[1]);
             } while (seg != chainHead);

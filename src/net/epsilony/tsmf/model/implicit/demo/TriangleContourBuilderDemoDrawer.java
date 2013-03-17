@@ -62,11 +62,11 @@ public class TriangleContourBuilderDemoDrawer extends ModelDrawerAdapter {
             nodeDrawer.setColor(DEFAULT_CONTOUR_COLOR);
             nodeDrawer.setNode(chainHead.getHead());
             nodeDrawer.drawModel(g2);
-            LinearSegment2D seg = chainHead.getSucc();
+            LinearSegment2D seg = (LinearSegment2D) chainHead.getSucc();
             while (seg != null && seg != chainHead) {
                 nodeDrawer.setNode(seg.getHead());
                 nodeDrawer.drawModel(g2);
-                seg = seg.getSucc();
+                seg = (LinearSegment2D) seg.getSucc();
             }
         }
     }
@@ -76,11 +76,11 @@ public class TriangleContourBuilderDemoDrawer extends ModelDrawerAdapter {
         for (LinearSegment2D chainHead : trianglePolygonizer.getContourHeads()) {
             double[] headCoord = chainHead.getHeadCoord();
             path.moveTo(headCoord[0], headCoord[1]);
-            LinearSegment2D seg = chainHead.getSucc();
+            LinearSegment2D seg = (LinearSegment2D) chainHead.getSucc();
             while (seg != null && seg != chainHead) {
                 double[] segHeadCoord = seg.getHeadCoord();
                 path.lineTo(segHeadCoord[0], segHeadCoord[1]);
-                seg = seg.getSucc();
+                seg = (LinearSegment2D) seg.getSucc();
             }
             if (seg == chainHead) {
                 path.closePath();
