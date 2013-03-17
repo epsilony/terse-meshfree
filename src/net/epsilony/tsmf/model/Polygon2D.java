@@ -10,10 +10,10 @@ import java.util.List;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class Polygon2D implements Iterable<Segment2D> {
+public class Polygon2D implements Iterable<LinearSegment2D> {
 
     public static final int DIM = 2;
-    ArrayList<Segment2D> chainsHeads;
+    ArrayList<LinearSegment2D> chainsHeads;
 
     public static Polygon2D byCoordChains(double[][][] coordChains) {
         ArrayList<ArrayList<Node>> nodeChains = new ArrayList<>(coordChains.length);
@@ -36,11 +36,11 @@ public class Polygon2D implements Iterable<Segment2D> {
             if (nds.size() < 3) {
                 throw new IllegalArgumentException(String.format("Each chain in a polygon must contain at least 3 nodes as vertes!%n nodesChain[%d] has only %d nodes", nodeChains.indexOf(nds), nds.size()));
             }
-            Segment2D chainHead = new Segment2D();
-            Segment2D seg = chainHead;
+            LinearSegment2D chainHead = new LinearSegment2D();
+            LinearSegment2D seg = chainHead;
             for (Node nd : nds) {
                 seg.head = nd;
-                Segment2D succ = new Segment2D();
+                LinearSegment2D succ = new LinearSegment2D();
                 seg.succ = succ;
                 succ.pred = seg;
                 seg = succ;
@@ -56,7 +56,7 @@ public class Polygon2D implements Iterable<Segment2D> {
     public Polygon2D() {
     }
 
-    public void setChainsHeads(List<? extends Segment2D> chainsHeads) {
+    public void setChainsHeads(List<? extends LinearSegment2D> chainsHeads) {
         this.chainsHeads = new ArrayList<>(chainsHeads);
         refresh();
     }
@@ -67,19 +67,19 @@ public class Polygon2D implements Iterable<Segment2D> {
 
     private void fillSegmentsIds() {
         int id = 0;
-        for (Segment2D seg : this) {
+        for (LinearSegment2D seg : this) {
             seg.setId(id);
             id++;
         }
     }
 
-    public ArrayList<Segment2D> getChainsHeads() {
+    public ArrayList<LinearSegment2D> getChainsHeads() {
         return chainsHeads;
     }
 
     public double getMinSegmentLength() {
         double minLen = Double.POSITIVE_INFINITY;
-        for (Segment2D seg : this) {
+        for (LinearSegment2D seg : this) {
             double len = seg.length();
             if (len < minLen) {
                 minLen = len;
@@ -90,7 +90,7 @@ public class Polygon2D implements Iterable<Segment2D> {
 
     public double getMaxSegmentLength() {
         double maxLen = 0;
-        for (Segment2D seg : this) {
+        for (LinearSegment2D seg : this) {
             double len = seg.length();
             if (maxLen < len) {
                 maxLen = len;
@@ -108,7 +108,7 @@ public class Polygon2D implements Iterable<Segment2D> {
      */
     public char rayCrossing(double x, double y) {
         int rCross = 0, lCross = 0;
-        for (Segment2D seg : this) {
+        for (LinearSegment2D seg : this) {
             Node head = seg.getHead();
             double x1 = head.coord[0];
             double y1 = head.coord[1];
@@ -158,7 +158,7 @@ public class Polygon2D implements Iterable<Segment2D> {
         }
 
         double inf = Double.POSITIVE_INFINITY;
-        for (Segment2D seg : this) {
+        for (LinearSegment2D seg : this) {
             double dst = seg.distanceTo(x, y);
             if (dst < inf) {
                 inf = dst;
@@ -172,13 +172,13 @@ public class Polygon2D implements Iterable<Segment2D> {
             throw new IllegalArgumentException("maxLength should be greater than 0 :" + lenUpBnd);
         }
         Polygon2D res = new Polygon2D(getVertes());
-        for (Segment2D cHead : res.chainsHeads) {
-            Segment2D seg = cHead;
+        for (LinearSegment2D cHead : res.chainsHeads) {
+            LinearSegment2D seg = cHead;
             do {
                 while (seg.length() > lenUpBnd) {
                     seg.bisectionAndReturnNewSuccessor();
                 }
-                seg = (Segment2D) seg.succ;
+                seg = (LinearSegment2D) seg.succ;
             } while (seg != cHead);
         }
         res.refresh();
@@ -187,28 +187,28 @@ public class Polygon2D implements Iterable<Segment2D> {
 
     public ArrayList<LinkedList<Node>> getVertes() {
         ArrayList<LinkedList<Node>> res = new ArrayList<>(chainsHeads.size());
-        for (Segment2D cHead : chainsHeads) {
+        for (LinearSegment2D cHead : chainsHeads) {
             LinkedList<Node> vs = new LinkedList<>();
             res.add(vs);
-            Segment2D seg = cHead;
+            LinearSegment2D seg = cHead;
             do {
                 vs.add(seg.getHead());
-                seg = (Segment2D) seg.succ;
+                seg = (LinearSegment2D) seg.succ;
             } while (seg != cHead);
         }
         return res;
     }
 
     @Override
-    public Iterator<Segment2D> iterator() {
+    public Iterator<LinearSegment2D> iterator() {
         return new SegmentIterator();
     }
 
-    class SegmentIterator implements Iterator<Segment2D> {
+    class SegmentIterator implements Iterator<LinearSegment2D> {
 
         int chainId = 0;
-        Segment2D seg = chainsHeads.isEmpty() ? null : chainsHeads.get(0);
-        Segment2D last;
+        LinearSegment2D seg = chainsHeads.isEmpty() ? null : chainsHeads.get(0);
+        LinearSegment2D last;
 
         @Override
         public boolean hasNext() {
@@ -216,9 +216,9 @@ public class Polygon2D implements Iterable<Segment2D> {
         }
 
         @Override
-        public Segment2D next() {
-            Segment2D res = seg;
-            seg = (Segment2D) seg.succ;
+        public LinearSegment2D next() {
+            LinearSegment2D res = seg;
+            seg = (LinearSegment2D) seg.succ;
             if (seg.pred != res || seg.pred == seg) {
                 throw new IllegalStateException("Meet broken Segment2D link, may cause self ring");
             }

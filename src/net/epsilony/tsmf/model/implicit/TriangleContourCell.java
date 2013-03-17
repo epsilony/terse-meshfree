@@ -2,7 +2,7 @@
 package net.epsilony.tsmf.model.implicit;
 
 import net.epsilony.tsmf.adaptive.TriangleAdaptiveCell;
-import net.epsilony.tsmf.model.Segment2D;
+import net.epsilony.tsmf.model.LinearSegment2D;
 
 /**
  *
@@ -35,7 +35,7 @@ public class TriangleContourCell extends TriangleAdaptiveCell {
         }
     }
 
-    public Segment2D getContourSourceEdge() {
+    public LinearSegment2D getContourSourceEdge() {
         if (status < 0) {
             throw new IllegalStateException("status haven't been updated");
         }
@@ -46,7 +46,7 @@ public class TriangleContourCell extends TriangleAdaptiveCell {
         return getEdges()[index];
     }
 
-    public Segment2D getContourDestinationEdge() {
+    public LinearSegment2D getContourDestinationEdge() {
         if (status < 0) {
             throw new IllegalStateException("status haven't been updated");
         }

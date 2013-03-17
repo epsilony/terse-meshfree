@@ -7,7 +7,7 @@ package net.epsilony.tsmf.model.implicit;
 import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.List;
-import net.epsilony.tsmf.model.Segment2D;
+import net.epsilony.tsmf.model.LinearSegment2D;
 import net.epsilony.tsmf.model.util.SegmentHeadCoordIterable;
 import net.epsilony.tsmf.util.Math2D;
 import net.epsilony.tsmf.util.MiscellaneousUtils;
@@ -38,13 +38,13 @@ public class TriangleContourBuilderTest {
         builder.cells = cells;
         builder.levelSetFunction = levelsetFunction;
         builder.genContour();
-        List<Segment2D> contourHeads = builder.contourHeads;
+        List<LinearSegment2D> contourHeads = builder.contourHeads;
 
         assertEquals(expChainsSize, contourHeads.size());
 
         for (int i = 0; i < contourHeads.size(); i++) {
             double x0, y0, rad;
-            Segment2D head = contourHeads.get(i);
+            LinearSegment2D head = contourHeads.get(i);
             boolean b = Math2D.isAnticlockwise(new SegmentHeadCoordIterable(head));
             if (b) {
                 x0 = levelsetFunction.diskX;
@@ -58,7 +58,7 @@ public class TriangleContourBuilderTest {
             double expArea = Math.PI * rad * rad;
             expArea *= b ? 1 : -1;
 
-            Segment2D seg = head;
+            LinearSegment2D seg = head;
             double actArea = 0;
             do {
                 double[] headCoord = seg.getHeadCoord();

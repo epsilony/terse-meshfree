@@ -10,7 +10,7 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.List;
-import net.epsilony.tsmf.model.Segment2D;
+import net.epsilony.tsmf.model.LinearSegment2D;
 import net.epsilony.tsmf.model.implicit.TriangleContourBuilder;
 import net.epsilony.tsmf.model.implicit.TriangleContourCell;
 import net.epsilony.tsmf.model.ui.NodeDrawer;
@@ -58,11 +58,11 @@ public class TriangleContourBuilderDemoDrawer extends ModelDrawerAdapter {
     }
 
     private void drawContourNodes(Graphics2D g2) {
-        for (Segment2D chainHead : trianglePolygonizer.getContourHeads()) {
+        for (LinearSegment2D chainHead : trianglePolygonizer.getContourHeads()) {
             nodeDrawer.setColor(DEFAULT_CONTOUR_COLOR);
             nodeDrawer.setNode(chainHead.getHead());
             nodeDrawer.drawModel(g2);
-            Segment2D seg = chainHead.getSucc();
+            LinearSegment2D seg = chainHead.getSucc();
             while (seg != null && seg != chainHead) {
                 nodeDrawer.setNode(seg.getHead());
                 nodeDrawer.drawModel(g2);
@@ -73,10 +73,10 @@ public class TriangleContourBuilderDemoDrawer extends ModelDrawerAdapter {
 
     private Path2D genContourPath() {
         Path2D path = new Path2D.Double();
-        for (Segment2D chainHead : trianglePolygonizer.getContourHeads()) {
+        for (LinearSegment2D chainHead : trianglePolygonizer.getContourHeads()) {
             double[] headCoord = chainHead.getHeadCoord();
             path.moveTo(headCoord[0], headCoord[1]);
-            Segment2D seg = chainHead.getSucc();
+            LinearSegment2D seg = chainHead.getSucc();
             while (seg != null && seg != chainHead) {
                 double[] segHeadCoord = seg.getHeadCoord();
                 path.lineTo(segHeadCoord[0], segHeadCoord[1]);

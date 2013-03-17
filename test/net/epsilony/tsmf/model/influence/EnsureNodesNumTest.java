@@ -8,7 +8,7 @@ import java.util.List;
 import net.epsilony.tsmf.model.Model2D;
 import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.Polygon2D;
-import net.epsilony.tsmf.model.Segment2D;
+import net.epsilony.tsmf.model.LinearSegment2D;
 import net.epsilony.tsmf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.tsmf.model.support_domain.SupportDomainSearcherFactory;
 import net.epsilony.tsmf.util.Math2D;
@@ -32,7 +32,7 @@ public class EnsureNodesNumTest {
     public void testInflucenceRadius() {
         EnsureNodesNum calc = new EnsureNodesNum(5, 10);
         Model2D sampleModel = sampleModel();
-        Segment2D sampleBnd = sampleModel.getPolygon().getChainsHeads().get(0);
+        LinearSegment2D sampleBnd = sampleModel.getPolygon().getChainsHeads().get(0);
         Node sampleNode = sampleBnd.getHead();
         int[] numLowerBounds = new int[]{2, 4, 8, 20};
         SupportDomainSearcherFactory factory = SupportDomainSearcherFactory.layeredRangeTreeBasedFactory(sampleModel.getAllNodes(), sampleModel.getPolygon());

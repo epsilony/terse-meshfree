@@ -7,7 +7,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tsmf.model.Polygon2D;
-import net.epsilony.tsmf.model.Segment2D;
+import net.epsilony.tsmf.model.LinearSegment2D;
 import net.epsilony.tsmf.util.ArrvarFunction;
 import net.epsilony.tsmf.util.GenericFunction;
 import net.epsilony.tsmf.util.ui.UIUtils;
@@ -75,7 +75,7 @@ public class RectangleWithHoles implements ArrvarFunction, GenericFunction<doubl
     }
 
     private void genRectanglePolygon() {
-        List<Segment2D> chainsHeads = UIUtils.pathIteratorToSegment2DChains(rectangle.getPathIterator(null));
+        List<LinearSegment2D> chainsHeads = UIUtils.pathIteratorToSegment2DChains(rectangle.getPathIterator(null));
         rectanglePolygon = new Polygon2D();
         rectanglePolygon.setChainsHeads(chainsHeads);
     }

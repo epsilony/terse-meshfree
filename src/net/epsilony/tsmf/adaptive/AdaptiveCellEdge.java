@@ -4,7 +4,7 @@ package net.epsilony.tsmf.adaptive;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import net.epsilony.tsmf.model.Segment2D;
+import net.epsilony.tsmf.model.LinearSegment2D;
 import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.util.Math2D;
 
@@ -12,7 +12,7 @@ import net.epsilony.tsmf.util.Math2D;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class AdaptiveCellEdge extends Segment2D {
+public class AdaptiveCellEdge extends LinearSegment2D {
 
     public static int MAX_SIZE_RATIO_TO_OPPOSITES = 2;
     protected List<AdaptiveCellEdge> opposites = new ArrayList<>(MAX_SIZE_RATIO_TO_OPPOSITES);
@@ -181,7 +181,7 @@ public class AdaptiveCellEdge extends Segment2D {
     }
 
     @Override
-    public void setPred(Segment2D pred) {
+    public void setPred(LinearSegment2D pred) {
         super.setPred((AdaptiveCellEdge) pred);
     }
 
@@ -191,7 +191,7 @@ public class AdaptiveCellEdge extends Segment2D {
     }
 
     @Override
-    public void setSucc(Segment2D succ) {
+    public void setSucc(LinearSegment2D succ) {
         super.setSucc((AdaptiveCellEdge) succ); //To change body of generated methods, choose Tools | Templates.
     }
 

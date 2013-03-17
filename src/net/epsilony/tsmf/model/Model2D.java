@@ -15,7 +15,7 @@ import net.epsilony.tsmf.model.search.SphereSearcher;
 public class Model2D {
 
     public final static int DIMENSION = 2;
-    SphereSearcher<Segment2D> segmentsIntersectingSphereSearcher;
+    SphereSearcher<LinearSegment2D> segmentsIntersectingSphereSearcher;
     SphereSearcher<Node> allNodesSearcher;
     ArrayList<Node> allNodes;
     ArrayList<Node> spaceNodes;   //allNode except polygon.getVertes()
@@ -39,7 +39,7 @@ public class Model2D {
         this.spaceNodes = new ArrayList<>(spaceNodes);
         allNodes = new ArrayList<>(spaceNodes);
         LinkedList<Node> segNds = new LinkedList<>();
-        for (Segment2D seg : polygon) {
+        for (LinearSegment2D seg : polygon) {
             segNds.add(seg.getHead());
         }
         allNodes.addAll(segNds);

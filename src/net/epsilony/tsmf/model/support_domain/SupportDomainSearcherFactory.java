@@ -4,7 +4,7 @@ package net.epsilony.tsmf.model.support_domain;
 import java.util.Collection;
 import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.Polygon2D;
-import net.epsilony.tsmf.model.Segment2D;
+import net.epsilony.tsmf.model.LinearSegment2D;
 import net.epsilony.tsmf.model.influence.InfluenceRadiusMapper;
 import net.epsilony.tsmf.model.search.LRTreeNodesSphereSearcher;
 import net.epsilony.tsmf.model.search.LRTreeSegment2DIntersectingSphereSearcher;
@@ -20,7 +20,7 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
     public static final boolean DEFAULT_USE_CENTER_PERTURB = true;
     public static final boolean DEFAULT_IGNORGE_INVISIBLE_NODES_INFORMATION = true;
     SphereSearcher<Node> nodesSearcher;
-    SphereSearcher<Segment2D> segmentsSearcher;
+    SphereSearcher<LinearSegment2D> segmentsSearcher;
     InfluenceRadiusMapper influenceDomainRadiusMapper;
     boolean useCenterPerturb = DEFAULT_USE_CENTER_PERTURB;
     boolean ignoreInvisibleNodesInformation = DEFAULT_IGNORGE_INVISIBLE_NODES_INFORMATION;
@@ -35,20 +35,20 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
 
     public SupportDomainSearcherFactory(
             SphereSearcher<Node> nodesSearcher,
-            SphereSearcher<Segment2D> segmentsSearcher) {
+            SphereSearcher<LinearSegment2D> segmentsSearcher) {
         this(nodesSearcher, segmentsSearcher, null);
     }
 
     public SupportDomainSearcherFactory(
             SphereSearcher<Node> nodesSearcher,
-            SphereSearcher<Segment2D> segmentsSearcher,
+            SphereSearcher<LinearSegment2D> segmentsSearcher,
             InfluenceRadiusMapper influenceDomainRadiusMapper) {
         this(nodesSearcher, segmentsSearcher, influenceDomainRadiusMapper, DEFAULT_USE_CENTER_PERTURB);
     }
 
     public SupportDomainSearcherFactory(
             SphereSearcher<Node> nodesSearcher,
-            SphereSearcher<Segment2D> segmentsSearcher,
+            SphereSearcher<LinearSegment2D> segmentsSearcher,
             InfluenceRadiusMapper influenceDomainRadiusMapper,
             boolean useCenterPerturb) {
         this.nodesSearcher = nodesSearcher;
@@ -99,7 +99,7 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
         this.nodesSearcher = nodesSearcher;
     }
 
-    public void setSegmentsSearcher(SphereSearcher<Segment2D> segmentsSearcher) {
+    public void setSegmentsSearcher(SphereSearcher<LinearSegment2D> segmentsSearcher) {
         this.segmentsSearcher = segmentsSearcher;
     }
 

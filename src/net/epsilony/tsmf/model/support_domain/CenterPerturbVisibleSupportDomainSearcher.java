@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import net.epsilony.tsmf.model.Node;
-import net.epsilony.tsmf.model.Segment2D;
+import net.epsilony.tsmf.model.LinearSegment2D;
 import net.epsilony.tsmf.util.Math2D;
 
 /**
@@ -34,7 +34,7 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
     }
 
     @Override
-    public SupportDomainData searchSupportDomain(double[] center, Segment2D bndOfCenter, double radius) {
+    public SupportDomainData searchSupportDomain(double[] center, LinearSegment2D bndOfCenter, double radius) {
         SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain(center, bndOfCenter, radius);
         prepairResult(searchResult);
         double[] searchCenter = (null == bndOfCenter) ? center : perturbCenter(center, bndOfCenter, searchResult.segments);
@@ -43,7 +43,7 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
         return searchResult;
     }
 
-    private double[] perturbCenter(double[] center, Segment2D bndOfCenter, List<Segment2D> segs) {
+    private double[] perturbCenter(double[] center, LinearSegment2D bndOfCenter, List<LinearSegment2D> segs) {
         Node head = bndOfCenter.getHead();
         Node rear = bndOfCenter.getRear();
         double[] hCoord = head.coord;
@@ -67,8 +67,8 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
         return pertCenter;
     }
 
-    void checkPerturbCenter(double[] center, double[] perturbedCenter, Segment2D bnd, Collection<? extends Segment2D> segs) {
-        Segment2D bndNeighbor = null;
+    void checkPerturbCenter(double[] center, double[] perturbedCenter, LinearSegment2D bnd, Collection<? extends LinearSegment2D> segs) {
+        LinearSegment2D bndNeighbor = null;
         double[] bndNeighborFurtherPoint = null;
         if (center == bnd.getHead().coord) {
             bndNeighbor = bnd.getPred();
@@ -88,7 +88,7 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
             }
         }
 
-        for (Segment2D seg : segs) {
+        for (LinearSegment2D seg : segs) {
             if (seg == bnd || seg == bndNeighbor) {
                 continue;
             }

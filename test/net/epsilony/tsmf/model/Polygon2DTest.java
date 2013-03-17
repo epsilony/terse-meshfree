@@ -56,7 +56,7 @@ public class Polygon2DTest {
         ArrayList<double[][][]> coords = new ArrayList<>(1);
         Polygon2D pg = TestTool.samplePolygon(coords);
         int i = 0, j = 0;
-        for (Segment2D seg : pg) {
+        for (LinearSegment2D seg : pg) {
             double[][][] coordChains = coords.get(0);
             double[] coord = coordChains[i][j];
             assertArrayEquals(coord, seg.getHead().coord, 1e-14);
@@ -73,8 +73,8 @@ public class Polygon2DTest {
         Polygon2D pg = TestTool.samplePolygon(null);
         ArrayList<LinkedList<Node>> vertes = pg.getVertes();
         Iterator<LinkedList<Node>> vIter = vertes.iterator();
-        for (Segment2D cHead : pg.chainsHeads) {
-            Segment2D seg = cHead;
+        for (LinearSegment2D cHead : pg.chainsHeads) {
+            LinearSegment2D seg = cHead;
             LinkedList<Node> cs = vIter.next();
             ListIterator<Node> csIter = cs.listIterator(cs.size());
             boolean getHere = false;
@@ -82,7 +82,7 @@ public class Polygon2DTest {
                 Node actNd = seg.pred.getHead();
                 Node expNd = csIter.previous();
                 assertArrayEquals(expNd.coord, actNd.coord, 1e-14);
-                seg = (Segment2D) seg.pred;
+                seg = (LinearSegment2D) seg.pred;
                 getHere = true;
             } while (seg != cHead);
             assertTrue(getHere);

@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import net.epsilony.tsmf.model.Segment2D;
+import net.epsilony.tsmf.model.LinearSegment2D;
 import net.epsilony.tsmf.util.DoubleArrayComparator;
 import net.epsilony.tsmf.util.pair.PairPack;
 import net.epsilony.tsmf.util.pair.WithPair;
@@ -17,15 +17,15 @@ import net.epsilony.tsmf.util.rangesearch.RangeSearcher;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class SegmentsMidPointLRTreeRangeSearcher implements RangeSearcher<double[], Segment2D> {
+public class SegmentsMidPointLRTreeRangeSearcher implements RangeSearcher<double[], LinearSegment2D> {
 
     public static final int DEFAULT_DIMENSION = 2;
-    LayeredRangeTree<double[], Segment2D> segmentsTree;
+    LayeredRangeTree<double[], LinearSegment2D> segmentsTree;
 
-    public SegmentsMidPointLRTreeRangeSearcher(Iterable<? extends Segment2D> segments, int dimension) {
-        LinkedList<WithPair<double[], Segment2D>> midSegPairs = new LinkedList<>();
-        for (Segment2D seg : segments) {
-            PairPack<double[], Segment2D> midSegPair = new PairPack<>(seg.midPoint(), seg);
+    public SegmentsMidPointLRTreeRangeSearcher(Iterable<? extends LinearSegment2D> segments, int dimension) {
+        LinkedList<WithPair<double[], LinearSegment2D>> midSegPairs = new LinkedList<>();
+        for (LinearSegment2D seg : segments) {
+            PairPack<double[], LinearSegment2D> midSegPair = new PairPack<>(seg.midPoint(), seg);
             midSegPairs.add(midSegPair);
         }
         ArrayList<Comparator<double[]>> comps = new ArrayList<>(2);
@@ -35,12 +35,12 @@ public class SegmentsMidPointLRTreeRangeSearcher implements RangeSearcher<double
         segmentsTree = new LayeredRangeTree<>(midSegPairs, comps);
     }
 
-    public SegmentsMidPointLRTreeRangeSearcher(Iterable<? extends Segment2D> segments) {
+    public SegmentsMidPointLRTreeRangeSearcher(Iterable<? extends LinearSegment2D> segments) {
         this(segments, DEFAULT_DIMENSION);
     }
 
     @Override
-    public List<Segment2D> rangeSearch(double[] from, double[] to) {
+    public List<LinearSegment2D> rangeSearch(double[] from, double[] to) {
         return segmentsTree.rangeSearch(from, to);
     }
 }

@@ -3,7 +3,7 @@ package net.epsilony.tsmf.util;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import net.epsilony.tsmf.model.Segment2D;
+import net.epsilony.tsmf.model.LinearSegment2D;
 
 /**
  *

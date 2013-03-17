@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tsmf.adaptive.AdaptiveCellEdge;
 import net.epsilony.tsmf.model.Node;
-import net.epsilony.tsmf.model.Segment2D;
+import net.epsilony.tsmf.model.LinearSegment2D;
 import net.epsilony.tsmf.util.GenericFunction;
 import net.epsilony.tsmf.util.Math2D;
 
@@ -20,9 +20,9 @@ public class TriangleContourBuilder {
     protected List<TriangleContourCell> cells;
     protected double contourLevel = DEFAULT_CONTOUR_LEVEL;
     protected GenericFunction<double[], double[]> levelSetFunction;
-    protected List<Segment2D> contourHeads;
+    protected List<LinearSegment2D> contourHeads;
     protected LinkedList<TriangleContourCell> openRingHeadCells;
-    protected LinkedList<Segment2D> openRingHeadSegments;
+    protected LinkedList<LinearSegment2D> openRingHeadSegments;
     protected Iterator<TriangleContourCell> cellsIterator;
 
     public void setCells(List<TriangleContourCell> cells) {
@@ -48,7 +48,7 @@ public class TriangleContourBuilder {
         }
     }
 
-    public List<Segment2D> getContourHeads() {
+    public List<LinearSegment2D> getContourHeads() {
         return contourHeads;
     }
 
@@ -75,7 +75,7 @@ public class TriangleContourBuilder {
             }
             setupFunctionData(cell);
 
-            Segment2D sourceEdge = cell.getContourSourceEdge();
+            LinearSegment2D sourceEdge = cell.getContourSourceEdge();
             if (sourceEdge == null) {
                 cell.setVisited(true);
                 continue;
@@ -88,26 +88,26 @@ public class TriangleContourBuilder {
 
     private void genContourFromHeadCell(TriangleContourCell headCell) {
         headCell.setVisited(true);
-        Segment2D chainHead = new Segment2D(genContourNode(headCell.getContourSourceEdge()));
+        LinearSegment2D chainHead = new LinearSegment2D(genContourNode(headCell.getContourSourceEdge()));
         contourHeads.add(chainHead);
 
         openRingHeadCells.add(headCell);
         openRingHeadSegments.add(chainHead);
         TriangleContourCell contourCell = headCell;
 
-        Segment2D segment = chainHead;
+        LinearSegment2D segment = chainHead;
         while (true) {
             TriangleContourCell nextContourCell = contourCell.nextContourCell();
             if (null == nextContourCell) {
-                Segment2D newSucc = new Segment2D(genContourNode(contourCell.getContourDestinationEdge()));
-                Segment2D.link(segment, newSucc);
+                LinearSegment2D newSucc = new LinearSegment2D(genContourNode(contourCell.getContourDestinationEdge()));
+                LinearSegment2D.link(segment, newSucc);
                 break;
             } else {
                 contourCell = nextContourCell;
             }
 
             if (contourCell == headCell) {
-                Segment2D.link(segment, chainHead);
+                LinearSegment2D.link(segment, chainHead);
                 openRingHeadCells.remove(headCell);
                 openRingHeadSegments.remove(chainHead);
                 break;
@@ -124,8 +124,8 @@ public class TriangleContourBuilder {
             contourCell.setVisited(true);
             setupFunctionData(contourCell);
 
-            Segment2D newSucc = new Segment2D(genContourNode(contourCell.getContourSourceEdge()));
-            Segment2D.link(segment, newSucc);
+            LinearSegment2D newSucc = new LinearSegment2D(genContourNode(contourCell.getContourSourceEdge()));
+            LinearSegment2D.link(segment, newSucc);
             segment = newSucc;
 
         }
@@ -142,7 +142,7 @@ public class TriangleContourBuilder {
         cell.updateStatus(contourLevel);
     }
 
-    private Node genContourNode(Segment2D contourSourceEdge) {
+    private Node genContourNode(LinearSegment2D contourSourceEdge) {
         double[] headCoord = contourSourceEdge.getHeadCoord();
         double[] rearCoord = contourSourceEdge.getRearCoord();
         double headValue = ((double[]) contourSourceEdge.getHead().getData())[0];
@@ -152,17 +152,17 @@ public class TriangleContourBuilder {
         return new Node(resultCoord);
     }
 
-    private boolean tryMergeWithOpenRingHeads(TriangleContourCell contourCell, Segment2D segment) {
+    private boolean tryMergeWithOpenRingHeads(TriangleContourCell contourCell, LinearSegment2D segment) {
         Iterator<TriangleContourCell> openHeadCellIter = openRingHeadCells.descendingIterator();
-        Iterator<Segment2D> openHeadSegIter = openRingHeadSegments.descendingIterator();
+        Iterator<LinearSegment2D> openHeadSegIter = openRingHeadSegments.descendingIterator();
         boolean findAndRemove = false;
         while (openHeadCellIter.hasNext()) {
             TriangleContourCell cell = openHeadCellIter.next();
-            Segment2D openRingHead = openHeadSegIter.next();
+            LinearSegment2D openRingHead = openHeadSegIter.next();
             if (cell == contourCell) {
                 openHeadCellIter.remove();
                 openHeadSegIter.remove();
-                Segment2D.link(segment, openRingHead);
+                LinearSegment2D.link(segment, openRingHead);
 
                 contourHeads.remove(openRingHead);
 

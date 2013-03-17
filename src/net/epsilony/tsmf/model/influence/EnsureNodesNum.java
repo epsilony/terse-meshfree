@@ -9,7 +9,7 @@ import java.util.List;
 import net.epsilony.tsmf.model.support_domain.SupportDomainData;
 import net.epsilony.tsmf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.tsmf.model.Node;
-import net.epsilony.tsmf.model.Segment2D;
+import net.epsilony.tsmf.model.LinearSegment2D;
 import net.epsilony.tsmf.util.IntIdentityComparator;
 import net.epsilony.tsmf.util.Math2D;
 
@@ -116,7 +116,7 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
     }
 
     @Override
-    public double influcenceRadius(Node node, Segment2D seg, SupportDomainSearcher modelSearcher) {
+    public double influcenceRadius(Node node, LinearSegment2D seg, SupportDomainSearcher modelSearcher) {
         double searchRad = initSearchRad;
         do {
             SupportDomainData searchResult = modelSearcher.searchSupportDomain(node.coord, seg, searchRad);
@@ -136,11 +136,11 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
         throw new IllegalStateException("Can find a suitable radius!");
     }
 
-    private List<Node> filterNodesOnSegments(List<Node> nodes, List<Segment2D> segments) {
+    private List<Node> filterNodesOnSegments(List<Node> nodes, List<LinearSegment2D> segments) {
         Node[] sortedNodes = nodes.toArray(new Node[0]);
         Arrays.sort(sortedNodes, idComparator);
         boolean[] onSegment = new boolean[sortedNodes.length];
-        for (Segment2D seg : segments) {
+        for (LinearSegment2D seg : segments) {
             int headIndex = Arrays.binarySearch(sortedNodes, seg.getHead(), idComparator);
             if (headIndex < sortedNodes.length && headIndex >= 0) {
                 onSegment[headIndex] = true;

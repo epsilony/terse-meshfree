@@ -9,18 +9,18 @@ import net.epsilony.tsmf.util.UnivarArrayFunction;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class Segment2D implements IntIdentity, UnivarArrayFunction {
+public class LinearSegment2D implements IntIdentity, UnivarArrayFunction {
 
-    protected Segment2D pred;
-    protected Segment2D succ;
+    protected LinearSegment2D pred;
+    protected LinearSegment2D succ;
     protected Node head;
     public int id;
     protected int diffOrder = 0;
 
-    public Segment2D() {
+    public LinearSegment2D() {
     }
 
-    public Segment2D(Node head) {
+    public LinearSegment2D(Node head) {
         this.head = head;
     }
 
@@ -70,8 +70,8 @@ public class Segment2D implements IntIdentity, UnivarArrayFunction {
         return midPoint(null);
     }
 
-    public Segment2D bisectionAndReturnNewSuccessor() {
-        Segment2D newSucc = newInstance();
+    public LinearSegment2D bisectionAndReturnNewSuccessor() {
+        LinearSegment2D newSucc = newInstance();
         newSucc.setHead(bisectionNode());
         newSucc.succ = this.succ;
         newSucc.pred = this;
@@ -124,23 +124,23 @@ public class Segment2D implements IntIdentity, UnivarArrayFunction {
         getRear().coord = coord;
     }
 
-    protected Segment2D newInstance() {
-        return new Segment2D();
+    protected LinearSegment2D newInstance() {
+        return new LinearSegment2D();
     }
 
-    public Segment2D getPred() {
+    public LinearSegment2D getPred() {
         return pred;
     }
 
-    public void setPred(Segment2D pred) {
+    public void setPred(LinearSegment2D pred) {
         this.pred = pred;
     }
 
-    public Segment2D getSucc() {
+    public LinearSegment2D getSucc() {
         return succ;
     }
 
-    public void setSucc(Segment2D succ) {
+    public void setSucc(LinearSegment2D succ) {
         this.succ = succ;
     }
 
@@ -170,7 +170,7 @@ public class Segment2D implements IntIdentity, UnivarArrayFunction {
         this.id = id;
     }
 
-    public static void link(Segment2D asPred, Segment2D asSucc) {
+    public static void link(LinearSegment2D asPred, LinearSegment2D asSucc) {
         asPred.succ = asSucc;
         asSucc.pred = asPred;
     }

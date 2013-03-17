@@ -7,7 +7,7 @@ import java.util.List;
 import net.epsilony.tsmf.model.Model2D;
 import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.Polygon2D;
-import net.epsilony.tsmf.model.Segment2D;
+import net.epsilony.tsmf.model.LinearSegment2D;
 import net.epsilony.tsmf.model.search.LRTreeNodesSphereSearcher;
 import net.epsilony.tsmf.model.search.LRTreeSegment2DIntersectingSphereSearcher;
 import net.epsilony.tsmf.util.IntIdentityComparator;
@@ -39,11 +39,11 @@ public class SupportDomainSearcherFactoryTest {
             {1, 2}, {2, 2}, {3, 2}, {4, 2}, {5, 2}, {6, 2}, {7, 2}, {8, 2}};
 
         Polygon2D pg = Polygon2D.byCoordChains(vertesCoords);
-        LinkedList<Segment2D> pgSegs = new LinkedList<>();
-        for (Segment2D seg : pg) {
+        LinkedList<LinearSegment2D> pgSegs = new LinkedList<>();
+        for (LinearSegment2D seg : pg) {
             pgSegs.add(seg);
         }
-        Segment2D bnd = pgSegs.get(bndId);
+        LinearSegment2D bnd = pgSegs.get(bndId);
         LinkedList<Node> spaceNodes = new LinkedList<>();
         for (double[] crd : spaceNodeCoords) {
             spaceNodes.add(new Node(crd));
@@ -104,8 +104,8 @@ public class SupportDomainSearcherFactoryTest {
         SupportDomainSearcher searcher = factory.produce();
         SupportDomainData searchResult = searcher.searchSupportDomain(center, null, radius);
         Collections.sort(searchResult.visibleNodes, new IntIdentityComparator<>());
-        List<WithPair<Node, Segment2D>> blockPair = searchResult.invisibleNodesAndBlockingSegments;
-        Collections.sort(blockPair, new WithPairComparator<Node, Segment2D>(new IntIdentityComparator<Node>()));
+        List<WithPair<Node, LinearSegment2D>> blockPair = searchResult.invisibleNodesAndBlockingSegments;
+        Collections.sort(blockPair, new WithPairComparator<Node, LinearSegment2D>(new IntIdentityComparator<Node>()));
         Collections.sort(searchResult.segments, new IntIdentityComparator<>());
 
         int[] ndsIdsExp = new int[]{1, 2, 3, 9, 12};
@@ -116,18 +116,18 @@ public class SupportDomainSearcherFactoryTest {
             idx++;
         }
         idx = 0;
-        for (Segment2D seg : searchResult.segments) {
+        for (LinearSegment2D seg : searchResult.segments) {
             assertEquals(segsIdsExp[idx], seg.id);
             idx++;
         }
         int[] blockedNdsIds = new int[]{0, 4, 8, 10, 11,};
         idx = 0;
         boolean getHere = false;
-        for (WithPair<Node, Segment2D> p : blockPair) {
+        for (WithPair<Node, LinearSegment2D> p : blockPair) {
 
             assertEquals(blockedNdsIds[idx], p.getKey().id);
             Node exp_nd = p.getKey();
-            Segment2D seg = p.getValue();
+            LinearSegment2D seg = p.getValue();
             assertTrue(
                     Math2D.isSegmentsIntersecting(seg.getHead().coord, seg.getRear().coord, center, exp_nd.coord));
             idx++;
