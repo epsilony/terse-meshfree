@@ -3,7 +3,12 @@ package net.epsilony.tsmf.util.ui;
 
 import java.awt.Component;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.PathIterator;
 import java.awt.geom.Rectangle2D;
+import java.util.LinkedList;
+import java.util.List;
+import net.epsilony.tsmf.model.Node;
+import net.epsilony.tsmf.model.Segment2D;
 
 /**
  *
@@ -57,6 +62,43 @@ public class UIUtils {
         transform.transform(ZERO2D, 0, transformedOrigin, 0, 1);
         result[0] = result[0] - transformedOrigin[0];
         result[1] = result[1] - transformedOrigin[1];
+        return result;
+    }
+
+    public static List<Segment2D> pathIteratorToSegment2DChains(PathIterator pathIterator) {
+        List<Segment2D> result = new LinkedList<>();
+        Segment2D head = null;
+        Segment2D current = head;
+        double[] coords = new double[6];
+        while (!pathIterator.isDone()) {
+            int type = pathIterator.currentSegment(coords);
+            switch (type) {
+                case PathIterator.SEG_MOVETO:
+                    if (null != head) {
+                        result.add(head);
+                    }
+                    head = new Segment2D(new Node(coords[0], coords[1]));
+                    current = head;
+                    break;
+                case PathIterator.SEG_LINETO:
+                    Segment2D newSeg = new Segment2D(new Node(coords[0], coords[1]));
+                    Segment2D.link(current, newSeg);
+                    current = newSeg;
+                    break;
+                case PathIterator.SEG_CLOSE:
+                    Segment2D.link(current, head);
+                    result.add(head);
+                    head = null;
+                    current = null;
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Only Supports SEG_MOVETO, SEG_LINETO and SEG_CLOSE");
+            }
+            pathIterator.next();
+        }
+        if (head != null) {
+            result.add(head);
+        }
         return result;
     }
 }
