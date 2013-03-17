@@ -3,17 +3,19 @@ package net.epsilony.tsmf.model;
 
 import net.epsilony.tsmf.util.IntIdentity;
 import net.epsilony.tsmf.util.Math2D;
+import net.epsilony.tsmf.util.UnivarArrayFunction;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class Segment2D implements IntIdentity {
+public class Segment2D implements IntIdentity, UnivarArrayFunction {
 
     protected Segment2D pred;
     protected Segment2D succ;
     protected Node head;
     public int id;
+    protected int diffOrder = 0;
 
     public Segment2D() {
     }
@@ -171,5 +173,33 @@ public class Segment2D implements IntIdentity {
     public static void link(Segment2D asPred, Segment2D asSucc) {
         asPred.succ = asSucc;
         asSucc.pred = asPred;
+    }
+
+    @Override
+    public double[] values(double t, double[] results) {
+        if (null == results) {
+            results = new double[diffOrder * 2];
+        }
+        double[] headCoord = getHeadCoord();
+        double[] rearCoord = getRearCoord();
+        Math2D.pointOnSegment(headCoord, rearCoord, t, results);
+        if (diffOrder >= 1) {
+            results[2] = rearCoord[0] - headCoord[0];
+            results[3] = rearCoord[1] - headCoord[1];
+        }
+        return results;
+    }
+
+    @Override
+    public int getDiffOrder() {
+        return diffOrder;
+    }
+
+    @Override
+    public void setDiffOrder(int diffOrder) {
+        if (diffOrder < 0 || diffOrder > 1) {
+            throw new UnsupportedOperationException("Only support 0 and 1, not :" + diffOrder);
+        }
+        this.diffOrder = diffOrder;
     }
 }
