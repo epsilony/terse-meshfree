@@ -12,29 +12,27 @@ import net.epsilony.tsmf.util.ArrvarFunction;
 public class Segment2DQuadrature implements Iterable<QuadraturePoint> {
 
     Segment2D segment = null;
-    double segLen;
     int degree;
     double[] points;
     double[] weights;
 
-    private void _setSegment(Segment2D segment) {
+    public void setSegment(Segment2D segment) {
         this.segment = segment;
-        segLen = segment.length();
+        prepare();
     }
 
     public Segment2DQuadrature(Segment2D segment, int degree) {
-        _setSegment(segment);
-        _setDegree(degree);
+        this.segment = segment;
+        this.degree = degree;
+        prepare();
     }
 
     public Segment2DQuadrature(int degree) {
-        _setDegree(degree);
+        this.degree = degree;
+        prepare();
     }
 
-    private void _setDegree(int degree) {
-        double[][] pws = GaussLegendre.pointsWeightsByDegree(degree);
-        points = pws[0];
-        weights = pws[1];
+    public void setDegree(int degree) {
         this.degree = degree;
     }
 
@@ -42,22 +40,21 @@ public class Segment2DQuadrature implements Iterable<QuadraturePoint> {
         return degree;
     }
 
-    public void setSegment(Segment2D segment) {
-        _setSegment(segment);
-    }
-
-    public void setDegree(int degree) {
-        _setDegree(degree);
-    }
-
     @Override
     public Iterator<QuadraturePoint> iterator() {
         return new MyIterator();
     }
 
+    private void prepare() {
+        double[][] pws = GaussLegendre.pointsWeightsByDegree(degree);
+        points = pws[0];
+        weights = pws[1];
+    }
+
     private class MyIterator implements Iterator<QuadraturePoint> {
 
         int nextIdx = 0;
+        private double[] coordAndDifferential = new double[4];
 
         @Override
         public boolean hasNext() {
@@ -66,13 +63,16 @@ public class Segment2DQuadrature implements Iterable<QuadraturePoint> {
 
         @Override
         public QuadraturePoint next() {
-            double weight = weights[nextIdx] / 2 * segLen;
             double point = points[nextIdx];
-            double[] cHead = segment.getHead().coord;
-            double[] cRear = segment.getRear().coord;
-            double p = (point + 1) / 2;
-            double x = cHead[0] * (1 - p) + cRear[0] * p;
-            double y = cHead[1] * (1 - p) + cRear[1] * p;
+            double t = (point + 1) / 2;
+            segment.setDiffOrder(1);
+            segment.values(t, coordAndDifferential);
+            double dx = coordAndDifferential[2];
+            double dy = coordAndDifferential[3];
+            double weight = weights[nextIdx] / 2 * (Math.sqrt(dx * dx + dy * dy));
+
+            double x = coordAndDifferential[0];
+            double y = coordAndDifferential[1];
             nextIdx++;
             return new QuadraturePoint(weight, x, y);
         }
