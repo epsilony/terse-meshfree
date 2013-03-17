@@ -52,9 +52,8 @@ public class TriangleContourBuilderDemo extends MouseAdapter {
         LinkedList<TriangleContourCell> cells = new LinkedList<>();
         MiscellaneousUtils.addToList(coverRectangle, cells);
         polygonizer = new TriangleContourBuilder();
-        polygonizer.cells = cells;
-        polygonizer.levelSetFunction = new SampleFunction();
-        polygonizer.contourLevel = 0;
+        polygonizer.setCells(cells);
+        polygonizer.setLevelSetFunction(new SampleFunction());
     }
 
     class SampleFunction implements GenericFunction<double[], double[]> {

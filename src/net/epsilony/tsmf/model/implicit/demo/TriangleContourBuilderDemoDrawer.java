@@ -24,9 +24,11 @@ import net.epsilony.tsmf.util.ui.ModelDrawerAdapter;
 public class TriangleContourBuilderDemoDrawer extends ModelDrawerAdapter {
 
     public static Color DEFAULT_CONTOUR_COLOR = Color.PINK;
+    public static boolean DEFAULT_TRIANGLE_NODES_VISIBLE = true;
     TriangleContourBuilder trianglePolygonizer;
     List<TriangleContourCellDemoDrawer> triangleDrawers;
     NodeDrawer nodeDrawer = new NodeDrawer();
+    boolean triangleNodesVisible = DEFAULT_TRIANGLE_NODES_VISIBLE;
 
     public TriangleContourBuilderDemoDrawer(TriangleContourBuilder trianglePolygonizer) {
         this.trianglePolygonizer = trianglePolygonizer;
@@ -35,7 +37,7 @@ public class TriangleContourBuilderDemoDrawer extends ModelDrawerAdapter {
 
     @Override
     public Rectangle2D getBoundsInModelSpace() {
-        Rectangle2D rect = new Rectangle2D.Double();
+        Rectangle2D rect = triangleDrawers.get(0).getBoundsInModelSpace();
         for (ModelDrawer drawer : triangleDrawers) {
             Rectangle2D.union(rect, drawer.getBoundsInModelSpace(), rect);
         }
@@ -56,7 +58,7 @@ public class TriangleContourBuilderDemoDrawer extends ModelDrawerAdapter {
     }
 
     private void drawContourNodes(Graphics2D g2) {
-        for (Segment2D chainHead : trianglePolygonizer.contourHeads) {
+        for (Segment2D chainHead : trianglePolygonizer.getContourHeads()) {
             nodeDrawer.setColor(DEFAULT_CONTOUR_COLOR);
             nodeDrawer.setNode(chainHead.getHead());
             nodeDrawer.drawModel(g2);
@@ -71,7 +73,7 @@ public class TriangleContourBuilderDemoDrawer extends ModelDrawerAdapter {
 
     private Path2D genContourPath() {
         Path2D path = new Path2D.Double();
-        for (Segment2D chainHead : trianglePolygonizer.contourHeads) {
+        for (Segment2D chainHead : trianglePolygonizer.getContourHeads()) {
             double[] headCoord = chainHead.getHeadCoord();
             path.moveTo(headCoord[0], headCoord[1]);
             Segment2D seg = chainHead.getSucc();
@@ -107,8 +109,21 @@ public class TriangleContourBuilderDemoDrawer extends ModelDrawerAdapter {
 
     private void genDrawers() {
         triangleDrawers = new LinkedList<>();
-        for (TriangleContourCell cell : trianglePolygonizer.cells) {
-            triangleDrawers.add(new TriangleContourCellDemoDrawer(cell));
+        for (TriangleContourCell cell : trianglePolygonizer.getCells()) {
+            TriangleContourCellDemoDrawer cellDrawer = new TriangleContourCellDemoDrawer(cell);
+            triangleDrawers.add(cellDrawer);
+            cellDrawer.setNodesVisible(triangleNodesVisible);
+        }
+    }
+
+    public boolean isTriangleNodesVisible() {
+        return triangleNodesVisible;
+    }
+
+    public void setTriangleNodesVisible(boolean triangleNodesVisible) {
+        this.triangleNodesVisible = triangleNodesVisible;
+        for (TriangleContourCellDemoDrawer cellDrawer : triangleDrawers) {
+            cellDrawer.setNodesVisible(triangleNodesVisible);
         }
     }
 }

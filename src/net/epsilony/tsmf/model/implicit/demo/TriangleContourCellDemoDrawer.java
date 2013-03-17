@@ -36,6 +36,7 @@ public class TriangleContourCellDemoDrawer extends ModelDrawerAdapter {
     Path2D path;
     NodeDrawer nodeDrawer = new NodeDrawer();
     Color nodeDataNullColor = DEFAULT_NODE_NULL_DATA_COLOR;
+    boolean nodesVisible;
 
     public TriangleContourCellDemoDrawer(TriangleContourCell cell) {
         this.cell = cell;
@@ -73,18 +74,20 @@ public class TriangleContourCellDemoDrawer extends ModelDrawerAdapter {
             g2.fill(pathOnScreen);
         }
 
-        AdaptiveCellEdge[] edges = cell.getEdges();
-        for (AdaptiveCellEdge edge : edges) {
-            nodeDrawer.setNode(edge.getHead());
-            double[] data = (double[]) edge.getHead().getData();
-            if (null == data) {
-                continue;
-            } else if (data[0] < value) {
-                nodeDrawer.setColor(below);
-            } else {
-                nodeDrawer.setColor(above);
+        if (nodesVisible) {
+            AdaptiveCellEdge[] edges = cell.getEdges();
+            for (AdaptiveCellEdge edge : edges) {
+                nodeDrawer.setNode(edge.getHead());
+                double[] data = (double[]) edge.getHead().getData();
+                if (null == data) {
+                    continue;
+                } else if (data[0] < value) {
+                    nodeDrawer.setColor(below);
+                } else {
+                    nodeDrawer.setColor(above);
+                }
+                nodeDrawer.drawModel(g2);
             }
-            nodeDrawer.drawModel(g2);
         }
     }
 
@@ -98,5 +101,13 @@ public class TriangleContourCellDemoDrawer extends ModelDrawerAdapter {
             path.lineTo(coord[0], coord[1]);
         }
         path.closePath();
+    }
+
+    public boolean isNodesVisible() {
+        return nodesVisible;
+    }
+
+    public void setNodesVisible(boolean nodesVisible) {
+        this.nodesVisible = nodesVisible;
     }
 }

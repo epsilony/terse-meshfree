@@ -16,16 +16,25 @@ import net.epsilony.tsmf.util.Math2D;
  */
 public class TriangleContourBuilder {
 
-    public List<TriangleContourCell> cells;
-    public double contourLevel;
-    public GenericFunction<double[], double[]> levelSetFunction;
-    public LinkedList<Segment2D> contourHeads;
-    public LinkedList<TriangleContourCell> openRingHeadCells;
-    public LinkedList<Segment2D> openRingHeadSegments;
-    Iterator<TriangleContourCell> cellsIterator;
+    public static double DEFAULT_CONTOUR_LEVEL = 0;
+    protected List<TriangleContourCell> cells;
+    protected double contourLevel = DEFAULT_CONTOUR_LEVEL;
+    protected GenericFunction<double[], double[]> levelSetFunction;
+    protected List<Segment2D> contourHeads;
+    protected LinkedList<TriangleContourCell> openRingHeadCells;
+    protected LinkedList<Segment2D> openRingHeadSegments;
+    protected Iterator<TriangleContourCell> cellsIterator;
 
-    public LinkedList<Segment2D> getContourHeads() {
-        return contourHeads;
+    public void setCells(List<TriangleContourCell> cells) {
+        this.cells = cells;
+    }
+
+    public void setContourLevel(double contourLevel) {
+        this.contourLevel = contourLevel;
+    }
+
+    public void setLevelSetFunction(GenericFunction<double[], double[]> levelSetFunction) {
+        this.levelSetFunction = levelSetFunction;
     }
 
     public void genContour() {
@@ -37,6 +46,44 @@ public class TriangleContourBuilder {
             }
             genContourFromHeadCell(headCell);
         }
+    }
+
+    public List<Segment2D> getContourHeads() {
+        return contourHeads;
+    }
+
+    private void prepareGenContour() {
+        for (TriangleContourCell cell : cells) {
+            cell.setVisited(false);
+            AdaptiveCellEdge[] edges = cell.getEdges();
+            for (AdaptiveCellEdge edge : edges) {
+                edge.getHead().setData(null);
+            }
+        }
+        contourHeads = new LinkedList<>();
+        openRingHeadCells = new LinkedList<>();
+        openRingHeadSegments = new LinkedList<>();
+        cellsIterator = cells.iterator();
+    }
+
+    private TriangleContourCell nextHeadCell() {
+        TriangleContourCell result = null;
+        while (cellsIterator.hasNext()) {
+            TriangleContourCell cell = cellsIterator.next();
+            if (cell.isVisited()) {
+                continue;
+            }
+            setupFunctionData(cell);
+
+            Segment2D sourceEdge = cell.getContourSourceEdge();
+            if (sourceEdge == null) {
+                cell.setVisited(true);
+                continue;
+            }
+            result = cell;
+            break;
+        }
+        return result;
     }
 
     private void genContourFromHeadCell(TriangleContourCell headCell) {
@@ -84,40 +131,6 @@ public class TriangleContourBuilder {
         }
     }
 
-    public void prepareGenContour() {
-        for (TriangleContourCell cell : cells) {
-            cell.setVisited(false);
-            AdaptiveCellEdge[] edges = cell.getEdges();
-            for (AdaptiveCellEdge edge : edges) {
-                edge.getHead().setData(null);
-            }
-        }
-        contourHeads = new LinkedList<>();
-        openRingHeadCells = new LinkedList<>();
-        openRingHeadSegments = new LinkedList<>();
-        cellsIterator = cells.iterator();
-    }
-
-    private TriangleContourCell nextHeadCell() {
-        TriangleContourCell result = null;
-        while (cellsIterator.hasNext()) {
-            TriangleContourCell cell = cellsIterator.next();
-            if (cell.isVisited()) {
-                continue;
-            }
-            setupFunctionData(cell);
-
-            Segment2D sourceEdge = cell.getContourSourceEdge();
-            if (sourceEdge == null) {
-                cell.setVisited(true);
-                continue;
-            }
-            result = cell;
-            break;
-        }
-        return result;
-    }
-
     private void setupFunctionData(TriangleContourCell cell) {
         AdaptiveCellEdge[] edges = cell.getEdges();
         for (int i = 0; i < edges.length; i++) {
@@ -158,5 +171,17 @@ public class TriangleContourBuilder {
             }
         }
         return findAndRemove;
+    }
+
+    public List<TriangleContourCell> getCells() {
+        return cells;
+    }
+
+    public double getContourLevel() {
+        return contourLevel;
+    }
+
+    public GenericFunction<double[], double[]> getLevelSetFunction() {
+        return levelSetFunction;
     }
 }
