@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.util.quadrature;
 
+import net.epsilony.tsmf.model.ArcSegment2D;
 import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.LinearSegment2D;
 import net.epsilony.tsmf.util.ArrvarFunction;
@@ -81,5 +82,34 @@ public class Segment2DQuadratureTest {
             getHere = true;
         }
         assertTrue(getHere);
+    }
+
+    @Test
+    public void testArcLength() {
+        double startAngle = Math.PI * 0.33;
+        double endAngle = Math.PI * 0.55;
+        double xTrans = 13.1;
+        double yTrans = -7.2;
+        double radius = 33;
+        double exp = Math.PI * (0.55 - 0.33) * radius;
+        ArcSegment2D arc = new ArcSegment2D();
+        arc.setHead(new Node(xTrans + radius * Math.cos(startAngle), yTrans + radius * Math.sin(startAngle)));
+        arc.setRadius(radius);
+        arc.setSucc(new LinearSegment2D(new Node(xTrans + radius * Math.cos(endAngle), yTrans + radius * Math.sin(endAngle))));
+        Segment2DQuadrature sq = new Segment2DQuadrature(1);
+        boolean beenHere = false;
+        for (int deg = 3; deg < GaussLegendre.MAXPOINTS * 2 - 1; deg++) {
+            sq.setDegree(deg);
+            sq.setSegment(arc);
+            double act = sq.quadrate(new ArrvarFunction() {
+                @Override
+                public double value(double[] vec) {
+                    return 1;
+                }
+            });
+            assertEquals(exp, act, 1e-14);
+            beenHere = true;
+        }
+        assertTrue(beenHere);
     }
 }
