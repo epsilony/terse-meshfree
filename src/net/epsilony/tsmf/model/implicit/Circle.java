@@ -15,6 +15,7 @@ public class Circle implements ArrvarFunction, GenericFunction<double[], double[
 
     double radius;
     double centerX, centerY;
+    boolean concrete = true;
 
     public Circle(double centerX, double centerY, double radius) {
         this.radius = radius;
@@ -27,7 +28,11 @@ public class Circle implements ArrvarFunction, GenericFunction<double[], double[
 
     @Override
     public double value(double[] vec) {
-        return radius - Math2D.distance(vec[0], vec[1], centerX, centerY);
+        double result = radius - Math2D.distance(vec[0], vec[1], centerX, centerY);
+        if (!concrete) {
+            result = -result;
+        }
+        return result;
     }
 
     public double getRadius() {
@@ -54,8 +59,16 @@ public class Circle implements ArrvarFunction, GenericFunction<double[], double[
         this.centerY = centerY;
     }
 
-    Shape genShape() {
+    Shape genProfile() {
         return new Ellipse2D.Double(centerX - radius, centerY - radius, radius * 2, radius * 2);
+    }
+
+    public boolean isConcrete() {
+        return concrete;
+    }
+
+    public void setConcrete(boolean concrete) {
+        this.concrete = concrete;
     }
 
     @Override

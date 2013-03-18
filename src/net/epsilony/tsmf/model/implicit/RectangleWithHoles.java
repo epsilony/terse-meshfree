@@ -68,7 +68,9 @@ public class RectangleWithHoles implements ArrvarFunction, GenericFunction<doubl
                 if (i % 2 != 0) {
                     holeCenterX += r;
                 }
-                holes.add(new Circle(holeCenterX, holeCenterY, holeRadius));
+                Circle circle = new Circle(holeCenterX, holeCenterY, holeRadius);
+                circle.setConcrete(false);
+                holes.add(circle);
 
             }
         }
@@ -84,7 +86,7 @@ public class RectangleWithHoles implements ArrvarFunction, GenericFunction<doubl
     public double value(double[] vec) {
         double result = rectanglePolygon.distanceFunc(vec[0], vec[1]);
         for (Circle circle : holes) {
-            double value = -circle.value(vec);
+            double value = circle.value(vec);
             if (Math.abs(value) < Math.abs(result)) {
                 result = value;
             }
