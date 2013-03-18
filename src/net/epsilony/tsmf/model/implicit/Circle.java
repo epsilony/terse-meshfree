@@ -3,9 +3,15 @@ package net.epsilony.tsmf.model.implicit;
 
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
+import net.epsilony.tsmf.model.ArcSegment2D;
 import net.epsilony.tsmf.util.ArrvarFunction;
 import net.epsilony.tsmf.util.GenericFunction;
 import net.epsilony.tsmf.util.Math2D;
+import static java.lang.Math.PI;
+import static java.lang.Math.sin;
+import static java.lang.Math.cos;
+import net.epsilony.tsmf.model.Node;
+import net.epsilony.tsmf.util.MiscellaneousUtils;
 
 /**
  *
@@ -79,5 +85,38 @@ public class Circle implements ArrvarFunction, GenericFunction<double[], double[
             output[0] = value(input);
         }
         return output;
+    }
+
+    public ArcSegment2D toArcs(double arcLengthSup) {
+        double perimeter = 2 * PI * radius;
+        int arcNum = (int) Math.ceil(perimeter / 4 / arcLengthSup) * 4;
+        if (arcNum < 4) {
+            arcNum = 4;
+        }
+        double deltaAmpAngle = 2 * PI / arcNum;
+        if (!concrete) {
+            deltaAmpAngle = -deltaAmpAngle;
+        }
+        ArcSegment2D arc = new ArcSegment2D();
+        ArcSegment2D headArc = arc;
+        int i = 0;
+        while (i < arcNum) {
+            double ampAngle = deltaAmpAngle * i;
+            double arcX = radius * cos(ampAngle) + centerX;
+            double arcY = radius * sin(ampAngle) + centerY;
+            arc.setHead(new Node(arcX, arcY));
+            arc.setRadius(radius);
+            arc.setCenterOnChordLeft(concrete);
+            ArcSegment2D succArc;
+            if (i != arcNum - 1) {
+                succArc = new ArcSegment2D();
+            } else {
+                succArc = headArc;
+            }
+            MiscellaneousUtils.link(arc, succArc);
+            arc = succArc;
+            i++;
+        }
+        return headArc;
     }
 }
