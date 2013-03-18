@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.LinearSegment2D;
+import net.epsilony.tsmf.util.MiscellaneousUtils;
 
 /**
  *
@@ -82,11 +83,11 @@ public class UIUtils {
                     break;
                 case PathIterator.SEG_LINETO:
                     LinearSegment2D newSeg = new LinearSegment2D(new Node(coords[0], coords[1]));
-                    LinearSegment2D.link(current, newSeg);
+                    MiscellaneousUtils.link(current, newSeg);
                     current = newSeg;
                     break;
                 case PathIterator.SEG_CLOSE:
-                    LinearSegment2D.link(current, head);
+                    MiscellaneousUtils.link(current, head);
                     result.add(head);
                     head = null;
                     current = null;

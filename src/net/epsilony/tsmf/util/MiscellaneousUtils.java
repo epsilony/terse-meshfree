@@ -3,6 +3,7 @@ package net.epsilony.tsmf.util;
 
 import java.util.Arrays;
 import java.util.List;
+import net.epsilony.tsmf.model.Segment2D;
 
 /**
  *
@@ -14,5 +15,10 @@ public class MiscellaneousUtils {
         for (int i = 0; i < array.length; i++) {
             dst.addAll(Arrays.asList(array[i]));
         }
+    }
+
+    public static void link(Segment2D asPred, Segment2D asSucc) {
+        asPred.setSucc(asSucc);
+        asSucc.setPred(asPred);
     }
 }

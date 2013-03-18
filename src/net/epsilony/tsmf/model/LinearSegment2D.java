@@ -106,11 +106,6 @@ public class LinearSegment2D extends AbstractSegment2D {
         return new LinearSegment2D();
     }
 
-    public static void link(LinearSegment2D asPred, LinearSegment2D asSucc) {
-        asPred.succ = asSucc;
-        asSucc.pred = asPred;
-    }
-
     @Override
     public double[] values(double t, double[] results) {
         if (null == results) {

@@ -95,7 +95,7 @@ public class RectangleWithHoles implements ArrvarFunction, GenericFunction<doubl
     public Shape genShape() {
         Area area = new Area(rectangle);
         for (Circle cir : holes) {
-            area.subtract(new Area(cir.genShape()));
+            area.subtract(new Area(cir.genProfile()));
         }
         return area;
     }

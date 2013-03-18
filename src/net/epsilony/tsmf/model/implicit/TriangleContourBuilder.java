@@ -9,6 +9,7 @@ import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.LinearSegment2D;
 import net.epsilony.tsmf.util.GenericFunction;
 import net.epsilony.tsmf.util.Math2D;
+import net.epsilony.tsmf.util.MiscellaneousUtils;
 
 /**
  *
@@ -100,14 +101,14 @@ public class TriangleContourBuilder {
             TriangleContourCell nextContourCell = contourCell.nextContourCell();
             if (null == nextContourCell) {
                 LinearSegment2D newSucc = new LinearSegment2D(genContourNode(contourCell.getContourDestinationEdge()));
-                LinearSegment2D.link(segment, newSucc);
+                MiscellaneousUtils.link(segment, newSucc);
                 break;
             } else {
                 contourCell = nextContourCell;
             }
 
             if (contourCell == headCell) {
-                LinearSegment2D.link(segment, chainHead);
+                MiscellaneousUtils.link(segment, chainHead);
                 openRingHeadCells.remove(headCell);
                 openRingHeadSegments.remove(chainHead);
                 break;
@@ -125,7 +126,7 @@ public class TriangleContourBuilder {
             setupFunctionData(contourCell);
 
             LinearSegment2D newSucc = new LinearSegment2D(genContourNode(contourCell.getContourSourceEdge()));
-            LinearSegment2D.link(segment, newSucc);
+            MiscellaneousUtils.link(segment, newSucc);
             segment = newSucc;
 
         }
@@ -162,7 +163,7 @@ public class TriangleContourBuilder {
             if (cell == contourCell) {
                 openHeadCellIter.remove();
                 openHeadSegIter.remove();
-                LinearSegment2D.link(segment, openRingHead);
+                MiscellaneousUtils.link(segment, openRingHead);
 
                 contourHeads.remove(openRingHead);
 
