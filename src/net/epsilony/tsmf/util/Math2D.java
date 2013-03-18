@@ -3,7 +3,6 @@ package net.epsilony.tsmf.util;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import net.epsilony.tsmf.model.LinearSegment2D;
 
 /**
  *
@@ -38,9 +37,17 @@ public class Math2D {
     }
 
     public static double distance(double x1, double y1, double x2, double y2) {
+        return Math.sqrt(distanceSquare(x1, y1, x2, y2));
+    }
+
+    public static double distanceSquare(double x1, double y1, double x2, double y2) {
         double dx = x1 - x2;
         double dy = y1 - y2;
-        return Math.sqrt(dx * dx + dy * dy);
+        return dx * dx + dy * dy;
+    }
+
+    public static double distanceSquare(double[] v1, double[] v2) {
+        return distanceSquare(v1[0], v1[1], v2[0], v2[1]);
     }
 
     public static double distance(double[] xy1, double[] xy2) {
@@ -186,9 +193,9 @@ public class Math2D {
                     break;
                 }
                 if (tailRun == 2) {
-                    p3=firstSegmentHead;
+                    p3 = firstSegmentHead;
                 } else {
-                    p3=firstSegmentRear;
+                    p3 = firstSegmentRear;
                 }
                 tailRun--;
             }
@@ -202,7 +209,7 @@ public class Math2D {
         return angle > 0;
     }
 
-    public static  double deltaAngle(double v1x, double v1y, double v2x, double v2y) {
+    public static double deltaAngle(double v1x, double v1y, double v2x, double v2y) {
         double crossValue = cross(v1x, v1y, v2x, v2y);
         double cosineValue = cos(v1x, v1y, v2x, v2y);
         double deltaAngle = Math.acos(cosineValue) * Math.signum(crossValue);
