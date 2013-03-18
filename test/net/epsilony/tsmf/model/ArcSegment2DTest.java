@@ -42,45 +42,69 @@ public class ArcSegment2DTest {
         double radius = 3;
         double xTrans = -3.1;
         double yTrans = 2.2;
-        ArcSegment2D arc = new ArcSegment2D();
-        arc.setRadius(radius);
-        arc.setHead(new Node(radius * cos(PI / 6) + xTrans, radius * sin(PI / 6) + yTrans));
-        arc.setSucc(new LinearSegment2D(new Node(
-                radius * cos(PI / 3) + xTrans,
-                radius * sin(PI / 3) + yTrans)));
-        double[] samples = new double[]{0, 1, 0.5, 0.35};
-        double[][] exps = new double[][]{
-            {arc.getHeadCoord()[0], arc.getHeadCoord()[1]},
-            {arc.getRearCoord()[0], arc.getRearCoord()[1]},
-            {radius * cos(PI / 4) + xTrans, radius * sin(PI / 4) + yTrans},
-            {radius * cos(PI / 6 + PI / 6 * 0.35) + xTrans, radius * sin(PI / 6 + PI / 6 * 0.35) + yTrans}
-        };
+        for (boolean onChordLeft : new boolean[]{true, false}) {
+            double headAngle = PI / 6;
+            double rearAngle = PI / 3;
+            if (!onChordLeft) {
+                headAngle = PI / 3;
+                rearAngle = PI / 6;
+            }
+            ArcSegment2D arc = new ArcSegment2D();
+            arc.setCenterOnChordLeft(onChordLeft);
+            arc.setRadius(radius);
+            arc.setHead(new Node(radius * cos(headAngle) + xTrans, radius * sin(headAngle) + yTrans));
+            arc.setSucc(new LinearSegment2D(new Node(
+                    radius * cos(rearAngle) + xTrans,
+                    radius * sin(rearAngle) + yTrans)));
+            double[] samples = new double[]{0, 1, 0.5, 0.35};
+            double[][] exps = new double[][]{
+                {arc.getHeadCoord()[0], arc.getHeadCoord()[1]},
+                {arc.getRearCoord()[0], arc.getRearCoord()[1]},
+                {radius * cos((headAngle + rearAngle) / 2) + xTrans, radius * sin((headAngle + rearAngle) / 2) + yTrans},
+                {radius * cos(headAngle * (1 - 0.35) + rearAngle * 0.35) + xTrans, radius * sin(headAngle * (1 - 0.35) + rearAngle * 0.35) + yTrans}
+            };
 
-        for (int i = 0; i < samples.length; i++) {
-            double t = samples[i];
-            double[] exp = exps[i];
-            double[] act = arc.values(t, null);
-            assertArrayEquals(exp, act, 1e-14);
+            for (int i = 0; i < samples.length; i++) {
+                double t = samples[i];
+                double[] exp = exps[i];
+                double[] act = arc.values(t, null);
+                assertArrayEquals(exp, act, 1e-14);
+            }
         }
+    }
 
-        arc.setGreatArc(true);
-
-        exps[2] = new double[]{radius * cos(5 * PI / 4) + xTrans, radius * sin(5 * PI / 4) + yTrans};
-        exps[3] = new double[]{
-            radius * cos(PI / 6 - 5 * PI / 6 * 0.35) + xTrans,
-            radius * sin(PI / 6 - 5 * PI / 6 * 0.35) + yTrans};
-
-        arc.setGreatArc(false);
-        arc.setDiffOrder(1);
-        double sample = 0.33;
-        double[] exp = new double[]{
-            radius * cos(PI / 6 + PI / 6 * 0.33) + xTrans,
-            radius * sin(PI / 6 + PI / 6 * 0.33) + yTrans,
-            -radius * sin(PI / 6 + PI / 6 * 0.33) * PI / 6,
-            radius * cos(PI / 6 + PI / 6 * 0.33) * PI / 6
-        };
-        double[] act = arc.values(sample, null);
-        assertArrayEquals(act, exp, 1e-14);
+    @Test
+    public void testValueDiff() {
+        double radius = 3;
+        double xTrans = -3.1;
+        double yTrans = 2.2;
+        for (boolean onChordLeft : new boolean[]{true, false}) {
+            double headAngle = PI / 6;
+            double rearAngle = PI / 3;
+            if (!onChordLeft) {
+                headAngle = PI / 3;
+                rearAngle = PI / 6;
+            }
+            ArcSegment2D arc = new ArcSegment2D();
+            arc.setCenterOnChordLeft(false);
+            arc.setRadius(radius);
+            arc.setHead(new Node(radius * cos(headAngle) + xTrans, radius * sin(headAngle) + yTrans));
+            arc.setSucc(new LinearSegment2D(new Node(
+                    radius * cos(rearAngle) + xTrans,
+                    radius * sin(rearAngle) + yTrans)));
+            arc.setCenterOnChordLeft(onChordLeft);
+            arc.setDiffOrder(1);
+            double sample = 0.33;
+            double angle = headAngle * (1 - sample) + rearAngle * sample;
+            double[] exp = new double[]{
+                radius * cos(angle) + xTrans,
+                radius * sin(angle) + yTrans,
+                -radius * sin(angle) * (rearAngle - headAngle),
+                radius * cos(angle) * (rearAngle - headAngle)
+            };
+            double[] act = arc.values(sample, null);
+            assertArrayEquals(act, exp, 1e-14);
+        }
     }
 
     @Test
@@ -109,10 +133,51 @@ public class ArcSegment2DTest {
         act = arc.distanceTo(x, y);
         exp = Math2D.distance(x, y, arc.getHeadCoord()[0], arc.getHeadCoord()[1]);
         assertEquals(exp, act, 1e-14);
-        
-        arc.setGreatArc(true);
-        exp = radius - sampleRad;
-        act = arc.distanceTo(x, y);
-        assertEquals(exp, act, 1e-14);
+    }
+
+    @Test
+    public void testBisection() {
+        double radius = 3;
+        double xTrans = -3.1;
+        double yTrans = 2.2;
+
+
+        for (boolean centerOnChordLeft : new boolean[]{true, false}) {
+            double headAmpAngle = PI / 6;
+            double rearAmpAngle = PI * 2 / 3;
+            if (!centerOnChordLeft) {
+                double t = headAmpAngle;
+                headAmpAngle = rearAmpAngle;
+                rearAmpAngle = t;
+            }
+            ArcSegment2D arc = new ArcSegment2D();
+            arc.setCenterOnChordLeft(centerOnChordLeft);
+            arc.setRadius(radius);
+            arc.setHead(new Node(radius * cos(headAmpAngle) + xTrans, radius * sin(headAmpAngle) + yTrans));
+            arc.setSucc(new LinearSegment2D(new Node(
+                    radius * cos(rearAmpAngle) + xTrans,
+                    radius * sin(rearAmpAngle) + yTrans)));
+            Segment2D rawTail = arc.getSucc();
+            ArcSegment2D newSucc = arc.bisectionAndReturnNewSuccessor();
+
+            assertTrue(arc.getSucc() == newSucc);
+            assertTrue(newSucc.getPred() == arc);
+            assertTrue(rawTail == newSucc.getSucc());
+            assertTrue(rawTail.getPred() == newSucc);
+
+            double[] arcCenter = arc.calcCenter(null);
+            double[] expCenter = new double[]{xTrans, yTrans};
+            assertArrayEquals(expCenter, arcCenter, 1e-14);
+
+            arcCenter = newSucc.calcCenter(null);
+            assertArrayEquals(expCenter, arcCenter, 1e-14);
+
+            double arcCenterAngle = arc.calcCenterAngle();
+            double expArcCenterAngle = (headAmpAngle + rearAmpAngle) / 2 - headAmpAngle;
+            assertEquals(expArcCenterAngle, arcCenterAngle, 1e-14);
+
+            double newSuccCenterAngle = newSucc.calcCenterAngle();
+            assertEquals(expArcCenterAngle, newSuccCenterAngle, 1e-14);
+        }
     }
 }

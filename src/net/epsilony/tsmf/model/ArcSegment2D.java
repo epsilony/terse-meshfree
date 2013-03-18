@@ -10,7 +10,6 @@ import net.epsilony.tsmf.util.Math2D;
 public class ArcSegment2D extends AbstractSegment2D {
 
     double radius;
-    boolean greatArc = false;
     boolean centerOnChordLeft = true;//chord is a linear segment start from head node and end at rear node
 
     public double[] calcCenter(double[] result) {
@@ -51,7 +50,7 @@ public class ArcSegment2D extends AbstractSegment2D {
         double crossToHead = Math2D.cross(vecX, vecY, headCoord[0] - center[0], headCoord[1] - center[1]);
         double crossToRear = Math2D.cross(vecX, vecY, rearCoord[0] - center[0], rearCoord[1] - center[1]);
         boolean betwean = crossToHead * crossToRear < 0;
-        if (betwean && !greatArc || !betwean && greatArc) {
+        if (betwean) {
             return radius - Math.sqrt(vecX * vecX + vecY * vecY);
         } else {
             return Math.min(
@@ -74,7 +73,6 @@ public class ArcSegment2D extends AbstractSegment2D {
         newSucc.setPred(this);
         newSucc.setDiffOrder(diffOrder);
         newSucc.setRadius(radius);
-        newSucc.setGreatArc(greatArc);
         newSucc.setCenterOnChordLeft(centerOnChordLeft);
         return newSucc;
     }
@@ -103,6 +101,11 @@ public class ArcSegment2D extends AbstractSegment2D {
         return results;
     }
 
+    public double calcCenterAngle() {
+        double[] center = calcCenter(null);
+        return calcCenterAngle(center[0], center[1]);
+    }
+
     public double calcCenterAngle(double centerX, double centerY) {
         double[] headCoord = getHeadCoord();
         double[] rearCoord = getRearCoord();
@@ -115,10 +118,15 @@ public class ArcSegment2D extends AbstractSegment2D {
                     + "radius:" + radius);
         }
         double centerAngle = Math.acos(centerAngleCosine);
-        if (greatArc) {
-            centerAngle -= Math.PI * 2;
+        if (!centerOnChordLeft) {
+            centerAngle = -centerAngle;
         }
         return centerAngle;
+    }
+
+    public double calcHeadAmplitudeAngle() {
+        double[] center = calcCenter(null);
+        return calcHeadAmplitudeAngle(center[0], center[1]);
     }
 
     public double calcHeadAmplitudeAngle(double centerX, double centerY) {
@@ -132,14 +140,6 @@ public class ArcSegment2D extends AbstractSegment2D {
 
     public void setRadius(double radius) {
         this.radius = radius;
-    }
-
-    public boolean isGreatArc() {
-        return greatArc;
-    }
-
-    public void setGreatArc(boolean greatArc) {
-        this.greatArc = greatArc;
     }
 
     /**
