@@ -34,6 +34,9 @@ public class WeakformProcessRunnable implements Runnable {
     }
 
     public void processVolume() {
+        if (null == volumeSynchronizedIterator) {
+            return;
+        }
         mixer.setDiffOrder(volumeDiffOrder);
         while (true) {
             TaskUnit pt = volumeSynchronizedIterator.nextItem();
@@ -49,6 +52,9 @@ public class WeakformProcessRunnable implements Runnable {
     }
 
     public void processNeumann() {
+        if (null == neumannSynchronizedIterator) {
+            return;
+        }
         mixer.setDiffOrder(neumannDiffOrder);
         while (true) {
             TaskUnit pt = neumannSynchronizedIterator.nextItem();
@@ -64,6 +70,9 @@ public class WeakformProcessRunnable implements Runnable {
     }
 
     public void processDirichlet() {
+        if (null == dirichletSynchronizedIterator) {
+            return;
+        }
         mixer.setDiffOrder(dirichletDiffOrder);
         boolean lagDiri = isAssemblyDirichletByLagrange();
         while (true) {
