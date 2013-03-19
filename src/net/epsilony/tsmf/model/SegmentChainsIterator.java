@@ -12,7 +12,7 @@ import net.epsilony.tsmf.util.MiscellaneousUtils;
  *
  * @author epsilon
  */
-class SegmentIterator<T extends Segment2D> implements Iterator<T> {
+class SegmentChainsIterator<T extends Segment2D> implements Iterator<T> {
 
     Iterator<T> headIterator;
     T seg;
@@ -20,7 +20,7 @@ class SegmentIterator<T extends Segment2D> implements Iterator<T> {
     T head;
     boolean reachChainEnd;
 
-    SegmentIterator(List<T> chainsHeads) {
+    SegmentChainsIterator(List<T> chainsHeads) {
         headIterator = chainsHeads.iterator();
         seg = headIterator.hasNext() ? headIterator.next() : null;
         reachChainEnd = seg == null;

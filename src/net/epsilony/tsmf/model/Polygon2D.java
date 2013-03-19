@@ -201,6 +201,6 @@ public class Polygon2D implements Iterable<LinearSegment2D> {
 
     @Override
     public Iterator<LinearSegment2D> iterator() {
-        return new SegmentIterator<>(chainsHeads);
+        return new SegmentChainsIterator<>(chainsHeads);
     }
 }
