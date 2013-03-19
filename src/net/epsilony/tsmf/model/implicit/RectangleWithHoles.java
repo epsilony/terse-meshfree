@@ -4,10 +4,12 @@ package net.epsilony.tsmf.model.implicit;
 import java.awt.Shape;
 import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tsmf.model.Polygon2D;
 import net.epsilony.tsmf.model.LinearSegment2D;
+import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.util.ArrvarFunction;
 import net.epsilony.tsmf.util.GenericFunction;
 import net.epsilony.tsmf.util.ui.UIUtils;
@@ -110,5 +112,15 @@ public class RectangleWithHoles implements ArrvarFunction, GenericFunction<doubl
             output[0] = value(input);
         }
         return output;
+    }
+
+    public List<Segment2D> toSegmentChains(double segLengthSup) {
+        List<Segment2D> chainsHeads = new LinkedList<>();
+        Polygon2D rectFraction = rectanglePolygon.fractionize(segLengthSup);
+        chainsHeads.addAll(rectFraction.getChainsHeads());
+        for (Circle cir : holes) {
+            chainsHeads.add(cir.toArcs(segLengthSup));
+        }
+        return chainsHeads;
     }
 }
