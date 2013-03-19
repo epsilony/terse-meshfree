@@ -29,19 +29,6 @@ public class WeakformProcessRunnable implements Runnable {
         this.observer = observer;
     }
 
-    public WeakformProcessRunnable(WeakformAssemblier assemblier, Mixer mixer,
-            LinearLagrangeDirichletProcessor lagProcessor,
-            SynchronizedIteratorWrapper<TaskUnit> volumeSynchronizedIterator,
-            SynchronizedIteratorWrapper<TaskUnit> neumannSynchronizedIterator,
-            SynchronizedIteratorWrapper<TaskUnit> dirichletSynchronizedIterator) {
-        this.assemblier = assemblier;
-        this.mixer = mixer;
-        this.lagProcessor = lagProcessor;
-        this.volumeSynchronizedIterator = volumeSynchronizedIterator;
-        this.neumannSynchronizedIterator = neumannSynchronizedIterator;
-        this.dirichletSynchronizedIterator = dirichletSynchronizedIterator;
-    }
-
     public boolean isAssemblyDirichletByLagrange() {
         return lagProcessor != null && assemblier instanceof SupportLagrange;
     }
@@ -100,5 +87,77 @@ public class WeakformProcessRunnable implements Runnable {
         processVolume();
         processNeumann();
         processDirichlet();
+    }
+
+    public WeakformAssemblier getAssemblier() {
+        return assemblier;
+    }
+
+    public void setAssemblier(WeakformAssemblier assemblier) {
+        this.assemblier = assemblier;
+    }
+
+    public Mixer getMixer() {
+        return mixer;
+    }
+
+    public void setMixer(Mixer mixer) {
+        this.mixer = mixer;
+    }
+
+    public LinearLagrangeDirichletProcessor getLagProcessor() {
+        return lagProcessor;
+    }
+
+    public void setLagrangeProcessor(LinearLagrangeDirichletProcessor lagProcessor) {
+        this.lagProcessor = lagProcessor;
+    }
+
+    public SynchronizedIteratorWrapper<TaskUnit> getVolumeSynchronizedIterator() {
+        return volumeSynchronizedIterator;
+    }
+
+    public void setVolumeSynchronizedIterator(SynchronizedIteratorWrapper<TaskUnit> volumeSynchronizedIterator) {
+        this.volumeSynchronizedIterator = volumeSynchronizedIterator;
+    }
+
+    public SynchronizedIteratorWrapper<TaskUnit> getNeumannSynchronizedIterator() {
+        return neumannSynchronizedIterator;
+    }
+
+    public void setNeumannSynchronizedIterator(SynchronizedIteratorWrapper<TaskUnit> neumannSynchronizedIterator) {
+        this.neumannSynchronizedIterator = neumannSynchronizedIterator;
+    }
+
+    public SynchronizedIteratorWrapper<TaskUnit> getDirichletSynchronizedIterator() {
+        return dirichletSynchronizedIterator;
+    }
+
+    public void setDirichletSynchronizedIterator(SynchronizedIteratorWrapper<TaskUnit> dirichletSynchronizedIterator) {
+        this.dirichletSynchronizedIterator = dirichletSynchronizedIterator;
+    }
+
+    public int getVolumeDiffOrder() {
+        return volumeDiffOrder;
+    }
+
+    public void setVolumeDiffOrder(int volumeDiffOrder) {
+        this.volumeDiffOrder = volumeDiffOrder;
+    }
+
+    public int getNeumannDiffOrder() {
+        return neumannDiffOrder;
+    }
+
+    public void setNeumannDiffOrder(int neumannDiffOrder) {
+        this.neumannDiffOrder = neumannDiffOrder;
+    }
+
+    public int getDirichletDiffOrder() {
+        return dirichletDiffOrder;
+    }
+
+    public void setDirichletDiffOrder(int dirichletDiffOrder) {
+        this.dirichletDiffOrder = dirichletDiffOrder;
     }
 }

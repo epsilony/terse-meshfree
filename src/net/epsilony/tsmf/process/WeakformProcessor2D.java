@@ -36,6 +36,9 @@ public class WeakformProcessor2D implements NeedPreparation {
     public static final int DENSE_MATRIC_SIZE_THRESHOLD = 200;
     public static final boolean SUPPORT_COMPLEX_CRITERION = false;
     public static final boolean DEFAULT_ENABLE_MULTITHREAD = true;
+    public static int DEFAULT_VOLUME_DIFF_ORDER = 1;
+    public static int DEFAULT_NEUMANN_DIFF_ORDER = 0;
+    public static int DEFAULT_DIRICHLET_DIFF_ORDER = 0;
     WeakformTask weakformTask;
     Model2D model;
     ShapeFunction shapeFunction;
@@ -52,6 +55,9 @@ public class WeakformProcessor2D implements NeedPreparation {
     private InfluenceRadiusMapper influenceRadiusMapper;
     SupportDomainSearcherFactory supportDomainSearcherFactory;
     boolean enableMultiThread = DEFAULT_ENABLE_MULTITHREAD;
+    int volumeDiffOrder = DEFAULT_VOLUME_DIFF_ORDER;
+    int neumannDiffOrder = DEFAULT_NEUMANN_DIFF_ORDER;
+    int dirichletDiffOrder = DEFAULT_DIRICHLET_DIFF_ORDER;
 
     public WeakformProcessor2D(
             Model2D model,
@@ -93,8 +99,16 @@ public class WeakformProcessor2D implements NeedPreparation {
 
         Mixer mixer = new Mixer(
                 shapeFunction, supportDomainSearcherFactory.produce(), influenceRadiusMapper);
-        WeakformProcessRunnable runnable = new WeakformProcessRunnable(assemblier, mixer, lagProcessor,
-                volumeIteratorWrapper, neumannIteratorWrapper, dirichletIteratorWrapper);
+        WeakformProcessRunnable runnable = new WeakformProcessRunnable();
+        runnable.setAssemblier(assemblier);
+        runnable.setMixer(mixer);
+        runnable.setLagrangeProcessor(lagProcessor);
+        runnable.setVolumeDiffOrder(volumeDiffOrder);
+        runnable.setVolumeSynchronizedIterator(volumeIteratorWrapper);
+        runnable.setDirichletDiffOrder(dirichletDiffOrder);
+        runnable.setDirichletSynchronizedIterator(dirichletIteratorWrapper);
+        runnable.setNeumannDiffOrder(neumannDiffOrder);
+        runnable.setNeumannSynchronizedIterator(neumannIteratorWrapper);
         runnable.run();
     }
 
@@ -109,8 +123,16 @@ public class WeakformProcessor2D implements NeedPreparation {
         for (int i = 0; i < assemblierAvators.size(); i++) {
             Mixer mixer = new Mixer(
                     shapeFunction.synchronizeClone(), supportDomainSearcherFactory.produce(), influenceRadiusMapper);
-            WeakformProcessRunnable runnable = new WeakformProcessRunnable(assemblierAvators.get(i), mixer, lagProcessor,
-                    volumeIteratorWrapper, neumannIteratorWrapper, dirichletIteratorWrapper);
+            WeakformProcessRunnable runnable = new WeakformProcessRunnable();
+            runnable.setAssemblier(assemblierAvators.get(i));
+            runnable.setMixer(mixer);
+            runnable.setLagrangeProcessor(lagProcessor);
+            runnable.setVolumeDiffOrder(volumeDiffOrder);
+            runnable.setVolumeSynchronizedIterator(volumeIteratorWrapper);
+            runnable.setDirichletDiffOrder(dirichletDiffOrder);
+            runnable.setDirichletSynchronizedIterator(dirichletIteratorWrapper);
+            runnable.setNeumannDiffOrder(neumannDiffOrder);
+            runnable.setNeumannSynchronizedIterator(neumannIteratorWrapper);
             executor.execute(runnable);
         }
 
