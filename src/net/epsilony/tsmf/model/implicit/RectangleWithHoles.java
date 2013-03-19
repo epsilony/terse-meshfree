@@ -4,7 +4,6 @@ package net.epsilony.tsmf.model.implicit;
 import java.awt.Shape;
 import java.awt.geom.Area;
 import java.awt.geom.Rectangle2D;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tsmf.model.Polygon2D;
