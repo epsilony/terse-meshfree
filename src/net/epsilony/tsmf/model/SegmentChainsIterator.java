@@ -18,18 +18,16 @@ class SegmentChainsIterator<T extends Segment2D> implements Iterator<T> {
     T seg;
     T last;
     T head;
-    boolean reachChainEnd;
 
     SegmentChainsIterator(List<T> chainsHeads) {
         headIterator = chainsHeads.iterator();
         seg = headIterator.hasNext() ? headIterator.next() : null;
-        reachChainEnd = seg == null;
         head = seg;
     }
 
     @Override
     public boolean hasNext() {
-        return headIterator.hasNext() || !reachChainEnd;
+        return seg != null;
     }
 
     @Override
@@ -41,7 +39,11 @@ class SegmentChainsIterator<T extends Segment2D> implements Iterator<T> {
             throw new IllegalStateException("Meet broken Segment2D link, may cause self ring");
         }
         if (seg == head) {
-            seg = headIterator.next();
+            if (headIterator.hasNext()) {
+                seg = headIterator.next();
+            } else {
+                seg = null;
+            }
             head = seg;
         }
         last = res;
