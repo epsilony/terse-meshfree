@@ -201,44 +201,6 @@ public class Polygon2D implements Iterable<LinearSegment2D> {
 
     @Override
     public Iterator<LinearSegment2D> iterator() {
-        return new SegmentIterator();
-    }
-
-    class SegmentIterator implements Iterator<LinearSegment2D> {
-
-        int chainId = 0;
-        LinearSegment2D seg = chainsHeads.isEmpty() ? null : chainsHeads.get(0);
-        LinearSegment2D last;
-
-        @Override
-        public boolean hasNext() {
-            return chainId < chainsHeads.size();
-        }
-
-        @Override
-        public LinearSegment2D next() {
-            LinearSegment2D res = seg;
-            seg = (LinearSegment2D) seg.succ;
-            if (seg.pred != res || seg.pred == seg) {
-                throw new IllegalStateException("Meet broken Segment2D link, may cause self ring");
-            }
-            if (seg == chainsHeads.get(chainId)) {
-                chainId++;
-                if (chainId < chainsHeads.size()) {
-                    seg = chainsHeads.get(chainId);
-                }
-            }
-            last = res;
-            return res;
-        }
-
-        @Override
-        public void remove() {
-            if (last.pred.getPred() == last.succ) {
-                throw new IllegalStateException("The chain is only a triangle, and no segments can be removed!");
-            }
-            last.pred.setSucc(last.succ);
-            last.succ.setPred(last.pred);
-        }
+        return new SegmentIterator<>(chainsHeads);
     }
 }
