@@ -11,13 +11,13 @@ import no.uib.cipr.matrix.Matrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class LagrangeWFAssemblier implements WFAssemblier, SupportLagrange {
+public class LagrangeWeakformAssemblier implements WeakformAssemblier, SupportLagrange {
 
     int diriNum;
-    PenaltyWFAssemblier basePenaltyAssemblier;
+    PenaltyWeakformAssemblier basePenaltyAssemblier;
 
-    public LagrangeWFAssemblier() {
-        basePenaltyAssemblier = new PenaltyWFAssemblier(0);
+    public LagrangeWeakformAssemblier() {
+        basePenaltyAssemblier = new PenaltyWeakformAssemblier(0);
     }
 
     @Override
@@ -84,8 +84,8 @@ public class LagrangeWFAssemblier implements WFAssemblier, SupportLagrange {
     }
 
     @Override
-    public void asmBalance(double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFunVals, double[] volumnForce) {
-        basePenaltyAssemblier.asmBalance(weight, nodesIds, shapeFunVals, volumnForce);
+    public void asmVolume(double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFunVals, double[] volumnForce) {
+        basePenaltyAssemblier.asmVolume(weight, nodesIds, shapeFunVals, volumnForce);
     }
 
     @Override
@@ -124,8 +124,8 @@ public class LagrangeWFAssemblier implements WFAssemblier, SupportLagrange {
     }
 
     @Override
-    public LagrangeWFAssemblier synchronizeClone() {
-        LagrangeWFAssemblier result = new LagrangeWFAssemblier();
+    public LagrangeWeakformAssemblier synchronizeClone() {
+        LagrangeWeakformAssemblier result = new LagrangeWeakformAssemblier();
         result.setConstitutiveLaw(basePenaltyAssemblier.constitutiveLaw);
         result.setDirichletNodesNums(diriNum);
         result.setMatrixDense(true);
@@ -135,7 +135,7 @@ public class LagrangeWFAssemblier implements WFAssemblier, SupportLagrange {
     }
 
     @Override
-    public void addToMainMatrix(WFAssemblier assemblier) {
+    public void addToMainMatrix(WeakformAssemblier assemblier) {
         if (isUpperSymmertric() != assemblier.isUpperSymmertric()) {
             throw new IllegalArgumentException("the input assemblier should have same symmetricity");
         }

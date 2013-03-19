@@ -7,8 +7,6 @@ import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
 import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
-import no.uib.cipr.matrix.MatrixEntry;
-import no.uib.cipr.matrix.UpperSPDDenseMatrix;
 import no.uib.cipr.matrix.UpperSymmDenseMatrix;
 import no.uib.cipr.matrix.sparse.FlexCompRowMatrix;
 
@@ -16,7 +14,7 @@ import no.uib.cipr.matrix.sparse.FlexCompRowMatrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class PenaltyWFAssemblier implements WFAssemblier {
+public class PenaltyWeakformAssemblier implements WeakformAssemblier {
 
     Matrix mainMatrix;
     DenseVector mainVector;
@@ -34,7 +32,7 @@ public class PenaltyWFAssemblier implements WFAssemblier {
     }
     int nodesNum;
 
-    public PenaltyWFAssemblier(double neumannPenalty) {
+    public PenaltyWeakformAssemblier(double neumannPenalty) {
         this.penalty = neumannPenalty;
     }
 
@@ -57,7 +55,7 @@ public class PenaltyWFAssemblier implements WFAssemblier {
     }
 
     @Override
-    public void asmBalance(
+    public void asmVolume(
             double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFunVals,
             double[] volumnForce) {
         TDoubleArrayList v = shapeFunVals[0];
@@ -234,8 +232,8 @@ public class PenaltyWFAssemblier implements WFAssemblier {
     }
 
     @Override
-    public PenaltyWFAssemblier synchronizeClone() {
-        PenaltyWFAssemblier result = new PenaltyWFAssemblier(penalty);
+    public PenaltyWeakformAssemblier synchronizeClone() {
+        PenaltyWeakformAssemblier result = new PenaltyWeakformAssemblier(penalty);
         result.setNodesNum(nodesNum);
         result.setConstitutiveLaw(constitutiveLaw);
         result.setMatrixDense(dense);
@@ -244,7 +242,7 @@ public class PenaltyWFAssemblier implements WFAssemblier {
     }
 
     @Override
-    public void addToMainMatrix(WFAssemblier otherAssemblier) {
+    public void addToMainMatrix(WeakformAssemblier otherAssemblier) {
         if (otherAssemblier.isUpperSymmertric() != isUpperSymmertric()) {
             throw new IllegalArgumentException("the assemblier to add in should be with same symmetricity");
         }

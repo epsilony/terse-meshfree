@@ -7,7 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import net.epsilony.tsmf.assemblier.SupportLagrange;
-import net.epsilony.tsmf.assemblier.WFAssemblier;
+import net.epsilony.tsmf.assemblier.WeakformAssemblier;
 import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
 import net.epsilony.tsmf.model.Model2D;
 import net.epsilony.tsmf.model.Node;
@@ -39,14 +39,14 @@ public class WeakformProcessor2D implements NeedPreparation {
     WeakformTask weakformTask;
     Model2D model;
     ShapeFunction shapeFunction;
-    WFAssemblier assemblier;
+    WeakformAssemblier assemblier;
     LinearLagrangeDirichletProcessor lagProcessor;
     ConstitutiveLaw constitutiveLaw;
     DenseVector nodesValue;
-    private List<TaskUnit> balanceProcessPoints;
+    private List<TaskUnit> volumeProcessPoints;
     private List<TaskUnit> dirichletProcessPoints;
     private List<TaskUnit> neumannProcessPoints;
-    SynchronizedIteratorWrapper<TaskUnit> balanceIteratorWrapper;
+    SynchronizedIteratorWrapper<TaskUnit> volumeIteratorWrapper;
     SynchronizedIteratorWrapper<TaskUnit> neumannIteratorWrapper;
     SynchronizedIteratorWrapper<TaskUnit> dirichletIteratorWrapper;
     private InfluenceRadiusMapper influenceRadiusMapper;
@@ -58,7 +58,7 @@ public class WeakformProcessor2D implements NeedPreparation {
             InfluenceRadiusCalculator inflRadCalc,
             WeakformTask project,
             ShapeFunction shapeFunction,
-            WFAssemblier assemblier,
+            WeakformAssemblier assemblier,
             ConstitutiveLaw constitutiveLaw) {
         this.model = model;
         this.shapeFunction = shapeFunction;
@@ -94,13 +94,13 @@ public class WeakformProcessor2D implements NeedPreparation {
         Mixer mixer = new Mixer(
                 shapeFunction, supportDomainSearcherFactory.produce(), influenceRadiusMapper);
         WeakformProcessRunnable runnable = new WeakformProcessRunnable(assemblier, mixer, lagProcessor,
-                balanceIteratorWrapper, neumannIteratorWrapper, dirichletIteratorWrapper);
+                volumeIteratorWrapper, neumannIteratorWrapper, dirichletIteratorWrapper);
         runnable.run();
     }
 
     private void multiThreadProcess() {
         int coreNum = Runtime.getRuntime().availableProcessors();
-        ArrayList<WFAssemblier> assemblierAvators = new ArrayList<>(coreNum);
+        ArrayList<WeakformAssemblier> assemblierAvators = new ArrayList<>(coreNum);
         assemblierAvators.add(assemblier);
         for (int i = 1; i < assemblierAvators.size(); i++) {
             assemblierAvators.add(assemblier.synchronizeClone());
@@ -110,7 +110,7 @@ public class WeakformProcessor2D implements NeedPreparation {
             Mixer mixer = new Mixer(
                     shapeFunction.synchronizeClone(), supportDomainSearcherFactory.produce(), influenceRadiusMapper);
             WeakformProcessRunnable runnable = new WeakformProcessRunnable(assemblierAvators.get(i), mixer, lagProcessor,
-                    balanceIteratorWrapper, neumannIteratorWrapper, dirichletIteratorWrapper);
+                    volumeIteratorWrapper, neumannIteratorWrapper, dirichletIteratorWrapper);
             executor.execute(runnable);
         }
 
@@ -148,11 +148,11 @@ public class WeakformProcessor2D implements NeedPreparation {
 
     @Override
     public void prepare() {
-        balanceProcessPoints = weakformTask.balance();
-        dirichletProcessPoints = weakformTask.dirichlet();
-        neumannProcessPoints = weakformTask.neumann();
-        balanceIteratorWrapper =
-                new SynchronizedIteratorWrapper<>(balanceProcessPoints.iterator());
+        volumeProcessPoints = weakformTask.volumeTasks();
+        dirichletProcessPoints = weakformTask.dirichletTasks();
+        neumannProcessPoints = weakformTask.neumannTasks();
+        volumeIteratorWrapper =
+                new SynchronizedIteratorWrapper<>(volumeProcessPoints.iterator());
         neumannIteratorWrapper =
                 new SynchronizedIteratorWrapper<>(neumannProcessPoints.iterator());
         dirichletIteratorWrapper =
@@ -160,7 +160,7 @@ public class WeakformProcessor2D implements NeedPreparation {
         prepareAssemblier(assemblier);
     }
 
-    void prepareAssemblier(WFAssemblier wfAssemblier) {
+    void prepareAssemblier(WeakformAssemblier wfAssemblier) {
         wfAssemblier.setConstitutiveLaw(constitutiveLaw);
         wfAssemblier.setNodesNum(model.getAllNodes().size());
         boolean dense = model.getAllNodes().size() <= DENSE_MATRIC_SIZE_THRESHOLD;

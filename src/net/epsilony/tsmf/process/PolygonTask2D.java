@@ -21,8 +21,8 @@ public class PolygonTask2D implements WeakformTask {
     SegmentsMidPointLRTreeRangeSearcher polygonSegmentsRangeSearcher;
     List<BCSpecification> neumannBCs;
     List<BCSpecification> dirichletBCs;
-    Collection<? extends QuadraturePoint> balanceQuadraturePoints;
-    GenericFunction<double[], double[]> volumnForceFunc;
+    Collection<? extends QuadraturePoint> volumeQuadraturePoints;
+    GenericFunction<double[], double[]> volumeForceFunc;
     int segQuadDegree;
 
     public PolygonTask2D(Polygon2D polygon) {
@@ -43,23 +43,23 @@ public class PolygonTask2D implements WeakformTask {
         this.segQuadDegree = segQuadDegree;
     }
 
-    public void setBalanceSpecification(GenericFunction<double[], double[]> volumnForceFunc, Collection<? extends QuadraturePoint> quadraturePoints) {
-        this.volumnForceFunc = volumnForceFunc;
-        balanceQuadraturePoints = quadraturePoints;
+    public void setVolumeSpecification(GenericFunction<double[], double[]> volumnForceFunc, Collection<? extends QuadraturePoint> quadraturePoints) {
+        this.volumeForceFunc = volumnForceFunc;
+        volumeQuadraturePoints = quadraturePoints;
     }
 
     @Override
-    public List<TaskUnit> balance() {
+    public List<TaskUnit> volumeTasks() {
         LinkedList<TaskUnit> res = new LinkedList<>();
-        for (QuadraturePoint qp : balanceQuadraturePoints) {
-            double[] volForce = volumnForceFunc == null ? null : volumnForceFunc.value(qp.coord, null);
+        for (QuadraturePoint qp : volumeQuadraturePoints) {
+            double[] volForce = volumeForceFunc == null ? null : volumeForceFunc.value(qp.coord, null);
             res.add(new TaskUnit(qp.weight, qp.coord, null, volForce, null));
         }
         return res;
     }
 
     @Override
-    public List<TaskUnit> neumann() {
+    public List<TaskUnit> neumannTasks() {
         LinkedList<TaskUnit> res = new LinkedList<>();
         Segment2DQuadrature segQuad = new Segment2DQuadrature(segQuadDegree);
         for (BCSpecification spec : neumannBCs) {
@@ -77,7 +77,7 @@ public class PolygonTask2D implements WeakformTask {
     }
 
     @Override
-    public List<TaskUnit> dirichlet() {
+    public List<TaskUnit> dirichletTasks() {
         LinkedList<TaskUnit> res = new LinkedList<>();
         Segment2DQuadrature segQuad = new Segment2DQuadrature(segQuadDegree);
         for (BCSpecification spec : dirichletBCs) {

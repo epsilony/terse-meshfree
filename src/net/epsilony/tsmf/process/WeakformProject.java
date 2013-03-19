@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.process;
 
-import net.epsilony.tsmf.assemblier.WFAssemblier;
+import net.epsilony.tsmf.assemblier.WeakformAssemblier;
 import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
 import net.epsilony.tsmf.model.Model2D;
 import net.epsilony.tsmf.model.influence.InfluenceRadiusCalculator;
@@ -16,11 +16,11 @@ public class WeakformProject {
     public WeakformTask project;
     public Model2D model;
     public InfluenceRadiusCalculator influenceRadCalc;
-    public WFAssemblier assemblier;
+    public WeakformAssemblier assemblier;
     public ShapeFunction shapeFunc;
     public ConstitutiveLaw constitutiveLaw;
 
-    public WeakformProject(WeakformTask project, Model2D model, InfluenceRadiusCalculator influenceRadCalc, WFAssemblier assemblier, ShapeFunction shapeFunc, ConstitutiveLaw constitutiveLaw) {
+    public WeakformProject(WeakformTask project, Model2D model, InfluenceRadiusCalculator influenceRadCalc, WeakformAssemblier assemblier, ShapeFunction shapeFunc, ConstitutiveLaw constitutiveLaw) {
         this.project = project;
         this.model = model;
         this.influenceRadCalc = influenceRadCalc;

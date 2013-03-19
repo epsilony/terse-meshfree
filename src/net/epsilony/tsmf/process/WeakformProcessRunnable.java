@@ -2,7 +2,7 @@
 package net.epsilony.tsmf.process;
 
 import net.epsilony.tsmf.assemblier.SupportLagrange;
-import net.epsilony.tsmf.assemblier.WFAssemblier;
+import net.epsilony.tsmf.assemblier.WeakformAssemblier;
 import net.epsilony.tsmf.util.synchron.SynchronizedIteratorWrapper;
 
 /**
@@ -14,7 +14,7 @@ public class WeakformProcessRunnable implements Runnable {
     public static int DEFAULT_VOLUME_DIFF_ORDER = 1;
     public static int DEFAULT_NEUMANN_DIFF_ORDER = 0;
     public static int DEFAULT_DIRICHLET_DIFF_ORDER = 0;
-    WFAssemblier assemblier;
+    WeakformAssemblier assemblier;
     Mixer mixer;
     LinearLagrangeDirichletProcessor lagProcessor;
     SynchronizedIteratorWrapper<TaskUnit> volumeSynchronizedIterator;
@@ -29,7 +29,7 @@ public class WeakformProcessRunnable implements Runnable {
         this.observer = observer;
     }
 
-    public WeakformProcessRunnable(WFAssemblier assemblier, Mixer mixer,
+    public WeakformProcessRunnable(WeakformAssemblier assemblier, Mixer mixer,
             LinearLagrangeDirichletProcessor lagProcessor,
             SynchronizedIteratorWrapper<TaskUnit> volumeSynchronizedIterator,
             SynchronizedIteratorWrapper<TaskUnit> neumannSynchronizedIterator,
@@ -54,9 +54,9 @@ public class WeakformProcessRunnable implements Runnable {
                 break;
             }
             Mixer.MixResult mixResult = mixer.mix(pt.coord, pt.seg);
-            assemblier.asmBalance(pt.weight, mixResult.nodeIds, mixResult.shapeFunctionValueLists, pt.value);
+            assemblier.asmVolume(pt.weight, mixResult.nodeIds, mixResult.shapeFunctionValueLists, pt.value);
             if (null != observer) {
-                observer.balanceProcessed(this);
+                observer.volumeProcessed(this);
             }
         }
     }

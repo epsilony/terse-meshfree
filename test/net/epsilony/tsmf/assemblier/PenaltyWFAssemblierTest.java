@@ -31,8 +31,8 @@ public class PenaltyWFAssemblierTest {
         return new TDoubleArrayList[]{v, v_x, v_y};
     }
 
-    public PenaltyWFAssemblier sampleAsm(int nodesSize, double penalty, boolean upperSym) {
-        PenaltyWFAssemblier res = new PenaltyWFAssemblier(penalty);
+    public PenaltyWeakformAssemblier sampleAsm(int nodesSize, double penalty, boolean upperSym) {
+        PenaltyWeakformAssemblier res = new PenaltyWeakformAssemblier(penalty);
         res.setNodesNum(nodesSize);
         res.setConstitutiveLaw(sampleConstutiveLaw(upperSym));
         res.setMatrixDense(true);
@@ -50,7 +50,7 @@ public class PenaltyWFAssemblierTest {
     TDoubleArrayList[] shapeFuncVals = sampleShapeFuncVals();
 
     @Test
-    public void testBalanceNeumann() {
+    public void testVolumeNeumann() {
 
         double[][] exps = new double[][]{{382.1136, 36.72, 2526.48, 2531.76, 0.0, 0.0, -2675.772, -2681.364, 0.0, 0.0, -4046.064, -395.4, 0.0, 0.0, 4015.968, 2928.816, 0.0, 0.0, 3545.124, 2456.988},
             {36.72, 256.2208, 1071.84, 1819.84, 0.0, 0.0, -1135.176, -1927.376, 0.0, 0.0, -391.2, -2713.392, 0.0, 0.0, 1306.944, 2832.544, 0.0, 0.0, 1107.192, 2493.392},
@@ -77,9 +77,9 @@ public class PenaltyWFAssemblierTest {
         //test twice for test if any mistake of add and set
         double weight = 0.42;
         for (boolean upperSym : new boolean[]{true, false}) {
-            PenaltyWFAssemblier asm = sampleAsm(nodesSize, penalty, upperSym);
+            PenaltyWeakformAssemblier asm = sampleAsm(nodesSize, penalty, upperSym);
             for (int test = 1; test <= 2; test++) {
-                asm.asmBalance(weight, nodesIds, shapeFuncVals, volumnForce);
+                asm.asmVolume(weight, nodesIds, shapeFuncVals, volumnForce);
                 Matrix acts = asm.getMainMatrix();
                 for (int i = 0; i < acts.numRows(); i++) {
                     for (int j = 0; j < acts.numColumns(); j++) {
@@ -138,7 +138,7 @@ public class PenaltyWFAssemblierTest {
         //test twice for test if any mistake of add and set
         double weight = 0.42;
         for (boolean upperSym : new boolean[]{true, false}) {
-            PenaltyWFAssemblier asm = sampleAsm(nodesSize, penalty, upperSym);
+            PenaltyWeakformAssemblier asm = sampleAsm(nodesSize, penalty, upperSym);
             for (int test = 1; test <= 2; test++) {
                 asm.asmDirichlet(weight, nodesIds, shapeFuncVals, volumnForce, new boolean[]{true, true});
                 Matrix acts = asm.getMainMatrix();

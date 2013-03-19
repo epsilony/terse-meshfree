@@ -9,9 +9,9 @@ import java.util.List;
  */
 public interface WeakformTask {
 
-    List<TaskUnit> balance();
+    List<TaskUnit> volumeTasks();
 
-    List<TaskUnit> neumann();
+    List<TaskUnit> neumannTasks();
 
-    List<TaskUnit> dirichlet();
+    List<TaskUnit> dirichletTasks();
 }

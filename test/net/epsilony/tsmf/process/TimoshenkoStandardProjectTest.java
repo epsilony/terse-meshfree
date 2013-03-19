@@ -27,17 +27,17 @@ public class TimoshenkoStandardProjectTest {
         for (int degree = 1; degree <= GaussLegendre.MAXPOINTS * 2 - 1; degree++) {
             TimoshenkoStandardTask project = new TimoshenkoStandardTask(timoBeam, segLen, quadDomainSize, degree);
             double actArea = 0;
-            for (TaskUnit p : project.balance()) {
+            for (TaskUnit p : project.volumeTasks()) {
                 actArea += p.weight;
             }
             assertEquals(expArea, actArea, 1e-10);
             double neumannLen = 0;
-            for (TaskUnit p : project.neumann()) {
+            for (TaskUnit p : project.neumannTasks()) {
                 neumannLen += p.weight;
             }
             assertEquals(expLen, neumannLen, 1e-10);
             double diriLen = 0;
-            for (TaskUnit p : project.dirichlet()) {
+            for (TaskUnit p : project.dirichletTasks()) {
                 diriLen += p.weight;
             }
             assertEquals(expLen, diriLen, 1e-10);

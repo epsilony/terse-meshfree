@@ -7,7 +7,7 @@ package net.epsilony.tsmf.process;
  */
 public interface WeakformProcessRunnerObserver {
 
-    void balanceProcessed(WeakformProcessRunnable weakformProcessRunnable);
+    void volumeProcessed(WeakformProcessRunnable weakformProcessRunnable);
 
     void neumannProcessed(WeakformProcessRunnable weakformProcessRunnable);
 

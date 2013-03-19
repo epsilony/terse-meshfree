@@ -2,8 +2,8 @@
 package net.epsilony.tsmf.process;
 
 import java.util.List;
-import net.epsilony.tsmf.assemblier.LagrangeWFAssemblier;
-import net.epsilony.tsmf.assemblier.WFAssemblier;
+import net.epsilony.tsmf.assemblier.LagrangeWeakformAssemblier;
+import net.epsilony.tsmf.assemblier.WeakformAssemblier;
 import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
 import net.epsilony.tsmf.model.Model2D;
 import net.epsilony.tsmf.model.influence.ConstantInfluenceRadiusCalculator;
@@ -22,18 +22,18 @@ public class TimoshenkoStandardTask implements WeakformTask {
     RectangleTask rectProject;
 
     @Override
-    public List<TaskUnit> balance() {
-        return rectProject.balance();
+    public List<TaskUnit> volumeTasks() {
+        return rectProject.volumeTasks();
     }
 
     @Override
-    public List<TaskUnit> neumann() {
-        return rectProject.neumann();
+    public List<TaskUnit> neumannTasks() {
+        return rectProject.neumannTasks();
     }
 
     @Override
-    public List<TaskUnit> dirichlet() {
-        return rectProject.dirichlet();
+    public List<TaskUnit> dirichletTasks() {
+        return rectProject.dirichletTasks();
     }
 
     public TimoshenkoAnalyticalBeam2D getTimoshenkoAnalytical() {
@@ -51,7 +51,7 @@ public class TimoshenkoStandardTask implements WeakformTask {
         double up = h / 2;
         rectProject = new RectangleTask(left, down, right, up, segLengthUpBnd);
         rectProject.setSegmentQuadratureDegree(quadDegree);
-        rectProject.setBalanceSpecification(null, quadDomainSize, quadDegree);
+        rectProject.setVolumeSpecification(null, quadDomainSize, quadDegree);
         rectProject.addBoundaryConditionOnEdge("r", timoBeam.new NeumannFunction(), null);
         rectProject.addBoundaryConditionOnEdge("l", timoBeam.new DirichletFunction(), timoBeam.new DirichletMarker());
     }
@@ -65,7 +65,7 @@ public class TimoshenkoStandardTask implements WeakformTask {
         Model2D model = rectProject.model(spaceNdsGap);
         ShapeFunction shapeFunc = new MLS();
         ConstitutiveLaw constitutiveLaw = timoBeam.constitutiveLaw();
-        WFAssemblier assemblier = new LagrangeWFAssemblier();
+        WeakformAssemblier assemblier = new LagrangeWeakformAssemblier();
         InfluenceRadiusCalculator influenceRadsCalc = new ConstantInfluenceRadiusCalculator(influenceRad);
         return new WeakformProject(project, model, influenceRadsCalc, assemblier, shapeFunc, constitutiveLaw);
     }

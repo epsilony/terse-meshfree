@@ -13,9 +13,9 @@ import no.uib.cipr.matrix.Matrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public interface WFAssemblier extends NeedPreparation, SynchronizedClonable<WFAssemblier> {
+public interface WeakformAssemblier extends NeedPreparation, SynchronizedClonable<WeakformAssemblier> {
 
-    void asmBalance(double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFunVals, double[] volumnForce);
+    void asmVolume(double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFunVals, double[] volumnForce);
 
     void asmNeumann(double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFunVals, double[] neumannVal);
 
@@ -33,5 +33,5 @@ public interface WFAssemblier extends NeedPreparation, SynchronizedClonable<WFAs
 
     boolean isUpperSymmertric();
 
-    void addToMainMatrix(WFAssemblier assemblier);
+    void addToMainMatrix(WeakformAssemblier assemblier);
 }

@@ -37,7 +37,7 @@ public class RectangleTask extends PolygonTask2D {
         initPolygonProject2D(poly);
     }
 
-    public void setBalanceSpecification(GenericFunction<double[], double[]> volumnForceFunc, double quadDomainSizeUpBnd, int quadratureDegree) {
+    public void setVolumeSpecification(GenericFunction<double[], double[]> volumnForceFunc, double quadDomainSizeUpBnd, int quadratureDegree) {
         QuadrangleQuadrature qQuad = new QuadrangleQuadrature();
         qQuad.setDegree(quadratureDegree);
         LinkedList<QuadraturePoint> qPoints = new LinkedList<>();
@@ -61,7 +61,7 @@ public class RectangleTask extends PolygonTask2D {
                 }
             }
         }
-        setBalanceSpecification(volumnForceFunc, qPoints);
+        setVolumeSpecification(volumnForceFunc, qPoints);
     }
 
     public void addBoundaryConditionOnEdge(String edge, GenericFunction<double[], double[]> value, GenericFunction<double[], boolean[]> diriMark) {

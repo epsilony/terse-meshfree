@@ -3,7 +3,7 @@ package net.epsilony.tsmf.assemblier;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
-import net.epsilony.tsmf.assemblier.LagrangeWFAssemblier;
+import net.epsilony.tsmf.assemblier.LagrangeWeakformAssemblier;
 import net.epsilony.tsmf.cons_law.RawConstitutiveLaw;
 import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.DenseVector;
@@ -34,7 +34,7 @@ public class LagrangeWFAssemblierTest {
     double weight = 0.23;
 
     /**
-     * Test of asmDirichlet method, of class LagrangeWFAssemblier.
+     * Test of asmDirichlet method, of class LagrangeWeakformAssemblier.
      */
     @Test
     public void testAsmDirichlet() {
@@ -63,7 +63,7 @@ public class LagrangeWFAssemblierTest {
         double[] exp_v = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -170.0, 60.0, 0.0, 0.0, -47.6, 16.8, 0.0, 0.0};
 
         for (boolean upperSym : new boolean[]{true, false}) {
-            LagrangeWFAssemblier lag = new LagrangeWFAssemblier();
+            LagrangeWeakformAssemblier lag = new LagrangeWeakformAssemblier();
             lag.setConstitutiveLaw(new RawConstitutiveLaw(upperSym, new DenseMatrix(3, 3)));
             lag.setNodesNum(nodesSize);
             lag.setMatrixDense(upperSym);
