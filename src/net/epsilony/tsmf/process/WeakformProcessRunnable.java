@@ -11,13 +11,19 @@ import net.epsilony.tsmf.util.synchron.SynchronizedIteratorWrapper;
  */
 public class WeakformProcessRunnable implements Runnable {
 
+    public static int DEFAULT_VOLUME_DIFF_ORDER = 1;
+    public static int DEFAULT_NEUMANN_DIFF_ORDER = 0;
+    public static int DEFAULT_DIRICHLET_DIFF_ORDER = 0;
     WFAssemblier assemblier;
     Mixer mixer;
     LinearLagrangeDirichletProcessor lagProcessor;
-    SynchronizedIteratorWrapper<TaskUnit> balanceSynchronizedIterator;
+    SynchronizedIteratorWrapper<TaskUnit> volumeSynchronizedIterator;
     SynchronizedIteratorWrapper<TaskUnit> neumannSynchronizedIterator;
     SynchronizedIteratorWrapper<TaskUnit> dirichletSynchronizedIterator;
     WeakformProcessRunnerObserver observer;
+    int volumeDiffOrder = DEFAULT_VOLUME_DIFF_ORDER;
+    int neumannDiffOrder = DEFAULT_NEUMANN_DIFF_ORDER;
+    int dirichletDiffOrder = DEFAULT_DIRICHLET_DIFF_ORDER;
 
     public void setObserver(WeakformProcessRunnerObserver observer) {
         this.observer = observer;
@@ -25,13 +31,13 @@ public class WeakformProcessRunnable implements Runnable {
 
     public WeakformProcessRunnable(WFAssemblier assemblier, Mixer mixer,
             LinearLagrangeDirichletProcessor lagProcessor,
-            SynchronizedIteratorWrapper<TaskUnit> balanceSynchronizedIterator,
+            SynchronizedIteratorWrapper<TaskUnit> volumeSynchronizedIterator,
             SynchronizedIteratorWrapper<TaskUnit> neumannSynchronizedIterator,
             SynchronizedIteratorWrapper<TaskUnit> dirichletSynchronizedIterator) {
         this.assemblier = assemblier;
         this.mixer = mixer;
         this.lagProcessor = lagProcessor;
-        this.balanceSynchronizedIterator = balanceSynchronizedIterator;
+        this.volumeSynchronizedIterator = volumeSynchronizedIterator;
         this.neumannSynchronizedIterator = neumannSynchronizedIterator;
         this.dirichletSynchronizedIterator = dirichletSynchronizedIterator;
     }
@@ -40,11 +46,10 @@ public class WeakformProcessRunnable implements Runnable {
         return lagProcessor != null && assemblier instanceof SupportLagrange;
     }
 
-    public void processBalance() {
-        final int diffOrder = 1;
-        mixer.setDiffOrder(diffOrder);
+    public void processVolume() {
+        mixer.setDiffOrder(volumeDiffOrder);
         while (true) {
-            TaskUnit pt = balanceSynchronizedIterator.nextItem();
+            TaskUnit pt = volumeSynchronizedIterator.nextItem();
             if (pt == null) {
                 break;
             }
@@ -57,9 +62,7 @@ public class WeakformProcessRunnable implements Runnable {
     }
 
     public void processNeumann() {
-        final int diffOrder = 0;
-        mixer.setDiffOrder(diffOrder);
-
+        mixer.setDiffOrder(neumannDiffOrder);
         while (true) {
             TaskUnit pt = neumannSynchronizedIterator.nextItem();
             if (pt == null) {
@@ -74,8 +77,7 @@ public class WeakformProcessRunnable implements Runnable {
     }
 
     public void processDirichlet() {
-        final int diffOrder = 0;
-        mixer.setDiffOrder(diffOrder);
+        mixer.setDiffOrder(dirichletDiffOrder);
         boolean lagDiri = isAssemblyDirichletByLagrange();
         while (true) {
             TaskUnit pt = dirichletSynchronizedIterator.nextItem();
@@ -95,7 +97,7 @@ public class WeakformProcessRunnable implements Runnable {
 
     @Override
     public void run() {
-        processBalance();
+        processVolume();
         processNeumann();
         processDirichlet();
     }
