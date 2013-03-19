@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.assemblier;
 
+import net.epsilony.tsmf.process.assemblier.PenaltyWeakformAssemblier;
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.tsmf.cons_law.ConstitutiveLaw;

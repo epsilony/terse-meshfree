@@ -3,7 +3,7 @@ package net.epsilony.tsmf.assemblier;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
-import net.epsilony.tsmf.assemblier.LagrangeWeakformAssemblier;
+import net.epsilony.tsmf.process.assemblier.LagrangeWeakformAssemblier;
 import net.epsilony.tsmf.cons_law.RawConstitutiveLaw;
 import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.DenseVector;

@@ -1,8 +1,8 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.process;
 
-import net.epsilony.tsmf.assemblier.SupportLagrange;
-import net.epsilony.tsmf.assemblier.WeakformAssemblier;
+import net.epsilony.tsmf.process.assemblier.SupportLagrange;
+import net.epsilony.tsmf.process.assemblier.WeakformAssemblier;
 import net.epsilony.tsmf.util.synchron.SynchronizedIteratorWrapper;
 
 /**
