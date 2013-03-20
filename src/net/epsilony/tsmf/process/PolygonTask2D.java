@@ -53,7 +53,7 @@ public class PolygonTask2D implements WeakformTask {
         LinkedList<TaskUnit> res = new LinkedList<>();
         for (QuadraturePoint qp : volumeQuadraturePoints) {
             double[] volForce = volumeForceFunc == null ? null : volumeForceFunc.value(qp.coord, null);
-            res.add(new TaskUnit(qp.weight, qp.coord, null, volForce, null));
+            res.add(new TaskUnit(qp, volForce, null));
         }
         return res;
     }
@@ -69,7 +69,7 @@ public class PolygonTask2D implements WeakformTask {
                 segQuad.setSegment(seg);
                 for (QuadraturePoint qp : segQuad) {
                     double[] value = func.value(qp.coord, null);
-                    res.add(new TaskUnit(qp.weight, qp.coord, seg, value, null));
+                    res.add(new TaskUnit(qp, value, null));
                 }
             }
         }
@@ -89,7 +89,7 @@ public class PolygonTask2D implements WeakformTask {
                 for (QuadraturePoint qp : segQuad) {
                     double[] value = func.value(qp.coord, null);
                     boolean[] mark = markFunc.value(qp.coord, null);
-                    res.add(new TaskUnit(qp.weight, qp.coord, seg, value, mark));
+                    res.add(new TaskUnit(qp, value, mark));
                 }
             }
         }

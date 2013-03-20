@@ -74,7 +74,10 @@ public class Segment2DQuadrature implements Iterable<QuadraturePoint> {
             double x = coordAndDifferential[0];
             double y = coordAndDifferential[1];
             nextIdx++;
-            return new QuadraturePoint(weight, x, y);
+            QuadraturePoint result = new QuadraturePoint(weight, x, y);
+            result.segment = segment;
+            result.segmentParameter = t;
+            return result;
         }
 
         @Override

@@ -12,13 +12,13 @@ public class TaskUnit extends QuadraturePoint {
 
     public double[] value;
     public boolean[] mark;
-    public Segment2D segment;
 
-    public TaskUnit(double weight, double[] coord, Segment2D seg, double[] value, boolean[] mark) {
-        this.weight = weight;
-        this.coord = coord;
-        this.segment = seg;
-        this.value = value;
+    public TaskUnit(QuadraturePoint qp, double[] value, boolean[] mark) {
+        this.weight = qp.weight;
+        this.coord = qp.coord;
+        this.segment = qp.segment;
+        this.segmentParameter = qp.segmentParameter;
         this.mark = mark;
+        this.value = value;
     }
 }
