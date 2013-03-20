@@ -248,5 +248,11 @@ public class PenaltyWeakformAssemblier implements WeakformAssemblier {
         }
         Matrix otherMat = otherAssemblier.getMainMatrix();
         mainMatrix.add(otherMat);
+        mainVector.add(otherAssemblier.getMainVector());
+    }
+
+    @Override
+    public boolean isMatrixDense() {
+        return dense;
     }
 }

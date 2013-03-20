@@ -18,26 +18,27 @@ public class WeakformProcessor2DTimoshenkoCantileverTest {
 
     @Test
     public void testErrSquareIntegrationOnXAxis() {
+        System.out.println("test Timoshenko standard beam, x axis");
         timoPostProcessor.setDiffOrder(0);
 
         CurveOnXAxis xAxisCure = new CurveOnXAxis();
         boolean compareDistanceU = false;
         double err = integrateErrorSquareOnCurve(xAxisCure, compareDistanceU);
         double expErr = 1e-15;
-        assertTrue(err <= expErr);
         System.out.println("err = " + err);
+        assertTrue(err <= expErr);
     }
 
     @Test
     public void testErrSquareIntegrationOnLeftSide() {
+        System.out.println("test Timoshinko standard beam, left edge");
         timoPostProcessor.setDiffOrder(0);
-
         CurveOnLeftSide curve = new CurveOnLeftSide();
         boolean compareDistanceU = false;
         double err = integrateErrorSquareOnCurve(curve, compareDistanceU);
         double expErr = 1e-17;
-        assertTrue(err <= expErr);
         System.out.println("err = " + err);
+        assertTrue(err <= expErr);
     }
 
     public double integrateErrorSquareOnCurve(GenericFunction<Double, double[]> curve, boolean displacementU) {

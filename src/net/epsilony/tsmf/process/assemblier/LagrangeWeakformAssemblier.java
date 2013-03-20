@@ -128,7 +128,7 @@ public class LagrangeWeakformAssemblier implements WeakformAssemblier, SupportLa
         LagrangeWeakformAssemblier result = new LagrangeWeakformAssemblier();
         result.setConstitutiveLaw(basePenaltyAssemblier.constitutiveLaw);
         result.setDirichletNodesNums(diriNum);
-        result.setMatrixDense(true);
+        result.setMatrixDense(isMatrixDense());
         result.setNodesNum(basePenaltyAssemblier.nodesNum);
         result.prepare();
         return result;
@@ -139,6 +139,11 @@ public class LagrangeWeakformAssemblier implements WeakformAssemblier, SupportLa
         if (isUpperSymmertric() != assemblier.isUpperSymmertric()) {
             throw new IllegalArgumentException("the input assemblier should have same symmetricity");
         }
-        basePenaltyAssemblier.mainMatrix.add(assemblier.getMainMatrix());
+        basePenaltyAssemblier.addToMainMatrix(assemblier);
+    }
+
+    @Override
+    public boolean isMatrixDense() {
+        return basePenaltyAssemblier.isMatrixDense();
     }
 }

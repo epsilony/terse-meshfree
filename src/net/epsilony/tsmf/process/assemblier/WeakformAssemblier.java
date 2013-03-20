@@ -25,6 +25,8 @@ public interface WeakformAssemblier extends NeedPreparation, SynchronizedClonabl
 
     void setMatrixDense(boolean dense);
 
+    boolean isMatrixDense();
+
     void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw);
 
     Matrix getMainMatrix();

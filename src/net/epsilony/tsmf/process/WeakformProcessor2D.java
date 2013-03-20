@@ -116,7 +116,7 @@ public class WeakformProcessor2D implements NeedPreparation {
         int coreNum = Runtime.getRuntime().availableProcessors();
         ArrayList<WeakformAssemblier> assemblierAvators = new ArrayList<>(coreNum);
         assemblierAvators.add(assemblier);
-        for (int i = 1; i < assemblierAvators.size(); i++) {
+        for (int i = 1; i < coreNum; i++) {
             assemblierAvators.add(assemblier.synchronizeClone());
         }
         ExecutorService executor = Executors.newFixedThreadPool(coreNum);

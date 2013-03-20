@@ -16,7 +16,6 @@ import net.epsilony.tsmf.shape_func.Linear2D;
 public class LinearLagrangeDirichletProcessor {
 
     int[] idMap;
-    double[] tds = new double[2];
     int dirichletNodesSize;
 
     public void process(TaskUnit pt, TIntArrayList nodesIds, TDoubleArrayList shapeFuncVal) {
@@ -26,7 +25,7 @@ public class LinearLagrangeDirichletProcessor {
         Node rear = pt.segment.getRear();
         nodesIds.add(getLagrangeId(head));
         nodesIds.add(getLagrangeId(rear));
-        double[] funcV = Linear2D.values(pt.coord, head.coord, rear.coord, tds);
+        double[] funcV = Linear2D.values(pt.coord, head.coord, rear.coord, null);
         shapeFuncVal.addAll(funcV);
     }
 
