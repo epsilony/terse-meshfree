@@ -10,12 +10,12 @@ import net.epsilony.tsmf.model.search.SphereSearcher;
 
 /**
  *
- * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a> St-Pierre</a>
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class Model2D {
 
     public final static int DIMENSION = 2;
-    SphereSearcher<LinearSegment2D> segmentsIntersectingSphereSearcher;
+    SphereSearcher<Segment2D> segmentsIntersectingSphereSearcher;
     SphereSearcher<Node> allNodesSearcher;
     ArrayList<Node> allNodes;
     ArrayList<Node> spaceNodes;   //allNode except polygon.getVertes()

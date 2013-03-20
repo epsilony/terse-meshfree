@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Random;
 import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.Polygon2D;
-import net.epsilony.tsmf.model.LinearSegment2D;
+import net.epsilony.tsmf.model.Segment2D;
+import net.epsilony.tsmf.model.Segment2DUtils;
 import net.epsilony.tsmf.util.TestTool;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -22,8 +23,7 @@ public class LRTreeSegment2DIntersectingSphereSearcherTest {
     }
 
     /**
-     * Test of searchInSphere method, of class
-     * LRTreeSegment2DIntersectingSphereSearcher.
+     * Test of searchInSphere method, of class LRTreeSegment2DIntersectingSphereSearcher.
      */
     @Test
     public void testSearchInSphere() {
@@ -39,7 +39,7 @@ public class LRTreeSegment2DIntersectingSphereSearcherTest {
         double minY = Double.POSITIVE_INFINITY;
         double maxX = Double.NEGATIVE_INFINITY;
         double maxY = Double.NEGATIVE_INFINITY;
-        for (LinearSegment2D seg : pg) {
+        for (Segment2D seg : pg) {
             Node nd = seg.getHead();
             double[] coord = nd.coord;
             double x = coord[0];
@@ -70,16 +70,16 @@ public class LRTreeSegment2DIntersectingSphereSearcherTest {
                 rand.nextDouble() * centerRange[1] + centerFrom[1]};
             double radius = rand.nextDouble() * radiusRange + radiusMin;
 
-            List<LinearSegment2D> acts = polygonSearcher.searchInSphere(center, radius);
-            LinkedList<LinearSegment2D> exps = new LinkedList<>();
-            for (LinearSegment2D seg : pg) {
-                if (seg.distanceTo(center[0], center[1]) <= radius) {
+            List<Segment2D> acts = polygonSearcher.searchInSphere(center, radius);
+            LinkedList<Segment2D> exps = new LinkedList<>();
+            for (Segment2D seg : pg) {
+                if (Segment2DUtils.distanceToChord(seg, center) <= radius) {
                     exps.add(seg);
                 }
             }
             try {
                 assertEquals(exps.size(), acts.size());
-                for (LinearSegment2D seg : acts) {
+                for (Segment2D seg : acts) {
                     assertTrue(exps.contains(seg));
                 }
             } catch (Throwable e) {

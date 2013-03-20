@@ -8,8 +8,7 @@ import net.epsilony.tsmf.util.synchron.SynchronizedClonable;
 
 /**
  *
- * @author @author <a href="mailto:my_email@email.exmaple.com">Benoit
- * St-Pierre</a>
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public interface ShapeFunction extends WithDiffOrder, SynchronizedClonable<ShapeFunction> {
 

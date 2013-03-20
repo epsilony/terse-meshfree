@@ -4,7 +4,7 @@ package net.epsilony.tsmf.model.support_domain;
 import java.util.Iterator;
 import java.util.LinkedList;
 import net.epsilony.tsmf.model.Node;
-import net.epsilony.tsmf.model.LinearSegment2D;
+import net.epsilony.tsmf.model.Segment2D;
 import static net.epsilony.tsmf.util.Math2D.cross;
 import static net.epsilony.tsmf.util.Math2D.isSegmentsIntersecting;
 import net.epsilony.tsmf.util.pair.PairPack;
@@ -29,7 +29,7 @@ public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
     }
 
     @Override
-    public SupportDomainData searchSupportDomain(double[] center, LinearSegment2D bndOfCenter, double radius) {
+    public SupportDomainData searchSupportDomain(double[] center, Segment2D bndOfCenter, double radius) {
         SupportDomainData result = supportDomainSearcher.searchSupportDomain(center, bndOfCenter, radius);
         prepairResult(result);
         filetAllNodesToVisibleNodesByBndOfCenter(bndOfCenter, result);
@@ -44,8 +44,8 @@ public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
         }
     }
 
-    protected void filetVisibleNodeBySegments(double[] center, LinearSegment2D bndOfCenter, SupportDomainData result) {
-        for (LinearSegment2D seg : result.segments) {
+    protected void filetVisibleNodeBySegments(double[] center, Segment2D bndOfCenter, SupportDomainData result) {
+        for (Segment2D seg : result.segments) {
             if (seg == bndOfCenter) {
                 continue;
             }
@@ -69,7 +69,7 @@ public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
         }
     }
 
-    protected void filetAllNodesToVisibleNodesByBndOfCenter(LinearSegment2D bndOfCenter, SupportDomainData result) {
+    protected void filetAllNodesToVisibleNodesByBndOfCenter(Segment2D bndOfCenter, SupportDomainData result) {
 
         if (null == bndOfCenter) {
             result.visibleNodes.addAll(result.allNodes);

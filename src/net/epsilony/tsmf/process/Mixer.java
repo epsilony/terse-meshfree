@@ -6,7 +6,7 @@ import gnu.trove.list.array.TIntArrayList;
 import java.util.ArrayList;
 import java.util.Collection;
 import net.epsilony.tsmf.model.Node;
-import net.epsilony.tsmf.model.LinearSegment2D;
+import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.model.influence.InfluenceRadiusMapper;
 import net.epsilony.tsmf.model.support_domain.SupportDomainData;
 import net.epsilony.tsmf.model.support_domain.SupportDomainSearcher;
@@ -36,7 +36,7 @@ public class Mixer implements WithDiffOrder {
         this.maxInfluenceRad = influenceRadiusMapper.getMaximumInfluenceRadius();
     }
 
-    public MixResult mix(double[] center, LinearSegment2D bnd) {
+    public MixResult mix(double[] center, Segment2D bnd) {
         SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain(center, bnd, maxInfluenceRad);
         if (WeakformProcessor2D.SUPPORT_COMPLEX_CRITERION) {
             throw new UnsupportedOperationException();

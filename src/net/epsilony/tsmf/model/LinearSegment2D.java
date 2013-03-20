@@ -38,11 +38,7 @@ public class LinearSegment2D extends AbstractSegment2D {
     }
 
     public double length() {
-        double[] start = getHead().coord;
-        double[] end = getRear().coord;
-        double dx = start[0] - end[0];
-        double dy = start[1] - end[1];
-        return Math.sqrt(dx * dx + dy * dy);
+        return Math2D.distance(getHeadCoord(), getRearCoord());
     }
 
     public double[] midPoint(double[] result) {
@@ -83,17 +79,6 @@ public class LinearSegment2D extends AbstractSegment2D {
         String rearStr = (null == succ || null == getRear()) ? "NULL" : getRear().toString();
         String headStr = (null == head) ? "NULL" : head.toString();
         return String.format("Segment2D(%d)[h:(%s), r:(%s)]", id, headStr, rearStr);
-    }
-
-    public boolean isStrictlyAtLeft(double[] xy) {
-        double[] headCoord = getHead().coord;
-        double[] rearCoord = getRear().coord;
-        double dhrX = rearCoord[0] - headCoord[0];
-        double dhrY = rearCoord[1] - headCoord[1];
-        double dx = xy[0] - headCoord[0];
-        double dy = xy[1] - headCoord[1];
-        double cross = Math2D.cross(dhrX, dhrY, dx, dy);
-        return cross > 0 ? true : false;
     }
 
     public double[] outNormal() {

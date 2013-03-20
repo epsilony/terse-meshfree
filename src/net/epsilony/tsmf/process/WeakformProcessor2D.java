@@ -11,7 +11,7 @@ import net.epsilony.tsmf.process.assemblier.WeakformAssemblier;
 import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
 import net.epsilony.tsmf.model.Model2D;
 import net.epsilony.tsmf.model.Node;
-import net.epsilony.tsmf.model.LinearSegment2D;
+import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.model.influence.ArrayInfluenceDomianRadiusMapperFactory;
 import net.epsilony.tsmf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.tsmf.model.influence.InfluenceRadiusMapper;
@@ -72,7 +72,7 @@ public class WeakformProcessor2D implements NeedPreparation {
         this.weakformTask = project;
         this.constitutiveLaw = constitutiveLaw;
         SphereSearcher<Node> nodesSearcher = new LRTreeNodesSphereSearcher(model.getAllNodes());
-        SphereSearcher<LinearSegment2D> segmentSearcher = new LRTreeSegment2DIntersectingSphereSearcher(model.getPolygon());
+        SphereSearcher<Segment2D> segmentSearcher = new LRTreeSegment2DIntersectingSphereSearcher(model.getPolygon());
         supportDomainSearcherFactory = new SupportDomainSearcherFactory(nodesSearcher, segmentSearcher);
         influenceRadiusMapper = new ArrayInfluenceDomianRadiusMapperFactory(
                 model,

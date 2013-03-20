@@ -2,7 +2,7 @@
 package net.epsilony.tsmf.model.influence;
 
 import net.epsilony.tsmf.model.Node;
-import net.epsilony.tsmf.model.LinearSegment2D;
+import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.model.support_domain.SupportDomainSearcher;
 
 /**
@@ -11,5 +11,5 @@ import net.epsilony.tsmf.model.support_domain.SupportDomainSearcher;
  */
 public interface InfluenceRadiusCalculator {
 
-    double influcenceRadius(Node node, LinearSegment2D seg, SupportDomainSearcher mSer);
+    double influcenceRadius(Node node, Segment2D seg, SupportDomainSearcher mSer);
 }

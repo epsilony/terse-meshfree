@@ -6,7 +6,7 @@ import gnu.trove.list.array.TIntArrayList;
 import java.util.Arrays;
 import java.util.List;
 import net.epsilony.tsmf.model.Node;
-import net.epsilony.tsmf.model.LinearSegment2D;
+import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.shape_func.Linear2D;
 
 /**
@@ -22,8 +22,8 @@ public class LinearLagrangeDirichletProcessor {
     public void process(TaskUnit pt, TIntArrayList nodesIds, TDoubleArrayList shapeFuncVal) {
         nodesIds.ensureCapacity(nodesIds.size() + 2);
         shapeFuncVal.ensureCapacity(shapeFuncVal.size() + 2);
-        Node head = pt.seg.getHead();
-        Node rear = pt.seg.getRear();
+        Node head = pt.segment.getHead();
+        Node rear = pt.segment.getRear();
         nodesIds.add(getLagrangeId(head));
         nodesIds.add(getLagrangeId(rear));
         double[] funcV = Linear2D.values(pt.coord, head.coord, rear.coord, tds);
@@ -35,7 +35,7 @@ public class LinearLagrangeDirichletProcessor {
         Arrays.fill(idMap, -1);
         int id = baseNodesNum;
         for (TaskUnit pt : pts) {
-            LinearSegment2D seg = pt.seg;
+            Segment2D seg = pt.segment;
             Node head = seg.getHead();
             Node rear = seg.getRear();
             if (idMap[head.id] < 0) {
