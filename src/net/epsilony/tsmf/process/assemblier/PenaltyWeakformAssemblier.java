@@ -255,4 +255,19 @@ public class PenaltyWeakformAssemblier implements WeakformAssemblier {
     public boolean isMatrixDense() {
         return dense;
     }
+
+    @Override
+    public int volumeDiffOrder() {
+        return 1;
+    }
+
+    @Override
+    public int neumannDiffOrder() {
+        return 0;
+    }
+
+    @Override
+    public int dirichletDiffOrder() {
+        return 0;
+    }
 }

@@ -17,9 +17,15 @@ public interface WeakformAssemblier extends NeedPreparation, SynchronizedClonabl
 
     void asmVolume(double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFunVals, double[] volumnForce);
 
+    int volumeDiffOrder();
+
     void asmNeumann(double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFunVals, double[] neumannVal);
 
+    int neumannDiffOrder();
+
     void asmDirichlet(double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFunVals, double[] dirichletVal, boolean[] dirichletMark);
+
+    int dirichletDiffOrder();
 
     void setNodesNum(int nodesNum);
 

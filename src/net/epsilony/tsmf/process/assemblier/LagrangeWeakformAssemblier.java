@@ -146,4 +146,19 @@ public class LagrangeWeakformAssemblier implements WeakformAssemblier, SupportLa
     public boolean isMatrixDense() {
         return basePenaltyAssemblier.isMatrixDense();
     }
+
+    @Override
+    public int volumeDiffOrder() {
+        return 1;
+    }
+
+    @Override
+    public int neumannDiffOrder() {
+        return 0;
+    }
+
+    @Override
+    public int dirichletDiffOrder() {
+        return 0;
+    }
 }

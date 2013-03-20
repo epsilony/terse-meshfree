@@ -11,9 +11,6 @@ import net.epsilony.tsmf.util.synchron.SynchronizedIteratorWrapper;
  */
 public class WeakformProcessRunnable implements Runnable {
 
-    public static int DEFAULT_VOLUME_DIFF_ORDER = 1;
-    public static int DEFAULT_NEUMANN_DIFF_ORDER = 0;
-    public static int DEFAULT_DIRICHLET_DIFF_ORDER = 0;
     WeakformAssemblier assemblier;
     Mixer mixer;
     LinearLagrangeDirichletProcessor lagProcessor;
@@ -21,9 +18,6 @@ public class WeakformProcessRunnable implements Runnable {
     SynchronizedIteratorWrapper<TaskUnit> neumannSynchronizedIterator;
     SynchronizedIteratorWrapper<TaskUnit> dirichletSynchronizedIterator;
     WeakformProcessRunnerObserver observer;
-    int volumeDiffOrder = DEFAULT_VOLUME_DIFF_ORDER;
-    int neumannDiffOrder = DEFAULT_NEUMANN_DIFF_ORDER;
-    int dirichletDiffOrder = DEFAULT_DIRICHLET_DIFF_ORDER;
 
     public void setObserver(WeakformProcessRunnerObserver observer) {
         this.observer = observer;
@@ -37,7 +31,7 @@ public class WeakformProcessRunnable implements Runnable {
         if (null == volumeSynchronizedIterator) {
             return;
         }
-        mixer.setDiffOrder(volumeDiffOrder);
+        mixer.setDiffOrder(assemblier.volumeDiffOrder());
         while (true) {
             TaskUnit pt = volumeSynchronizedIterator.nextItem();
             if (pt == null) {
@@ -55,7 +49,7 @@ public class WeakformProcessRunnable implements Runnable {
         if (null == neumannSynchronizedIterator) {
             return;
         }
-        mixer.setDiffOrder(neumannDiffOrder);
+        mixer.setDiffOrder(assemblier.neumannDiffOrder());
         while (true) {
             TaskUnit pt = neumannSynchronizedIterator.nextItem();
             if (pt == null) {
@@ -73,7 +67,7 @@ public class WeakformProcessRunnable implements Runnable {
         if (null == dirichletSynchronizedIterator) {
             return;
         }
-        mixer.setDiffOrder(dirichletDiffOrder);
+        mixer.setDiffOrder(assemblier.dirichletDiffOrder());
         boolean lagDiri = isAssemblyDirichletByLagrange();
         while (true) {
             TaskUnit pt = dirichletSynchronizedIterator.nextItem();
@@ -144,29 +138,5 @@ public class WeakformProcessRunnable implements Runnable {
 
     public void setDirichletSynchronizedIterator(SynchronizedIteratorWrapper<TaskUnit> dirichletSynchronizedIterator) {
         this.dirichletSynchronizedIterator = dirichletSynchronizedIterator;
-    }
-
-    public int getVolumeDiffOrder() {
-        return volumeDiffOrder;
-    }
-
-    public void setVolumeDiffOrder(int volumeDiffOrder) {
-        this.volumeDiffOrder = volumeDiffOrder;
-    }
-
-    public int getNeumannDiffOrder() {
-        return neumannDiffOrder;
-    }
-
-    public void setNeumannDiffOrder(int neumannDiffOrder) {
-        this.neumannDiffOrder = neumannDiffOrder;
-    }
-
-    public int getDirichletDiffOrder() {
-        return dirichletDiffOrder;
-    }
-
-    public void setDirichletDiffOrder(int dirichletDiffOrder) {
-        this.dirichletDiffOrder = dirichletDiffOrder;
     }
 }
