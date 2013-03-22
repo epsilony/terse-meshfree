@@ -10,14 +10,9 @@ import net.epsilony.tsmf.process.assemblier.SupportLagrange;
 import net.epsilony.tsmf.process.assemblier.WeakformAssemblier;
 import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
 import net.epsilony.tsmf.model.Model2D;
-import net.epsilony.tsmf.model.Node;
-import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.model.influence.ArrayInfluenceDomianRadiusMapperFactory;
 import net.epsilony.tsmf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.tsmf.model.influence.InfluenceRadiusMapper;
-import net.epsilony.tsmf.model.search.LRTreeNodesSphereSearcher;
-import net.epsilony.tsmf.model.search.LRTreeSegment2DIntersectingSphereSearcher;
-import net.epsilony.tsmf.model.search.SphereSearcher;
 import net.epsilony.tsmf.model.support_domain.SupportDomainSearcherFactory;
 import net.epsilony.tsmf.shape_func.ShapeFunction;
 import net.epsilony.tsmf.util.NeedPreparation;
@@ -141,9 +136,9 @@ public class WeakformProcessor2D implements NeedPreparation {
 
     @Override
     public void prepare() {
-        SphereSearcher<Node> nodesSearcher = new LRTreeNodesSphereSearcher(model.getAllNodes());
-        SphereSearcher<Segment2D> segmentSearcher = new LRTreeSegment2DIntersectingSphereSearcher(model.getPolygon());
-        supportDomainSearcherFactory = new SupportDomainSearcherFactory(nodesSearcher, segmentSearcher);
+        supportDomainSearcherFactory = new SupportDomainSearcherFactory();
+        supportDomainSearcherFactory.getNodesSearcher().setAll(model.getAllNodes());
+        supportDomainSearcherFactory.getSegmentsSearcher().setAll(model.getPolygon().getSegments());
         influenceRadiusMapper = new ArrayInfluenceDomianRadiusMapperFactory(
                 model, influenceRadiusCalculator,
                 supportDomainSearcherFactory.produce())

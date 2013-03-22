@@ -17,15 +17,8 @@ import net.epsilony.tsmf.util.rangesearch.LayeredRangeTree;
 public class LRTreeNodesSphereSearcher implements SphereSearcher<Node> {
 
     public static final int DEFAULT_DIMENSION = 2;
+    int dimension = DEFAULT_DIMENSION;
     LayeredRangeTree<double[], Node> nodesTree;
-
-    public LRTreeNodesSphereSearcher(Collection<? extends Node> allNodes, int dimension) {
-        nodesTree = new LayeredRangeTree<>(allNodes, DoubleArrayComparator.comparatorsForAll(dimension));
-    }
-
-    public LRTreeNodesSphereSearcher(Collection<? extends Node> allNodes) {
-        this(allNodes, DEFAULT_DIMENSION);
-    }
 
     @Override
     public List<Node> searchInSphere(double[] center, double radius) {
@@ -43,5 +36,18 @@ public class LRTreeNodesSphereSearcher implements SphereSearcher<Node> {
             }
         }
         return results;
+    }
+
+    @Override
+    public void setAll(Collection<? extends Node> allNodes) {
+        nodesTree = new LayeredRangeTree<>(allNodes, DoubleArrayComparator.comparatorsForAll(dimension));
+    }
+
+    public int getDimension() {
+        return dimension;
+    }
+
+    public void setDimension(int dimension) {
+        this.dimension = dimension;
     }
 }

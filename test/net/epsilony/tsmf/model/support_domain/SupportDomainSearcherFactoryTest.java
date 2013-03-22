@@ -9,8 +9,6 @@ import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.Polygon2D;
 import net.epsilony.tsmf.model.LinearSegment2D;
 import net.epsilony.tsmf.model.Segment2D;
-import net.epsilony.tsmf.model.search.LRTreeNodesSphereSearcher;
-import net.epsilony.tsmf.model.search.LRTreeSegment2DIntersectingSphereSearcher;
 import net.epsilony.tsmf.util.IntIdentityComparator;
 import net.epsilony.tsmf.util.Math2D;
 import net.epsilony.tsmf.util.pair.WithPair;
@@ -55,9 +53,9 @@ public class SupportDomainSearcherFactoryTest {
         int[] expPgNdIdxWithPerb = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 15, 16, 17, 21, 22};
         for (boolean wp : withPerturb) {
             Model2D sampleModel2D = new Model2D(pg, spaceNodes);
-            SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory(
-                    new LRTreeNodesSphereSearcher(sampleModel2D.getAllNodes()),
-                    new LRTreeSegment2DIntersectingSphereSearcher(pg));
+            SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
+            factory.getNodesSearcher().setAll(sampleModel2D.getAllNodes());
+            factory.getSegmentsSearcher().setAll(pg.getSegments());
             factory.setIgnoreInvisibleNodesInformation(false);
             factory.setUseCenterPerturb(wp);
             SupportDomainSearcher searcher = factory.produce();
@@ -98,9 +96,9 @@ public class SupportDomainSearcherFactoryTest {
         }
         Model2D sampleModel2D = new Model2D(pg, spaceNodes);
 
-        SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory(
-                new LRTreeNodesSphereSearcher(sampleModel2D.getAllNodes()),
-                new LRTreeSegment2DIntersectingSphereSearcher(sampleModel2D.getPolygon()));
+        SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory();
+        factory.getNodesSearcher().setAll(sampleModel2D.getAllNodes());
+        factory.getSegmentsSearcher().setAll(pg.getSegments());
         factory.setIgnoreInvisibleNodesInformation(false);
         SupportDomainSearcher searcher = factory.produce();
         SupportDomainData searchResult = searcher.searchSupportDomain(center, null, radius);

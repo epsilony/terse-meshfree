@@ -1,9 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.model.support_domain;
 
-import java.util.Collection;
 import net.epsilony.tsmf.model.Node;
-import net.epsilony.tsmf.model.Polygon2D;
 import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.model.influence.InfluenceRadiusMapper;
 import net.epsilony.tsmf.model.search.LRTreeNodesSphereSearcher;
@@ -33,6 +31,11 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
         this.ignoreInvisibleNodesInformation = ignoreInvisibleNodesInformation;
     }
 
+    public SupportDomainSearcherFactory() {
+        nodesSearcher = new LRTreeNodesSphereSearcher();
+        segmentsSearcher = new LRTreeSegment2DIntersectingSphereSearcher();
+    }
+
     public SupportDomainSearcherFactory(
             SphereSearcher<Node> nodesSearcher,
             SphereSearcher<Segment2D> segmentsSearcher) {
@@ -57,30 +60,6 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
         this.useCenterPerturb = DEFAULT_USE_CENTER_PERTURB;
     }
 
-    public static SupportDomainSearcherFactory layeredRangeTreeBasedFactory(
-            Collection<? extends Node> allNodes,
-            Polygon2D polygon,
-            InfluenceRadiusMapper influenceDomainRadiusMapper,
-            boolean useCenterPerturb) {
-        return new SupportDomainSearcherFactory(
-                new LRTreeNodesSphereSearcher(allNodes),
-                new LRTreeSegment2DIntersectingSphereSearcher(polygon),
-                influenceDomainRadiusMapper, useCenterPerturb);
-    }
-
-    public static SupportDomainSearcherFactory layeredRangeTreeBasedFactory(
-            Collection<? extends Node> allNodes,
-            Polygon2D polygon,
-            InfluenceRadiusMapper influenceDomainRadiusMapper) {
-        return layeredRangeTreeBasedFactory(allNodes, polygon, influenceDomainRadiusMapper, DEFAULT_USE_CENTER_PERTURB);
-    }
-
-    public static SupportDomainSearcherFactory layeredRangeTreeBasedFactory(
-            Collection<? extends Node> allNodes,
-            Polygon2D polygon) {
-        return layeredRangeTreeBasedFactory(allNodes, polygon, null);
-    }
-
     @Override
     public SupportDomainSearcher produce() {
         SupportDomainSearcher result = new RawSupportDomainSearcher(nodesSearcher, segmentsSearcher);
@@ -101,6 +80,14 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
 
     public void setSegmentsSearcher(SphereSearcher<Segment2D> segmentsSearcher) {
         this.segmentsSearcher = segmentsSearcher;
+    }
+
+    public SphereSearcher<Node> getNodesSearcher() {
+        return nodesSearcher;
+    }
+
+    public SphereSearcher<Segment2D> getSegmentsSearcher() {
+        return segmentsSearcher;
     }
 
     public void setInfluenceDomainRadiusMapper(InfluenceRadiusMapper influenceDomainRadiusMapper) {

@@ -1,9 +1,9 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.model.search;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import net.epsilony.tsmf.model.Polygon2D;
 import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.model.Segment2DUtils;
 
@@ -37,8 +37,9 @@ public class LRTreeSegment2DIntersectingSphereSearcher implements SphereSearcher
         return segments;
     }
 
-    public LRTreeSegment2DIntersectingSphereSearcher(Polygon2D polygon) {
-        segmentsRangeSearcher = new SegmentsMidPointLRTreeRangeSearcher(polygon, DEMENSION);
-        maxSegmentLength = polygon.getMaxSegmentLength();
+    @Override
+    public void setAll(Collection<? extends Segment2D> datas) {
+        segmentsRangeSearcher = new SegmentsMidPointLRTreeRangeSearcher(datas, DEMENSION);
+        maxSegmentLength = Segment2DUtils.maxChordLength(datas);
     }
 }
