@@ -54,23 +54,13 @@ public class WeakformProcessor2D implements NeedPreparation {
     SupportDomainSearcherFactory supportDomainSearcherFactory;
     boolean enableMultiThread = DEFAULT_ENABLE_MULTITHREAD;
 
-    public WeakformProcessor2D(
-            Model2D model,
-            InfluenceRadiusCalculator influenceRadiusCalculator,
-            WeakformQuadratureTask weakformTask,
-            ShapeFunction shapeFunction,
-            WeakformAssemblier assemblier,
-            ConstitutiveLaw constitutiveLaw) {
-        this.model = model;
-        this.shapeFunction = shapeFunction;
-        this.assemblier = assemblier;
-        this.weakformQuadratureTask = weakformTask;
-        this.constitutiveLaw = constitutiveLaw;
-        this.influenceRadiusCalculator = influenceRadiusCalculator;
-    }
-
-    public WeakformProcessor2D(WeakformProject project) {
-        this(project.getModel(), project.getInfluenceRadiusCalculator(), project.getWeakformTask(), project.getShapeFunction(), project.getAssemblier(), project.getConstitutiveLaw());
+    public void setup(WeakformProject project) {
+        setModel(project.getModel());
+        setInfluenceRadiusCalculator(project.getInfluenceRadiusCalculator());
+        setWeakformQuadratureTask(project.getWeakformTask());
+        setShapeFunction(project.getShapeFunction());
+        setAssemblier(project.getAssemblier());
+        setConstitutiveLaw(project.getConstitutiveLaw());
     }
 
     public void process() {
@@ -199,24 +189,6 @@ public class WeakformProcessor2D implements NeedPreparation {
         return new PostProcessor(shapeFunction, supportDomainSearcherFactory.produce(), influenceRadiusMapper, nodesValue);
     }
 
-    public static WeakformProcessor2D genTimoshenkoProjectProcess() {
-        TimoshenkoAnalyticalBeam2D timoBeam = new TimoshenkoAnalyticalBeam2D(48, 12, 3e7, 0.3, -1000);
-        int quadDomainSize = 2;
-        int quadDegree = 4;
-        double inflRads = quadDomainSize * 4.1;
-        TimoshenkoStandardTask task = new TimoshenkoStandardTask(timoBeam, quadDomainSize, quadDomainSize, quadDegree);
-        WeakformProcessor2D res = new WeakformProcessor2D(task.processPackage(quadDomainSize, inflRads));
-        return res;
-    }
-
-    public static void main(String[] args) {
-        WeakformProcessor2D process = genTimoshenkoProjectProcess();
-        process.process();
-        process.solve();
-        PostProcessor pp = process.postProcessor();
-        pp.value(new double[]{0.1, 0}, null);
-    }
-
     public WeakformQuadratureTask getWeakformQuadratureTask() {
         return weakformQuadratureTask;
     }
@@ -263,5 +235,24 @@ public class WeakformProcessor2D implements NeedPreparation {
 
     public void setInfluenceRadiusCalculator(InfluenceRadiusCalculator influenceRadiusCalculator) {
         this.influenceRadiusCalculator = influenceRadiusCalculator;
+    }
+
+    public static WeakformProcessor2D genTimoshenkoProjectProcess() {
+        TimoshenkoAnalyticalBeam2D timoBeam = new TimoshenkoAnalyticalBeam2D(48, 12, 3e7, 0.3, -1000);
+        int quadDomainSize = 2;
+        int quadDegree = 4;
+        double inflRads = quadDomainSize * 4.1;
+        TimoshenkoStandardTask task = new TimoshenkoStandardTask(timoBeam, quadDomainSize, quadDomainSize, quadDegree);
+        WeakformProcessor2D res = new WeakformProcessor2D();
+        res.setup(task.processPackage(quadDomainSize, inflRads));
+        return res;
+    }
+
+    public static void main(String[] args) {
+        WeakformProcessor2D process = genTimoshenkoProjectProcess();
+        process.process();
+        process.solve();
+        PostProcessor pp = process.postProcessor();
+        pp.value(new double[]{0.1, 0}, null);
     }
 }
