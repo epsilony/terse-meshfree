@@ -51,4 +51,15 @@ public class Segment2DUtils {
     public static double distanceToChord(Segment2D seg, double[] pt) {
         return distanceToChord(seg, pt[0], pt[1]);
     }
+
+    public static double maxChordLength(Iterable<? extends Segment2D> segments) {
+        double maxLength = 0;
+        for (Segment2D seg : segments) {
+            double chordLength = chordLength(seg);
+            if (chordLength > maxLength) {
+                maxLength = chordLength;
+            }
+        }
+        return maxLength;
+    }
 }
