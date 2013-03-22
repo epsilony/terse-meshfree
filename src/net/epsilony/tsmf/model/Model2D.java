@@ -4,9 +4,6 @@ package net.epsilony.tsmf.model;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import net.epsilony.tsmf.model.search.LRTreeNodesSphereSearcher;
-import net.epsilony.tsmf.model.search.LRTreeSegment2DIntersectingSphereSearcher;
-import net.epsilony.tsmf.model.search.SphereSearcher;
 
 /**
  *
@@ -15,8 +12,6 @@ import net.epsilony.tsmf.model.search.SphereSearcher;
 public class Model2D {
 
     public final static int DIMENSION = 2;
-    SphereSearcher<Segment2D> segmentsIntersectingSphereSearcher;
-    SphereSearcher<Node> allNodesSearcher;
     ArrayList<Node> allNodes;
     ArrayList<Node> spaceNodes;   //allNode except polygon.getVertes()
     private Polygon2D polygon;
@@ -35,7 +30,6 @@ public class Model2D {
 
     public Model2D(Polygon2D polygon, List<Node> spaceNodes) {
         this.polygon = polygon;
-        segmentsIntersectingSphereSearcher = new LRTreeSegment2DIntersectingSphereSearcher(polygon);
         this.spaceNodes = new ArrayList<>(spaceNodes);
         allNodes = new ArrayList<>(spaceNodes);
         LinkedList<Node> segNds = new LinkedList<>();
@@ -43,7 +37,6 @@ public class Model2D {
             segNds.add(seg.getHead());
         }
         allNodes.addAll(segNds);
-        allNodesSearcher = new LRTreeNodesSphereSearcher(allNodes, DIMENSION);
         int id = 0;
         for (Node nd : allNodes) {
             nd.setId(id);
