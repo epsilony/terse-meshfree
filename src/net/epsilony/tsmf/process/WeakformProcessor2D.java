@@ -57,7 +57,7 @@ public class WeakformProcessor2D implements NeedPreparation {
     public void setup(WeakformProject project) {
         setModel(project.getModel());
         setInfluenceRadiusCalculator(project.getInfluenceRadiusCalculator());
-        setWeakformQuadratureTask(project.getWeakformTask());
+        setWeakformQuadratureTask(project.getWeakformQuadratureTask());
         setShapeFunction(project.getShapeFunction());
         setAssemblier(project.getAssemblier());
         setConstitutiveLaw(project.getConstitutiveLaw());

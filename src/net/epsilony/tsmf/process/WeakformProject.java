@@ -26,6 +26,6 @@ public interface WeakformProject {
 
     ShapeFunction getShapeFunction();
 
-    WeakformQuadratureTask getWeakformTask();
+    WeakformQuadratureTask getWeakformQuadratureTask();
     
 }
