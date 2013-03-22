@@ -60,13 +60,13 @@ public class TimoshenkoStandardTask implements WeakformTask {
         return timoBeam.constitutiveLaw();
     }
 
-    public WeakformProject processPackage(double spaceNdsGap, double influenceRad) {
+    public SimpleWeakformProject processPackage(double spaceNdsGap, double influenceRad) {
         WeakformTask project = this;
         Model2D model = rectProject.model(spaceNdsGap);
         ShapeFunction shapeFunc = new MLS();
         ConstitutiveLaw constitutiveLaw = timoBeam.constitutiveLaw();
         WeakformAssemblier assemblier = new LagrangeWeakformAssemblier();
         InfluenceRadiusCalculator influenceRadsCalc = new ConstantInfluenceRadiusCalculator(influenceRad);
-        return new WeakformProject(project, model, influenceRadsCalc, assemblier, shapeFunc, constitutiveLaw);
+        return new SimpleWeakformProject(project, model, influenceRadsCalc, assemblier, shapeFunc, constitutiveLaw);
     }
 }

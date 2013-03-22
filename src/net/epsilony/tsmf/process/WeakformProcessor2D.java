@@ -56,14 +56,14 @@ public class WeakformProcessor2D implements NeedPreparation {
     public WeakformProcessor2D(
             Model2D model,
             InfluenceRadiusCalculator inflRadCalc,
-            WeakformTask project,
+            WeakformTask weakformTask,
             ShapeFunction shapeFunction,
             WeakformAssemblier assemblier,
             ConstitutiveLaw constitutiveLaw) {
         this.model = model;
         this.shapeFunction = shapeFunction;
         this.assemblier = assemblier;
-        this.weakformTask = project;
+        this.weakformTask = weakformTask;
         this.constitutiveLaw = constitutiveLaw;
         SphereSearcher<Node> nodesSearcher = new LRTreeNodesSphereSearcher(model.getAllNodes());
         SphereSearcher<Segment2D> segmentSearcher = new LRTreeSegment2DIntersectingSphereSearcher(model.getPolygon());
@@ -76,8 +76,8 @@ public class WeakformProcessor2D implements NeedPreparation {
         supportDomainSearcherFactory.setInfluenceDomainRadiusMapper(influenceRadiusMapper);
     }
 
-    public WeakformProcessor2D(WeakformProject pack) {
-        this(pack.model, pack.influenceRadCalc, pack.project, pack.shapeFunc, pack.assemblier, pack.constitutiveLaw);
+    public WeakformProcessor2D(WeakformProject project) {
+        this(project.getModel(), project.getInfluenceRadiusCalculator(), project.getWeakformTask(), project.getShapeFunction(), project.getAssemblier(), project.getConstitutiveLaw());
     }
 
     public void process() {
