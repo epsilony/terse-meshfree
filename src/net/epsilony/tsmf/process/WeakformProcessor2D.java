@@ -36,19 +36,19 @@ public class WeakformProcessor2D implements NeedPreparation {
     public static final int DENSE_MATRIC_SIZE_THRESHOLD = 200;
     public static final boolean SUPPORT_COMPLEX_CRITERION = false;
     public static final boolean DEFAULT_ENABLE_MULTITHREAD = true;
-    WeakformTask weakformTask;
+    WeakformQuadratureTask weakformTask;
     Model2D model;
     ShapeFunction shapeFunction;
     WeakformAssemblier assemblier;
     LinearLagrangeDirichletProcessor lagProcessor;
     ConstitutiveLaw constitutiveLaw;
     DenseVector nodesValue;
-    private List<TaskUnit> volumeProcessPoints;
-    private List<TaskUnit> dirichletProcessPoints;
-    private List<TaskUnit> neumannProcessPoints;
-    SynchronizedIteratorWrapper<TaskUnit> volumeIteratorWrapper;
-    SynchronizedIteratorWrapper<TaskUnit> neumannIteratorWrapper;
-    SynchronizedIteratorWrapper<TaskUnit> dirichletIteratorWrapper;
+    private List<WeakformQuadraturePoint> volumeProcessPoints;
+    private List<WeakformQuadraturePoint> dirichletProcessPoints;
+    private List<WeakformQuadraturePoint> neumannProcessPoints;
+    SynchronizedIteratorWrapper<WeakformQuadraturePoint> volumeIteratorWrapper;
+    SynchronizedIteratorWrapper<WeakformQuadraturePoint> neumannIteratorWrapper;
+    SynchronizedIteratorWrapper<WeakformQuadraturePoint> dirichletIteratorWrapper;
     private InfluenceRadiusMapper influenceRadiusMapper;
     SupportDomainSearcherFactory supportDomainSearcherFactory;
     boolean enableMultiThread = DEFAULT_ENABLE_MULTITHREAD;
@@ -56,7 +56,7 @@ public class WeakformProcessor2D implements NeedPreparation {
     public WeakformProcessor2D(
             Model2D model,
             InfluenceRadiusCalculator inflRadCalc,
-            WeakformTask weakformTask,
+            WeakformQuadratureTask weakformTask,
             ShapeFunction shapeFunction,
             WeakformAssemblier assemblier,
             ConstitutiveLaw constitutiveLaw) {

@@ -16,23 +16,23 @@ import net.epsilony.tsmf.util.TimoshenkoAnalyticalBeam2D;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class TimoshenkoStandardTask implements WeakformTask {
+public class TimoshenkoStandardTask implements WeakformQuadratureTask {
 
     TimoshenkoAnalyticalBeam2D timoBeam;
     RectangleTask rectProject;
 
     @Override
-    public List<TaskUnit> volumeTasks() {
+    public List<WeakformQuadraturePoint> volumeTasks() {
         return rectProject.volumeTasks();
     }
 
     @Override
-    public List<TaskUnit> neumannTasks() {
+    public List<WeakformQuadraturePoint> neumannTasks() {
         return rectProject.neumannTasks();
     }
 
     @Override
-    public List<TaskUnit> dirichletTasks() {
+    public List<WeakformQuadraturePoint> dirichletTasks() {
         return rectProject.dirichletTasks();
     }
 
@@ -61,7 +61,7 @@ public class TimoshenkoStandardTask implements WeakformTask {
     }
 
     public SimpleWeakformProject processPackage(double spaceNdsGap, double influenceRad) {
-        WeakformTask project = this;
+        WeakformQuadratureTask project = this;
         Model2D model = rectProject.model(spaceNdsGap);
         ShapeFunction shapeFunc = new MLS();
         ConstitutiveLaw constitutiveLaw = timoBeam.constitutiveLaw();

@@ -18,7 +18,7 @@ public class LinearLagrangeDirichletProcessor {
     int[] idMap;
     int dirichletNodesSize;
 
-    public void process(TaskUnit pt, TIntArrayList nodesIds, TDoubleArrayList shapeFuncVal) {
+    public void process(WeakformQuadraturePoint pt, TIntArrayList nodesIds, TDoubleArrayList shapeFuncVal) {
         nodesIds.ensureCapacity(nodesIds.size() + 2);
         shapeFuncVal.ensureCapacity(shapeFuncVal.size() + 2);
         Node head = pt.segment.getHead();
@@ -29,11 +29,11 @@ public class LinearLagrangeDirichletProcessor {
         shapeFuncVal.addAll(funcV);
     }
 
-    public LinearLagrangeDirichletProcessor(List<TaskUnit> pts, int baseNodesNum) {
+    public LinearLagrangeDirichletProcessor(List<WeakformQuadraturePoint> pts, int baseNodesNum) {
         idMap = new int[baseNodesNum];
         Arrays.fill(idMap, -1);
         int id = baseNodesNum;
-        for (TaskUnit pt : pts) {
+        for (WeakformQuadraturePoint pt : pts) {
             Segment2D seg = pt.segment;
             Node head = seg.getHead();
             Node rear = seg.getRear();

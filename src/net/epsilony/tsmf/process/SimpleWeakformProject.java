@@ -13,14 +13,14 @@ import net.epsilony.tsmf.shape_func.ShapeFunction;
  */
 public class SimpleWeakformProject implements WeakformProject {
 
-    public WeakformTask weakformTask;
+    public WeakformQuadratureTask weakformTask;
     public Model2D model;
     public InfluenceRadiusCalculator influenceRadiusCalculator;
     public WeakformAssemblier assemblier;
     public ShapeFunction shapeFunction;
     public ConstitutiveLaw constitutiveLaw;
 
-    public SimpleWeakformProject(WeakformTask project, Model2D model, InfluenceRadiusCalculator influenceRadCalc, WeakformAssemblier assemblier, ShapeFunction shapeFunc, ConstitutiveLaw constitutiveLaw) {
+    public SimpleWeakformProject(WeakformQuadratureTask project, Model2D model, InfluenceRadiusCalculator influenceRadCalc, WeakformAssemblier assemblier, ShapeFunction shapeFunc, ConstitutiveLaw constitutiveLaw) {
         this.weakformTask = project;
         this.model = model;
         this.influenceRadiusCalculator = influenceRadCalc;
@@ -30,7 +30,7 @@ public class SimpleWeakformProject implements WeakformProject {
     }
 
     @Override
-    public WeakformTask getWeakformTask() {
+    public WeakformQuadratureTask getWeakformTask() {
         return weakformTask;
     }
 

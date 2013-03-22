@@ -14,9 +14,9 @@ public class WeakformProcessRunnable implements Runnable {
     WeakformAssemblier assemblier;
     Mixer mixer;
     LinearLagrangeDirichletProcessor lagProcessor;
-    SynchronizedIteratorWrapper<TaskUnit> volumeSynchronizedIterator;
-    SynchronizedIteratorWrapper<TaskUnit> neumannSynchronizedIterator;
-    SynchronizedIteratorWrapper<TaskUnit> dirichletSynchronizedIterator;
+    SynchronizedIteratorWrapper<WeakformQuadraturePoint> volumeSynchronizedIterator;
+    SynchronizedIteratorWrapper<WeakformQuadraturePoint> neumannSynchronizedIterator;
+    SynchronizedIteratorWrapper<WeakformQuadraturePoint> dirichletSynchronizedIterator;
     WeakformProcessRunnerObserver observer;
 
     public void setObserver(WeakformProcessRunnerObserver observer) {
@@ -33,7 +33,7 @@ public class WeakformProcessRunnable implements Runnable {
         }
         mixer.setDiffOrder(assemblier.volumeDiffOrder());
         while (true) {
-            TaskUnit pt = volumeSynchronizedIterator.nextItem();
+            WeakformQuadraturePoint pt = volumeSynchronizedIterator.nextItem();
             if (pt == null) {
                 break;
             }
@@ -51,7 +51,7 @@ public class WeakformProcessRunnable implements Runnable {
         }
         mixer.setDiffOrder(assemblier.neumannDiffOrder());
         while (true) {
-            TaskUnit pt = neumannSynchronizedIterator.nextItem();
+            WeakformQuadraturePoint pt = neumannSynchronizedIterator.nextItem();
             if (pt == null) {
                 break;
             }
@@ -70,7 +70,7 @@ public class WeakformProcessRunnable implements Runnable {
         mixer.setDiffOrder(assemblier.dirichletDiffOrder());
         boolean lagDiri = isAssemblyDirichletByLagrange();
         while (true) {
-            TaskUnit pt = dirichletSynchronizedIterator.nextItem();
+            WeakformQuadraturePoint pt = dirichletSynchronizedIterator.nextItem();
             if (pt == null) {
                 break;
             }
@@ -116,27 +116,27 @@ public class WeakformProcessRunnable implements Runnable {
         this.lagProcessor = lagProcessor;
     }
 
-    public SynchronizedIteratorWrapper<TaskUnit> getVolumeSynchronizedIterator() {
+    public SynchronizedIteratorWrapper<WeakformQuadraturePoint> getVolumeSynchronizedIterator() {
         return volumeSynchronizedIterator;
     }
 
-    public void setVolumeSynchronizedIterator(SynchronizedIteratorWrapper<TaskUnit> volumeSynchronizedIterator) {
+    public void setVolumeSynchronizedIterator(SynchronizedIteratorWrapper<WeakformQuadraturePoint> volumeSynchronizedIterator) {
         this.volumeSynchronizedIterator = volumeSynchronizedIterator;
     }
 
-    public SynchronizedIteratorWrapper<TaskUnit> getNeumannSynchronizedIterator() {
+    public SynchronizedIteratorWrapper<WeakformQuadraturePoint> getNeumannSynchronizedIterator() {
         return neumannSynchronizedIterator;
     }
 
-    public void setNeumannSynchronizedIterator(SynchronizedIteratorWrapper<TaskUnit> neumannSynchronizedIterator) {
+    public void setNeumannSynchronizedIterator(SynchronizedIteratorWrapper<WeakformQuadraturePoint> neumannSynchronizedIterator) {
         this.neumannSynchronizedIterator = neumannSynchronizedIterator;
     }
 
-    public SynchronizedIteratorWrapper<TaskUnit> getDirichletSynchronizedIterator() {
+    public SynchronizedIteratorWrapper<WeakformQuadraturePoint> getDirichletSynchronizedIterator() {
         return dirichletSynchronizedIterator;
     }
 
-    public void setDirichletSynchronizedIterator(SynchronizedIteratorWrapper<TaskUnit> dirichletSynchronizedIterator) {
+    public void setDirichletSynchronizedIterator(SynchronizedIteratorWrapper<WeakformQuadraturePoint> dirichletSynchronizedIterator) {
         this.dirichletSynchronizedIterator = dirichletSynchronizedIterator;
     }
 }
