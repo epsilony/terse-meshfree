@@ -203,4 +203,12 @@ public class Polygon2D implements Iterable<LinearSegment2D> {
     public Iterator<LinearSegment2D> iterator() {
         return new SegmentChainsIterator<>(chainsHeads);
     }
+
+    public List<Segment2D> getSegments() {
+        LinkedList<Segment2D> segments = new LinkedList<>();
+        for (Segment2D seg : this) {
+            segments.add(seg);
+        }
+        return segments;
+    }
 }
