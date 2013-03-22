@@ -5,7 +5,7 @@ import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.model.influence.InfluenceRadiusMapper;
 import net.epsilony.tsmf.model.search.LRTreeNodesSphereSearcher;
-import net.epsilony.tsmf.model.search.LRTreeSegment2DIntersectingSphereSearcher;
+import net.epsilony.tsmf.model.search.LRTreeSegmentChordIntersectingSphereSearcher;
 import net.epsilony.tsmf.model.search.SphereSearcher;
 import net.epsilony.tsmf.util.Factory;
 
@@ -33,7 +33,7 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
 
     public SupportDomainSearcherFactory() {
         nodesSearcher = new LRTreeNodesSphereSearcher();
-        segmentsSearcher = new LRTreeSegment2DIntersectingSphereSearcher();
+        segmentsSearcher = new LRTreeSegmentChordIntersectingSphereSearcher();
     }
 
     public SupportDomainSearcherFactory(

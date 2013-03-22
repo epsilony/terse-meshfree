@@ -23,13 +23,13 @@ public class LRTreeSegment2DIntersectingSphereSearcherTest {
     }
 
     /**
-     * Test of searchInSphere method, of class LRTreeSegment2DIntersectingSphereSearcher.
+     * Test of searchInSphere method, of class LRTreeSegmentChordIntersectingSphereSearcher.
      */
     @Test
     public void testSearchInSphere() {
         ArrayList<double[][][]> coords = new ArrayList<>(1);
         Polygon2D pg = TestTool.samplePolygon(coords);
-        LRTreeSegment2DIntersectingSphereSearcher polygonSearcher = new LRTreeSegment2DIntersectingSphereSearcher();
+        LRTreeSegmentChordIntersectingSphereSearcher polygonSearcher = new LRTreeSegmentChordIntersectingSphereSearcher();
         polygonSearcher.setAll(pg.getSegments());
         int testTime = 1000;
         double radiusMin = 0.3;

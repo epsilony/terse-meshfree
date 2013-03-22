@@ -11,7 +11,7 @@ import net.epsilony.tsmf.model.Segment2DUtils;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class LRTreeSegment2DIntersectingSphereSearcher implements SphereSearcher<Segment2D> {
+public class LRTreeSegmentChordIntersectingSphereSearcher implements SphereSearcher<Segment2D> {
 
     public static final int DEMENSION = 2;
     SegmentsMidPointLRTreeRangeSearcher segmentsRangeSearcher;
