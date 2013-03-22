@@ -158,20 +158,20 @@ public class WeakformProcessor2D implements NeedPreparation {
                 new SynchronizedIteratorWrapper<>(neumannProcessPoints.iterator());
         dirichletIteratorWrapper =
                 new SynchronizedIteratorWrapper<>(dirichletProcessPoints.iterator());
-        prepareAssemblier(assemblier);
+        prepareAssemblier();
     }
 
-    void prepareAssemblier(WeakformAssemblier wfAssemblier) {
-        wfAssemblier.setConstitutiveLaw(constitutiveLaw);
-        wfAssemblier.setNodesNum(model.getAllNodes().size());
+    void prepareAssemblier() {
+        assemblier.setConstitutiveLaw(constitutiveLaw);
+        assemblier.setNodesNum(model.getAllNodes().size());
         boolean dense = model.getAllNodes().size() <= DENSE_MATRIC_SIZE_THRESHOLD;
-        wfAssemblier.setMatrixDense(dense);
+        assemblier.setMatrixDense(dense);
         if (isAssemblyDirichletByLagrange()) {
             lagProcessor = new LinearLagrangeDirichletProcessor(dirichletProcessPoints, model.getAllNodes().size());
-            SupportLagrange sL = (SupportLagrange) wfAssemblier;
+            SupportLagrange sL = (SupportLagrange) assemblier;
             sL.setDirichletNodesNums(lagProcessor.getDirichletNodesSize());
         }
-        wfAssemblier.prepare();
+        assemblier.prepare();
     }
 
     public boolean isAssemblyDirichletByLagrange() {
