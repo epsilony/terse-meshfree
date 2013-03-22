@@ -76,7 +76,7 @@ public class WeakformProcessor2DTimoshenkoCantileverTest {
             }
             double t = tD;
 
-            TimoshenkoStandardTask timoTask = (TimoshenkoStandardTask) timoProcessor.weakformTask;
+            TimoshenkoStandardTask timoTask = (TimoshenkoStandardTask) timoProcessor.weakformQuadratureTask;
             double left = timoTask.rectProject.left;
             double right = timoTask.rectProject.right;
             left += SHRINK;
@@ -96,7 +96,7 @@ public class WeakformProcessor2DTimoshenkoCantileverTest {
             }
             double t = tD;
 
-            TimoshenkoStandardTask timoTask = (TimoshenkoStandardTask) timoProcessor.weakformTask;
+            TimoshenkoStandardTask timoTask = (TimoshenkoStandardTask) timoProcessor.weakformQuadratureTask;
             double down = timoTask.rectProject.down;
             double up = timoTask.rectProject.up;
             down += SHRINK;
@@ -133,7 +133,7 @@ public class WeakformProcessor2DTimoshenkoCantileverTest {
 
         @Override
         public double value(double t) {
-            TimoshenkoStandardTask timoTask = (TimoshenkoStandardTask) timoProcessor.weakformTask;
+            TimoshenkoStandardTask timoTask = (TimoshenkoStandardTask) timoProcessor.weakformQuadratureTask;
             double[] pt = curveFunction.value(t, null);
             double[] value = timoTask.timoBeam.displacement(pt[0], pt[1], 0, null);
             int index = outputU ? 0 : 1;

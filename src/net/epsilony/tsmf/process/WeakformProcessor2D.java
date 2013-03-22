@@ -36,7 +36,8 @@ public class WeakformProcessor2D implements NeedPreparation {
     public static final int DENSE_MATRIC_SIZE_THRESHOLD = 200;
     public static final boolean SUPPORT_COMPLEX_CRITERION = false;
     public static final boolean DEFAULT_ENABLE_MULTITHREAD = true;
-    WeakformQuadratureTask weakformTask;
+    WeakformQuadratureTask weakformQuadratureTask;
+    InfluenceRadiusCalculator influenceRadiusCalculator;
     Model2D model;
     ShapeFunction shapeFunction;
     WeakformAssemblier assemblier;
@@ -55,7 +56,7 @@ public class WeakformProcessor2D implements NeedPreparation {
 
     public WeakformProcessor2D(
             Model2D model,
-            InfluenceRadiusCalculator inflRadCalc,
+            InfluenceRadiusCalculator influenceRadiusCalculator,
             WeakformQuadratureTask weakformTask,
             ShapeFunction shapeFunction,
             WeakformAssemblier assemblier,
@@ -63,17 +64,9 @@ public class WeakformProcessor2D implements NeedPreparation {
         this.model = model;
         this.shapeFunction = shapeFunction;
         this.assemblier = assemblier;
-        this.weakformTask = weakformTask;
+        this.weakformQuadratureTask = weakformTask;
         this.constitutiveLaw = constitutiveLaw;
-        SphereSearcher<Node> nodesSearcher = new LRTreeNodesSphereSearcher(model.getAllNodes());
-        SphereSearcher<Segment2D> segmentSearcher = new LRTreeSegment2DIntersectingSphereSearcher(model.getPolygon());
-        supportDomainSearcherFactory = new SupportDomainSearcherFactory(nodesSearcher, segmentSearcher);
-        influenceRadiusMapper = new ArrayInfluenceDomianRadiusMapperFactory(
-                model,
-                inflRadCalc,
-                supportDomainSearcherFactory.produce())
-                .produce();
-        supportDomainSearcherFactory.setInfluenceDomainRadiusMapper(influenceRadiusMapper);
+        this.influenceRadiusCalculator = influenceRadiusCalculator;
     }
 
     public WeakformProcessor2D(WeakformProject project) {
@@ -158,9 +151,17 @@ public class WeakformProcessor2D implements NeedPreparation {
 
     @Override
     public void prepare() {
-        volumeProcessPoints = weakformTask.volumeTasks();
-        dirichletProcessPoints = weakformTask.dirichletTasks();
-        neumannProcessPoints = weakformTask.neumannTasks();
+        SphereSearcher<Node> nodesSearcher = new LRTreeNodesSphereSearcher(model.getAllNodes());
+        SphereSearcher<Segment2D> segmentSearcher = new LRTreeSegment2DIntersectingSphereSearcher(model.getPolygon());
+        supportDomainSearcherFactory = new SupportDomainSearcherFactory(nodesSearcher, segmentSearcher);
+        influenceRadiusMapper = new ArrayInfluenceDomianRadiusMapperFactory(
+                model, influenceRadiusCalculator,
+                supportDomainSearcherFactory.produce())
+                .produce();
+        supportDomainSearcherFactory.setInfluenceDomainRadiusMapper(influenceRadiusMapper);
+        volumeProcessPoints = weakformQuadratureTask.volumeTasks();
+        dirichletProcessPoints = weakformQuadratureTask.dirichletTasks();
+        neumannProcessPoints = weakformQuadratureTask.neumannTasks();
         volumeIteratorWrapper =
                 new SynchronizedIteratorWrapper<>(volumeProcessPoints.iterator());
         neumannIteratorWrapper =
@@ -214,5 +215,53 @@ public class WeakformProcessor2D implements NeedPreparation {
         process.solve();
         PostProcessor pp = process.postProcessor();
         pp.value(new double[]{0.1, 0}, null);
+    }
+
+    public WeakformQuadratureTask getWeakformQuadratureTask() {
+        return weakformQuadratureTask;
+    }
+
+    public void setWeakformQuadratureTask(WeakformQuadratureTask weakformQuadratureTask) {
+        this.weakformQuadratureTask = weakformQuadratureTask;
+    }
+
+    public Model2D getModel() {
+        return model;
+    }
+
+    public void setModel(Model2D model) {
+        this.model = model;
+    }
+
+    public ShapeFunction getShapeFunction() {
+        return shapeFunction;
+    }
+
+    public void setShapeFunction(ShapeFunction shapeFunction) {
+        this.shapeFunction = shapeFunction;
+    }
+
+    public WeakformAssemblier getAssemblier() {
+        return assemblier;
+    }
+
+    public void setAssemblier(WeakformAssemblier assemblier) {
+        this.assemblier = assemblier;
+    }
+
+    public ConstitutiveLaw getConstitutiveLaw() {
+        return constitutiveLaw;
+    }
+
+    public void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw) {
+        this.constitutiveLaw = constitutiveLaw;
+    }
+
+    public InfluenceRadiusCalculator getInfluenceRadiusCalculator() {
+        return influenceRadiusCalculator;
+    }
+
+    public void setInfluenceRadiusCalculator(InfluenceRadiusCalculator influenceRadiusCalculator) {
+        this.influenceRadiusCalculator = influenceRadiusCalculator;
     }
 }
