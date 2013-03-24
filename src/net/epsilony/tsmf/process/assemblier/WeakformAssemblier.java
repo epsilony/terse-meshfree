@@ -41,5 +41,5 @@ public interface WeakformAssemblier extends NeedPreparation, SynchronizedClonabl
 
     boolean isUpperSymmertric();
 
-    void addToMainMatrix(WeakformAssemblier assemblier);
+    void mergeWithBrother(WeakformAssemblier brother);
 }

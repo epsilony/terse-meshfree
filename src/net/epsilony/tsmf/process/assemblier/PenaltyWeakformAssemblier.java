@@ -242,7 +242,7 @@ public class PenaltyWeakformAssemblier implements WeakformAssemblier {
     }
 
     @Override
-    public void addToMainMatrix(WeakformAssemblier otherAssemblier) {
+    public void mergeWithBrother(WeakformAssemblier otherAssemblier) {
         if (otherAssemblier.isUpperSymmertric() != isUpperSymmertric()) {
             throw new IllegalArgumentException("the assemblier to add in should be with same symmetricity");
         }

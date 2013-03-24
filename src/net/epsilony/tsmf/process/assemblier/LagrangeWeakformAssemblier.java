@@ -135,11 +135,11 @@ public class LagrangeWeakformAssemblier implements WeakformAssemblier, SupportLa
     }
 
     @Override
-    public void addToMainMatrix(WeakformAssemblier assemblier) {
+    public void mergeWithBrother(WeakformAssemblier assemblier) {
         if (isUpperSymmertric() != assemblier.isUpperSymmertric()) {
             throw new IllegalArgumentException("the input assemblier should have same symmetricity");
         }
-        basePenaltyAssemblier.addToMainMatrix(assemblier);
+        basePenaltyAssemblier.mergeWithBrother(assemblier);
     }
 
     @Override

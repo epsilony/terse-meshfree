@@ -111,7 +111,7 @@ public class WeakformProcessor2D implements NeedPreparation {
             }
         }
         for (int i = 1; i < assemblierAvators.size(); i++) {
-            assemblier.addToMainMatrix(assemblierAvators.get(i));
+            assemblier.mergeWithBrother(assemblierAvators.get(i));
         }
     }
 
