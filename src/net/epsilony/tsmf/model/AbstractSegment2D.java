@@ -1,6 +1,8 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.model;
 
+import net.epsilony.tsmf.util.IntIdentityMap;
+
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
@@ -9,7 +11,7 @@ public abstract class AbstractSegment2D implements Segment2D {
 
     protected int diffOrder = 0;
     protected Node head;
-    public int id;
+    public int id = IntIdentityMap.NULL_INDEX_SUPREMUM;
     protected Segment2D pred;
     protected Segment2D succ;
 

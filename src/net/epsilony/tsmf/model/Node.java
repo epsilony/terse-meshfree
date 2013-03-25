@@ -3,15 +3,16 @@ package net.epsilony.tsmf.model;
 
 import java.util.Arrays;
 import net.epsilony.tsmf.util.IntIdentity;
+import net.epsilony.tsmf.util.IntIdentityMap;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class Node implements IntIdentity{
+public class Node implements IntIdentity {
 
     protected double[] coord;
-    protected int id;
+    protected int id = IntIdentityMap.NULL_INDEX_SUPREMUM;
     protected Object data;
 
     public Object getData() {
