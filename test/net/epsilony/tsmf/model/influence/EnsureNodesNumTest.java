@@ -30,7 +30,7 @@ public class EnsureNodesNumTest {
     }
 
     /**
-     * Test of influcenceRadius method, of class EnsureNodesNum.
+     * Test of calcInflucenceRadius method, of class EnsureNodesNum.
      */
     @Test
     public void testInflucenceRadius() {
@@ -47,6 +47,7 @@ public class EnsureNodesNumTest {
 
         SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory(nodesSearcher, segmentsSearcher);
         SupportDomainSearcher searcher = factory.produce();
+        calc.setSupportDomainSearcher(searcher);
         for (boolean onlySpaceNodes : new boolean[]{false, true}) {
             LinkedList<Double> enlargedDistances = new LinkedList<>();
             List<Node> nodes = onlySpaceNodes ? sampleModel.getSpaceNodes() : sampleModel.getAllNodes();
@@ -61,7 +62,7 @@ public class EnsureNodesNumTest {
             boolean getHere = false;
             for (int i = 0; i < numLowerBounds.length; i++) {
                 calc.setNodesNumLowerBound(numLowerBounds[i]);
-                double act = calc.influcenceRadius(sampleNode, sampleBnd, searcher);
+                double act = calc.calcInflucenceRadius(sampleNode, sampleBnd);
                 double exp = enlargedDistances.get(numLowerBounds[i] - 1);
                 assertEquals(exp, act, 1e-10);
                 getHere = true;

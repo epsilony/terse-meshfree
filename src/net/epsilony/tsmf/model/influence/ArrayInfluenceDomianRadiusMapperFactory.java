@@ -28,6 +28,7 @@ public class ArrayInfluenceDomianRadiusMapperFactory implements Factory<Influenc
         this.influenceRadiusCalculator = influenceRadiusCalculator;
         this.model = model;
         this.supportDomainSearcher = supportDomainSearcher;
+        this.influenceRadiusCalculator.setSupportDomainSearcher(supportDomainSearcher);
     }
 
     @Override
@@ -39,13 +40,13 @@ public class ArrayInfluenceDomianRadiusMapperFactory implements Factory<Influenc
     public List<WithPair<Node, Double>> prepare() {
         List<WithPair<Node, Double>> pairs = new LinkedList<>();
         for (Node nd : model.getSpaceNodes()) {
-            double rad = influenceRadiusCalculator.influcenceRadius(nd, null, supportDomainSearcher);
+            double rad = influenceRadiusCalculator.calcInflucenceRadius(nd, null);
             pairs.add(new PairPack<>(nd, rad));
         }
 
         for (LinearSegment2D seg : model.getPolygon()) {
             Node nd = seg.getHead();
-            double rad = influenceRadiusCalculator.influcenceRadius(nd, seg, supportDomainSearcher);
+            double rad = influenceRadiusCalculator.calcInflucenceRadius(nd, seg);
             pairs.add(new PairPack<>(nd, rad));
         }
         return pairs;

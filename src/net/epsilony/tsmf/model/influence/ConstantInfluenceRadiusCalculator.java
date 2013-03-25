@@ -14,11 +14,20 @@ public class ConstantInfluenceRadiusCalculator implements InfluenceRadiusCalcula
     double rad;
 
     @Override
-    public double influcenceRadius(Node node, Segment2D seg, SupportDomainSearcher mSer) {
+    public double calcInflucenceRadius(Node node, Segment2D seg) {
         return rad;
     }
 
     public ConstantInfluenceRadiusCalculator(double rad) {
         this.rad = rad;
+    }
+
+    @Override
+    public SupportDomainSearcher getSupportDomainSearcher() {
+        return null;
+    }
+
+    @Override
+    public void setSupportDomainSearcher(SupportDomainSearcher supportDomainSearcher) {
     }
 }

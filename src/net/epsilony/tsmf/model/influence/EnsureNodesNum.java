@@ -31,6 +31,17 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
     public final static double DEFAULT_SEARCH_RADIUS_EXPEND_UPPER_BOUND = 100;
     public final static boolean DEFAULT_ONLY_COUNT_SPACE_NODES = false;
     public final static boolean DEFAULT_ADAPTIVE_INIT_SEARCH_RAD = true;
+    private SupportDomainSearcher supportDomainSearcher;
+
+    @Override
+    public SupportDomainSearcher getSupportDomainSearcher() {
+        return supportDomainSearcher;
+    }
+
+    @Override
+    public void setSupportDomainSearcher(SupportDomainSearcher supportDomainSearcher) {
+        this.supportDomainSearcher = supportDomainSearcher;
+    }
 
     public double getInitSearchRad() {
         return initSearchRad;
@@ -116,10 +127,10 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
     }
 
     @Override
-    public double influcenceRadius(Node node, Segment2D seg, SupportDomainSearcher modelSearcher) {
+    public double calcInflucenceRadius(Node node, Segment2D seg) {
         double searchRad = initSearchRad;
         do {
-            SupportDomainData searchResult = modelSearcher.searchSupportDomain(node.getCoord(), seg, searchRad);
+            SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain(node.getCoord(), seg, searchRad);
             if (searchResult.visibleNodes.size() >= nodesNumLowerBound) {
                 List<Node> cadidateNodes = onlyCountSpaceNodes
                         ? filterNodesOnSegments(searchResult.visibleNodes, searchResult.segments) : searchResult.visibleNodes;

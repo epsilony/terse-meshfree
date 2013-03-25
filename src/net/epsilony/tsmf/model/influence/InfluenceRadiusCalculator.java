@@ -11,5 +11,9 @@ import net.epsilony.tsmf.model.support_domain.SupportDomainSearcher;
  */
 public interface InfluenceRadiusCalculator {
 
-    double influcenceRadius(Node node, Segment2D seg, SupportDomainSearcher mSer);
+    double calcInflucenceRadius(Node node, Segment2D seg);
+
+    SupportDomainSearcher getSupportDomainSearcher();
+
+    void setSupportDomainSearcher(SupportDomainSearcher supportDomainSearcher);
 }
