@@ -65,7 +65,7 @@ public class AdaptiveCellEdgeTest {
         assertTrue(sampleData.oppositeSideEdges.get(1).numOpposites() == 2);
         assertTrue(sampleData.oppositeSideEdges.get(1).getOpposite(0) == newSucc);
         assertTrue(sampleData.oppositeSideEdges.get(1).getOpposite(1) == sampleEdge);
-        assertArrayEquals(new double[]{-0.5, 0.5}, sampleEdge.getRear().coord, 1e-14);
+        assertArrayEquals(new double[]{-0.5, 0.5}, sampleEdge.getRearCoord(), 1e-14);
         assertTrue(sampleEdge.numOpposites() == 1);
         assertTrue(sampleEdge.getOpposite(0) == sampleData.oppositeSideEdges.get(1));
         assertTrue(newSucc.numOpposites() == 1);
@@ -127,8 +127,8 @@ public class AdaptiveCellEdgeTest {
         assertTrue(sampleData.oppositeSideEdges.get(0).getOpposite(0) == sample);
         assertTrue(sampleData.oppositeSideEdges.get(3).numOpposites() == 1);
         assertTrue(sampleData.oppositeSideEdges.get(3).getOpposite(0) == sample);
-        assertTrue(sample.getHead().coord == sampleData.oppositeSideEdges.get(3).getRear().coord);
-        assertTrue(sample.getRear().coord == sampleData.oppositeSideEdges.get(0).getHead().coord);
+        assertTrue(sample.getHeadCoord() == sampleData.oppositeSideEdges.get(3).getRearCoord());
+        assertTrue(sample.getRearCoord() == sampleData.oppositeSideEdges.get(0).getHeadCoord());
     }
 
     public void testMergeEdgesWithTwoOpposites() {
@@ -182,8 +182,8 @@ public class AdaptiveCellEdgeTest {
         assertTrue(sample.getOpposite(0) == commonOpposite);
         assertTrue(commonOpposite.numOpposites() == 1);
         assertTrue(commonOpposite.getOpposite(0) == sample);
-        assertTrue(sample.getHead().coord == commonOpposite.getRear().coord);
-        assertTrue(sample.getRear().coord == commonOpposite.getHead().coord);
+        assertTrue(sample.getHeadCoord() == commonOpposite.getRearCoord());
+        assertTrue(sample.getRearCoord() == commonOpposite.getHeadCoord());
     }
 
     public SampleData genSample(

@@ -67,9 +67,9 @@ public class SupportDomainSearcherFactoryTest {
             boolean getHere = false;
             for (Node nd : searchResult.visibleNodes) {
                 if (idx < expSpackNdIdx.length) {
-                    assertEquals(expSpackNdIdx[idx], nd.id);
+                    assertEquals(expSpackNdIdx[idx], nd.getId());
                 } else {
-                    assertEquals(expPgNdIdx[idx - expSpackNdIdx.length] + spaceNodeCoords.length, nd.id);
+                    assertEquals(expPgNdIdx[idx - expSpackNdIdx.length] + spaceNodeCoords.length, nd.getId());
                 }
                 idx++;
                 getHere = true;
@@ -111,7 +111,7 @@ public class SupportDomainSearcherFactoryTest {
         int[] segsIdsExp = new int[]{0, 1, 2, 3, 6, 7, 8, 9, 10, 11};
         int idx = 0;
         for (Node nd : searchResult.visibleNodes) {
-            assertEquals(ndsIdsExp[idx], nd.id);
+            assertEquals(ndsIdsExp[idx], nd.getId());
             idx++;
         }
         idx = 0;
@@ -124,11 +124,11 @@ public class SupportDomainSearcherFactoryTest {
         boolean getHere = false;
         for (WithPair<Node, Segment2D> p : blockPair) {
 
-            assertEquals(blockedNdsIds[idx], p.getKey().id);
+            assertEquals(blockedNdsIds[idx], p.getKey().getId());
             Node exp_nd = p.getKey();
             Segment2D seg = p.getValue();
             assertTrue(
-                    Math2D.isSegmentsIntersecting(seg.getHead().coord, seg.getRear().coord, center, exp_nd.coord));
+                    Math2D.isSegmentsIntersecting(seg.getHeadCoord(), seg.getRearCoord(), center, exp_nd.getCoord()));
             idx++;
             getHere = true;
         }

@@ -33,7 +33,7 @@ public class LRTreeNodesSphereSearcher<T extends Node> implements SphereSearcher
         Iterator<T> rsIter = results.iterator();
         while (rsIter.hasNext()) {
             Node nd = rsIter.next();
-            if (Math2D.distance(nd.coord, center) >= radius) {
+            if (Math2D.distance(nd.getCoord(), center) >= radius) {
                 rsIter.remove();
             }
         }
@@ -44,7 +44,7 @@ public class LRTreeNodesSphereSearcher<T extends Node> implements SphereSearcher
     public void setAll(Collection<? extends T> allNodes) {
         LinkedList<WithPair<double[], T>> pairs = new LinkedList<>();
         for (T node : allNodes) {
-            pairs.add(new PairPack<>(node.coord, node));
+            pairs.add(new PairPack<>(node.getCoord(), node));
         }
         nodesTree = new LayeredRangeTree<>(pairs, DoubleArrayComparator.comparatorsForAll(dimension));
     }

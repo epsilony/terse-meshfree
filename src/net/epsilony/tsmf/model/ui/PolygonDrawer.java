@@ -27,13 +27,13 @@ public class PolygonDrawer extends SingleModelShapeDrawer {
         ArrayList<LinearSegment2D> chainsHeads = polygon.getChainsHeads();
         for (LinearSegment2D chainHead : chainsHeads) {
             Node nd = chainHead.getHead();
-            path.moveTo(nd.coord[0], nd.coord[1]);
+            path.moveTo(nd.getCoord()[0], nd.getCoord()[1]);
 
             LinearSegment2D seg = chainHead;
             do {
                 seg = (LinearSegment2D) seg.getSucc();
                 nd = seg.getHead();
-                path.lineTo(nd.coord[0], nd.coord[1]);
+                path.lineTo(nd.getCoord()[0], nd.getCoord()[1]);
             } while (seg != chainHead);
             path.closePath();
         }

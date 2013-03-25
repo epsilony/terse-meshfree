@@ -32,7 +32,7 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
     }
 
     public SupportDomainSearcherFactory() {
-        nodesSearcher = new LRTreeNodesSphereSearcher();
+        nodesSearcher = new LRTreeNodesSphereSearcher<>();
         segmentsSearcher = new LRTreeSegmentChordIntersectingSphereSearcher();
     }
 

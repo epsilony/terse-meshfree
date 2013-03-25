@@ -119,12 +119,12 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
     public double influcenceRadius(Node node, Segment2D seg, SupportDomainSearcher modelSearcher) {
         double searchRad = initSearchRad;
         do {
-            SupportDomainData searchResult = modelSearcher.searchSupportDomain(node.coord, seg, searchRad);
+            SupportDomainData searchResult = modelSearcher.searchSupportDomain(node.getCoord(), seg, searchRad);
             if (searchResult.visibleNodes.size() >= nodesNumLowerBound) {
                 List<Node> cadidateNodes = onlyCountSpaceNodes
                         ? filterNodesOnSegments(searchResult.visibleNodes, searchResult.segments) : searchResult.visibleNodes;
                 if (cadidateNodes.size() >= nodesNumLowerBound) {
-                    double result = shortestRadiusWithEnoughNodes(node.coord, cadidateNodes) * resultEnlargeRatio;
+                    double result = shortestRadiusWithEnoughNodes(node.getCoord(), cadidateNodes) * resultEnlargeRatio;
                     if (adaptiveInitSearchRad) {
                         initSearchRad = result;
                     }
@@ -165,7 +165,7 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
         distanceComparator.setCenter(center);
         Collections.sort(cadidateNodes, distanceComparator);
         Node nd = cadidateNodes.get(nodesNumLowerBound - 1);
-        return Math2D.distance(center, nd.coord);
+        return Math2D.distance(center, nd.getCoord());
     }
 
     private static class DistanceComparator implements Comparator<Node> {
@@ -174,8 +174,8 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
 
         @Override
         public int compare(Node node1, Node node2) {
-            double dis1 = Math2D.distance(center, node1.coord);
-            double dis2 = Math2D.distance(center, node2.coord);
+            double dis1 = Math2D.distance(center, node1.getCoord());
+            double dis2 = Math2D.distance(center, node2.getCoord());
             if (dis1 < dis2) {
                 return -1;
             } else if (dis1 > dis2) {

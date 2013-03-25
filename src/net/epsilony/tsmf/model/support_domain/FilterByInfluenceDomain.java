@@ -33,7 +33,7 @@ public class FilterByInfluenceDomain implements SupportDomainSearcher {
         while (nodesIter.hasNext()) {
             Node node = nodesIter.next();
             double rad = influenceDomainMapper.getInfluenceRadius(node);
-            if (rad <= Math2D.distance(node.coord, center)) {
+            if (rad <= Math2D.distance(node.getCoord(), center)) {
                 nodesIter.remove();
             }
         }

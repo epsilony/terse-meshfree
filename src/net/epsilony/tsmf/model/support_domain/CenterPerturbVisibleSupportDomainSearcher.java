@@ -48,8 +48,8 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
     private double[] perturbCenter(double[] center, Segment2D bndOfCenter, List<Segment2D> segs) {
         Node head = bndOfCenter.getHead();
         Node rear = bndOfCenter.getRear();
-        double[] hCoord = head.coord;
-        double[] rCoord = rear.coord;
+        double[] hCoord = head.getCoord();
+        double[] rCoord = rear.getCoord();
 
         double[] pertCenter = new double[2];
         double dx = rCoord[0] - hCoord[0];
@@ -72,12 +72,12 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
     void checkPerturbCenter(double[] center, double[] perturbedCenter, Segment2D bnd, Collection<? extends Segment2D> segs) {
         LinearSegment2D bndNeighbor = null;
         double[] bndNeighborFurtherPoint = null;
-        if (center == bnd.getHead().coord) {
+        if (center == bnd.getHeadCoord()) {
             bndNeighbor = (LinearSegment2D) bnd.getPred();
-            bndNeighborFurtherPoint = bndNeighbor.getHead().coord;
-        } else if (center == bnd.getRear().coord) {
+            bndNeighborFurtherPoint = bndNeighbor.getHeadCoord();
+        } else if (center == bnd.getRearCoord()) {
             bndNeighbor = (LinearSegment2D) bnd.getSucc();
-            bndNeighborFurtherPoint = bndNeighbor.getRear().coord;
+            bndNeighborFurtherPoint = bndNeighbor.getRearCoord();
         }
 
         if (null != bndNeighbor && Segment2DUtils.isPointStrictlyAtChordLeft(bnd, bndNeighborFurtherPoint)) {
@@ -94,7 +94,7 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
             if (seg == bnd || seg == bndNeighbor) {
                 continue;
             }
-            if (Math2D.isSegmentsIntersecting(center, perturbedCenter, seg.getHead().coord, seg.getRear().coord)) {
+            if (Math2D.isSegmentsIntersecting(center, perturbedCenter, seg.getHeadCoord(), seg.getRearCoord())) {
                 throw new IllegalStateException("Center and perturbed center over cross a segment\n\t"
                         + "center: " + Arrays.toString(center) + "\n\tperturbed center"
                         + Arrays.toString(perturbedCenter) + "\n\tseg: " + seg);

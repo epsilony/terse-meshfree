@@ -52,14 +52,14 @@ public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
             Iterator<Node> rsIter = result.visibleNodes.iterator();
             Node head = seg.getHead();
             Node rear = seg.getRear();
-            double[] hCoord = head.coord;
-            double[] rCoord = rear.coord;
+            double[] hCoord = head.getCoord();
+            double[] rCoord = rear.getCoord();
             while (rsIter.hasNext()) {
                 Node nd = rsIter.next();
                 if (nd == head || nd == rear) {
                     continue;
                 }
-                if (isSegmentsIntersecting(center, nd.coord, hCoord, rCoord)) {
+                if (isSegmentsIntersecting(center, nd.getCoord(), hCoord, rCoord)) {
                     rsIter.remove();
                     if (!isIgnoreInvisibleNodesInformation()) {
                         result.invisibleNodesAndBlockingSegments.add(new PairPack<>(nd, seg));
@@ -74,14 +74,14 @@ public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
         if (null == bndOfCenter) {
             result.visibleNodes.addAll(result.allNodes);
         } else {
-            double[] hc = bndOfCenter.getHead().coord;
-            double[] rc = bndOfCenter.getRear().coord;
+            double[] hc = bndOfCenter.getHeadCoord();
+            double[] rc = bndOfCenter.getRearCoord();
             double dx = rc[0] - hc[0];
             double dy = rc[1] - hc[1];
             Iterator<Node> rsIter = result.allNodes.iterator();
             while (rsIter.hasNext()) {
                 Node nd = rsIter.next();
-                double[] nc = nd.coord;
+                double[] nc = nd.getCoord();
                 if (cross(dx, dy, nc[0] - hc[0], nc[1] - hc[1]) < 0) {
                     if (!isIgnoreInvisibleNodesInformation()) {
                         result.invisibleNodesAndBlockingSegments.add(new PairPack<>(nd, bndOfCenter));

@@ -68,7 +68,7 @@ public class Mixer implements WithDiffOrder {
         infRads.resetQuick();
         infRads.ensureCapacity(nodes.size());
         for (Node nd : nodes) {
-            coords.add(nd.coord);
+            coords.add(nd.getCoord());
             ids.add(nd.getId());
             infRads.add(influenceRadiusMapper.getInfluenceRadius(nd));
         }

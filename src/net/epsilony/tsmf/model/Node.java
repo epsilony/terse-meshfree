@@ -3,16 +3,15 @@ package net.epsilony.tsmf.model;
 
 import java.util.Arrays;
 import net.epsilony.tsmf.util.IntIdentity;
-import net.epsilony.tsmf.util.pair.WithPair;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class Node implements IntIdentity, WithPair<double[], Node> {
+public class Node implements IntIdentity{
 
-    public double[] coord;
-    public int id;
+    protected double[] coord;
+    protected int id;
     protected Object data;
 
     public Object getData() {
@@ -33,6 +32,14 @@ public class Node implements IntIdentity, WithPair<double[], Node> {
         this.id = id;
     }
 
+    public double[] getCoord() {
+        return coord;
+    }
+
+    public void setCoord(double[] coord) {
+        this.coord = coord;
+    }
+
     public Node(double[] coord, boolean copy) {
         if (copy) {
             this.coord = Arrays.copyOf(coord, coord.length);
@@ -51,16 +58,6 @@ public class Node implements IntIdentity, WithPair<double[], Node> {
 
     public Node() {
         this.coord = new double[2];
-    }
-
-    @Override
-    public double[] getKey() {
-        return coord;
-    }
-
-    @Override
-    public Node getValue() {
-        return this;
     }
 
     @Override

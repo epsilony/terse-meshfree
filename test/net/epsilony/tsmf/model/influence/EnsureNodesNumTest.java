@@ -39,7 +39,7 @@ public class EnsureNodesNumTest {
         LinearSegment2D sampleBnd = sampleModel.getPolygon().getChainsHeads().get(0);
         Node sampleNode = sampleBnd.getHead();
         int[] numLowerBounds = new int[]{2, 4, 8, 20};
-        SphereSearcher<Node> nodesSearcher = new LRTreeNodesSphereSearcher();
+        SphereSearcher<Node> nodesSearcher = new LRTreeNodesSphereSearcher<>();
         nodesSearcher.setAll(sampleModel.getAllNodes());
         SphereSearcher<Segment2D> segmentsSearcher = new LRTreeSegmentChordIntersectingSphereSearcher();
         segmentsSearcher.setAll(sampleModel.getPolygon().getSegments());
@@ -52,7 +52,7 @@ public class EnsureNodesNumTest {
             List<Node> nodes = onlySpaceNodes ? sampleModel.getSpaceNodes() : sampleModel.getAllNodes();
             calc.setOnlyCountSpaceNodes(onlySpaceNodes);
             for (Node nd : nodes) {
-                double distance = Math2D.distance(nd.coord, sampleTranslateVector);
+                double distance = Math2D.distance(nd.getCoord(), sampleTranslateVector);
                 double enlarged = calc.getResultEnlargeRatio() * distance;
                 enlargedDistances.add(enlarged);
             }

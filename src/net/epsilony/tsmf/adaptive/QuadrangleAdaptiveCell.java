@@ -33,10 +33,10 @@ public class QuadrangleAdaptiveCell extends AdaptiveCellAdapter<QuadrangleAdapti
 
     private static Node centerNodeForFission(AdaptiveCellEdge[] bisectionedEdges) {
         double[] centerCoord = Math2D.intersectionPoint(
-                bisectionedEdges[0].getRear().coord,
-                bisectionedEdges[2].getRear().coord,
-                bisectionedEdges[1].getRear().coord,
-                bisectionedEdges[3].getRear().coord, null);
+                bisectionedEdges[0].getRearCoord(),
+                bisectionedEdges[2].getRearCoord(),
+                bisectionedEdges[1].getRearCoord(),
+                bisectionedEdges[3].getRearCoord(), null);
         return new Node(centerCoord);
     }
 

@@ -48,12 +48,12 @@ public class NodeDrawer extends ModelDrawerAdapter {
 
     @Override
     public Rectangle2D getBoundsInModelSpace() {
-        return new Rectangle2D.Double(node.coord[0], node.coord[1], 0, 0);
+        return new Rectangle2D.Double(node.getCoord()[0], node.getCoord()[1], 0, 0);
     }
 
     private double[] getCenterOnComponent() {
         double[] point = new double[2];
-        modelToComponentTransform.transform(node.coord, 0, point, 0, 1);
+        modelToComponentTransform.transform(node.getCoord(), 0, point, 0, 1);
         return point;
     }
 

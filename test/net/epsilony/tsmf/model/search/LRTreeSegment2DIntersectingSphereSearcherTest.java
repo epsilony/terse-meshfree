@@ -42,7 +42,7 @@ public class LRTreeSegment2DIntersectingSphereSearcherTest {
         double maxY = Double.NEGATIVE_INFINITY;
         for (Segment2D seg : pg) {
             Node nd = seg.getHead();
-            double[] coord = nd.coord;
+            double[] coord = nd.getCoord();
             double x = coord[0];
             double y = coord[1];
             if (x < minX) {

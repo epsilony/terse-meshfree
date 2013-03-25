@@ -14,6 +14,8 @@ import java.util.Random;
 import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.util.DoubleArrayComparator;
 import net.epsilony.tsmf.util.Math2D;
+import net.epsilony.tsmf.util.pair.PairPack;
+import net.epsilony.tsmf.util.pair.WithPair;
 import net.epsilony.tsmf.util.pair.WithPairComparator;
 import static org.junit.Assert.*;
 import org.junit.Ignore;
@@ -45,7 +47,7 @@ public abstract class AbstractAdaptiveCellTest {
         for (AdaptiveCell cell : cells) {
             AdaptiveCellEdge[] edges = cell.getEdges();
             for (AdaptiveCellEdge eg : edges) {
-                double[] xy = eg.getHead().coord;
+                double[] xy = eg.getHeadCoord();
                 if (xy[0] > maxX) {
                     maxX = xy[0];
                 }
@@ -129,14 +131,17 @@ public abstract class AbstractAdaptiveCellTest {
                 }
             }
         }
-        List<Node> sortedNodes = new ArrayList<>(nodes);
+        List<WithPair<double[], Node>> sortedNodes = new ArrayList<>(nodes.size());
+        for (Node nd : nodes) {
+            sortedNodes.add(new PairPack<>(nd.getCoord(), nd));
+        }
         WithPairComparator<double[], Node> nodeComparator = new WithPairComparator<>(new DoubleArrayComparator(0));
         Collections.sort(sortedNodes, nodeComparator);
         boolean noDuplication = true;
         for (int i = 0; i < sortedNodes.size() - 1; i++) {
-            Node n1 = sortedNodes.get(i);
-            Node n2 = sortedNodes.get(i + 1);
-            if (Math2D.distance(n1.coord, n2.coord) < minEdgeLength / 2) {
+            Node n1 = sortedNodes.get(i).getValue();
+            Node n2 = sortedNodes.get(i + 1).getValue();
+            if (Math2D.distance(n1.getCoord(), n2.getCoord()) < minEdgeLength / 2) {
                 noDuplication = false;
             }
         }

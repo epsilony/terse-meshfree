@@ -25,7 +25,7 @@ public class LinearLagrangeDirichletProcessor {
         Node rear = pt.segment.getRear();
         nodesIds.add(getLagrangeId(head));
         nodesIds.add(getLagrangeId(rear));
-        double[] funcV = Linear2D.values(pt.coord, head.coord, rear.coord, null);
+        double[] funcV = Linear2D.values(pt.coord, head.getCoord(), rear.getCoord(), null);
         shapeFuncVal.addAll(funcV);
     }
 
@@ -37,12 +37,12 @@ public class LinearLagrangeDirichletProcessor {
             Segment2D seg = pt.segment;
             Node head = seg.getHead();
             Node rear = seg.getRear();
-            if (idMap[head.id] < 0) {
-                idMap[head.id] = id;
+            if (idMap[head.getId()] < 0) {
+                idMap[head.getId()] = id;
                 id++;
             }
-            if (idMap[rear.id] < 0) {
-                idMap[rear.id] = id;
+            if (idMap[rear.getId()] < 0) {
+                idMap[rear.getId()] = id;
                 id++;
             }
         }
@@ -50,7 +50,7 @@ public class LinearLagrangeDirichletProcessor {
     }
 
     public int getLagrangeId(Node nd) {
-        return idMap[nd.id];
+        return idMap[nd.getId()];
     }
 
     public int getDirichletNodesSize() {
