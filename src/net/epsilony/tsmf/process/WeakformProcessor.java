@@ -27,7 +27,7 @@ import no.uib.cipr.matrix.Matrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class WeakformProcessor2D implements NeedPreparation {
+public class WeakformProcessor implements NeedPreparation {
 
     public static final int DENSE_MATRIC_SIZE_THRESHOLD = 200;
     public static final boolean SUPPORT_COMPLEX_CRITERION = false;
@@ -284,19 +284,19 @@ public class WeakformProcessor2D implements NeedPreparation {
         this.influenceRadiusCalculator = influenceRadiusCalculator;
     }
 
-    public static WeakformProcessor2D genTimoshenkoProjectProcess() {
+    public static WeakformProcessor genTimoshenkoProjectProcess() {
         TimoshenkoAnalyticalBeam2D timoBeam = new TimoshenkoAnalyticalBeam2D(48, 12, 3e7, 0.3, -1000);
         int quadDomainSize = 2;
         int quadDegree = 4;
         double inflRads = quadDomainSize * 4.1;
         TimoshenkoStandardTask task = new TimoshenkoStandardTask(timoBeam, quadDomainSize, quadDomainSize, quadDegree);
-        WeakformProcessor2D res = new WeakformProcessor2D();
+        WeakformProcessor res = new WeakformProcessor();
         res.setup(task.processPackage(quadDomainSize, inflRads));
         return res;
     }
 
     public static void main(String[] args) {
-        WeakformProcessor2D process = genTimoshenkoProjectProcess();
+        WeakformProcessor process = genTimoshenkoProjectProcess();
         process.prepare();
         process.process();
         process.solve();

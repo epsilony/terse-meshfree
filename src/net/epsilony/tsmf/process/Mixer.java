@@ -49,7 +49,7 @@ public class Mixer implements WithDiffOrder {
 
     public MixResult mix(double[] center, Segment2D bnd) {
         SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain(center, bnd, maxInfluenceRad);
-        if (WeakformProcessor2D.SUPPORT_COMPLEX_CRITERION) {
+        if (WeakformProcessor.SUPPORT_COMPLEX_CRITERION) {
             throw new UnsupportedOperationException();
         }
         fromNodesToIdsCoordsInfRads(searchResult.visibleNodes, nodesIds, coords, infRads);

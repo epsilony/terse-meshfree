@@ -11,9 +11,9 @@ import org.junit.Test;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class WeakformProcessor2DTimoshenkoCantileverTest {
+public class WeakformProcessorTimoshenkoCantileverTest {
 
-    public WeakformProcessor2DTimoshenkoCantileverTest() {
+    public WeakformProcessorTimoshenkoCantileverTest() {
     }
 
     @Test
@@ -55,11 +55,11 @@ public class WeakformProcessor2DTimoshenkoCantileverTest {
         return integrator.integrate(10000, func, 0, 1);
     }
     PostProcessor timoPostProcessor;
-    WeakformProcessor2D timoProcessor;
+    WeakformProcessor timoProcessor;
 
     @org.junit.Before
     public void prepareTimoshenkoStandardCantileverPostProcessor() {
-        timoProcessor = WeakformProcessor2D.genTimoshenkoProjectProcess();
+        timoProcessor = WeakformProcessor.genTimoshenkoProjectProcess();
         System.out.println("Multi Processing: " + timoProcessor.isActuallyMultiThreadable());
         timoProcessor.prepare();
         timoProcessor.process();
