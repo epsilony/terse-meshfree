@@ -1,9 +1,8 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.tsmf.assemblier;
+package net.epsilony.tsmf.process.assemblier;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
-import net.epsilony.tsmf.process.assemblier.LagrangeWeakformAssemblier;
 import net.epsilony.tsmf.cons_law.RawConstitutiveLaw;
 import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.DenseVector;
@@ -18,23 +17,25 @@ import org.junit.Test;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class LagrangeWFAssemblierTest {
+public class LagrangeWeakformAssemblierTest {
 
-    public LagrangeWFAssemblierTest() {
+    public LagrangeWeakformAssemblierTest() {
     }
 
     @Before
     public void setUp() {
     }
-    TDoubleArrayList[] shapeFuncVal = new TDoubleArrayList[]{new TDoubleArrayList(new double[]{-1.1, 2.01, 3.42, 14, 50})};
-    TIntArrayList nodesAssemblyIndes = new TIntArrayList(new int[]{5, 2, 0, 8, 6});
+    TDoubleArrayList[] shapeFuncVal = new TDoubleArrayList[]{new TDoubleArrayList(new double[]{-1.1, 2.01, 3.42})};
+    TDoubleArrayList lagrangeShapeFuncVal = new TDoubleArrayList(new double[]{14, 50});
+    TIntArrayList nodesAssemblyIndes = new TIntArrayList(new int[]{5, 2, 0});
+    TIntArrayList lagrangleAssemblyIndes = new TIntArrayList(new int[]{8, 6});
     int nodesSize = 6;
     int lagNodesSize = 4;
     double[] dirichletVal = new double[]{3.4, -1.2};
     double weight = 0.23;
 
     /**
-     * Test of asmDirichlet method, of class LagrangeWeakformAssemblier.
+     * Test of assembleDirichlet method, of class LagrangeWeakformAssemblier.
      */
     @Test
     public void testAsmDirichlet() {
@@ -67,13 +68,14 @@ public class LagrangeWFAssemblierTest {
             lag.setConstitutiveLaw(new RawConstitutiveLaw(upperSym, new DenseMatrix(3, 3)));
             lag.setNodesNum(nodesSize);
             lag.setMatrixDense(upperSym);
-            lag.setDirichletNodesNums(lagNodesSize);
+            lag.setDirichletNodesNum(lagNodesSize);
             lag.prepare();
             for (int test = 1; test <= 2; test++) {
                 lag.setWeight(weight);
-                lag.setShapeFunctionValues(nodesAssemblyIndes, shapeFuncVal);
+                lag.setShapeFunctionValue(nodesAssemblyIndes, shapeFuncVal);
+                lag.setLagrangeShapeFunctionValue(lagrangleAssemblyIndes, lagrangeShapeFuncVal);
                 lag.setLoad(dirichletVal, new boolean[]{true, true});
-                lag.asmDirichlet();
+                lag.assembleDirichlet();
                 Matrix mat = lag.getMainMatrix();
                 DenseVector vec = lag.getMainVector();
                 boolean getHere = false;

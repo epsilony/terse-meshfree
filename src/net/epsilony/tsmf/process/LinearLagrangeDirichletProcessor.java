@@ -6,24 +6,37 @@ import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.shape_func.Linear2D;
 import net.epsilony.tsmf.util.IntIdentityMap;
+import net.epsilony.tsmf.util.synchron.SynchronizedClonable;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class LinearLagrangeDirichletProcessor {
+public class LinearLagrangeDirichletProcessor implements SynchronizedClonable<LinearLagrangeDirichletProcessor> {
 
     private final IntIdentityMap<Node, ProcessNodeData> nodesProcessDatasMap;
+    TIntArrayList lagrangleAssemblyIndes = new TIntArrayList();
+    TDoubleArrayList lagrangleShapeFunction = new TDoubleArrayList();
 
-    public void process(WeakformQuadraturePoint pt, TIntArrayList nodesAssemblyIndes, TDoubleArrayList shapeFuncVal) {
-        nodesAssemblyIndes.ensureCapacity(nodesAssemblyIndes.size() + 2);
-        shapeFuncVal.ensureCapacity(shapeFuncVal.size() + 2);
+    public void process(WeakformQuadraturePoint pt) {
+        lagrangleAssemblyIndes.resetQuick();
+        lagrangleShapeFunction.resetQuick();
+        lagrangleAssemblyIndes.ensureCapacity(2);
+        lagrangleShapeFunction.ensureCapacity(2);
         Node head = pt.segment.getHead();
         Node rear = pt.segment.getRear();
-        nodesAssemblyIndes.add(getLagrangeId(head));
-        nodesAssemblyIndes.add(getLagrangeId(rear));
+        lagrangleAssemblyIndes.add(getLagrangeId(head));
+        lagrangleAssemblyIndes.add(getLagrangeId(rear));
         double[] funcV = Linear2D.values(pt.coord, head.getCoord(), rear.getCoord(), null);
-        shapeFuncVal.addAll(funcV);
+        lagrangleShapeFunction.addAll(funcV);
+    }
+
+    public TIntArrayList getLagrangleAssemblyIndes() {
+        return lagrangleAssemblyIndes;
+    }
+
+    public TDoubleArrayList getLagrangleShapeFunctionValue() {
+        return lagrangleShapeFunction;
     }
 
     public LinearLagrangeDirichletProcessor(IntIdentityMap<Node, ProcessNodeData> nodesProcessDatasMap) {
@@ -42,5 +55,10 @@ public class LinearLagrangeDirichletProcessor {
             }
         }
         return num;
+    }
+
+    @Override
+    public LinearLagrangeDirichletProcessor synchronizeClone() {
+        return new LinearLagrangeDirichletProcessor(nodesProcessDatasMap);
     }
 }

@@ -13,13 +13,23 @@ import no.uib.cipr.matrix.Matrix;
 public class LagrangeWeakformAssemblier extends PenaltyWeakformAssemblier implements SupportLagrange {
 
     int diriNum;
+    TIntArrayList lagrangeAssemblyIndes;
+    TDoubleArrayList lagrangeShapeFunctionValue;
 
     public LagrangeWeakformAssemblier() {
         super(0);
     }
 
     @Override
-    public void asmDirichlet() {
+    public void setLagrangeShapeFunctionValue(
+            TIntArrayList lagrangeAssemblyIndes,
+            TDoubleArrayList lagrangeShapeFunctionValue) {
+        this.lagrangeAssemblyIndes = lagrangeAssemblyIndes;
+        this.lagrangeShapeFunctionValue = lagrangeShapeFunctionValue;
+    }
+
+    @Override
+    public void assembleDirichlet() {
         Matrix mat = mainMatrix;
         DenseVector vec = mainVector;
         TDoubleArrayList vs = shapeFunctionValues[0];
@@ -30,18 +40,16 @@ public class LagrangeWeakformAssemblier extends PenaltyWeakformAssemblier implem
         double drk1 = dirichletVal[0];
         double drk2 = dirichletVal[1];
 
-        int lagIndex = firstLagIndex(nodesAssemblyIndes);
-
-        for (int j = lagIndex; j < nodesAssemblyIndes.size(); j++) {
-            double v_j_w = vs.getQuick(j) * weight;
-            int col = nodesAssemblyIndes.getQuick(j) * 2;
+        for (int j = 0; j < lagrangeAssemblyIndes.size(); j++) {
+            double v_j_w = lagrangeShapeFunctionValue.getQuick(j) * weight;
+            int col = lagrangeAssemblyIndes.getQuick(j) * 2;
             if (dirichletX) {
                 vec.add(col, -v_j_w * drk1);
             }
             if (dirichletY) {
                 vec.add(col + 1, -v_j_w * drk2);
             }
-            for (int i = 0; i < lagIndex; i++) {
+            for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
                 double v_i = vs.getQuick(i);
                 int row = nodesAssemblyIndes.getQuick(i) * 2;
 
@@ -56,17 +64,8 @@ public class LagrangeWeakformAssemblier extends PenaltyWeakformAssemblier implem
         }
     }
 
-    private int firstLagIndex(TIntArrayList nodesAssemblyIndes) {
-        for (int i = nodesAssemblyIndes.size() - 1; i >= 0; i--) {
-            if (nodesAssemblyIndes.getQuick(i) < nodesNum) {
-                return i + 1;
-            }
-        }
-        throw new IllegalStateException("nodeAssemblyIndes should contains both Lagrange-node ids and normal-nodes ids");
-    }
-
     @Override
-    public void setDirichletNodesNums(int diriNum) {
+    public void setDirichletNodesNum(int diriNum) {
         this.diriNum = diriNum;
     }
 
@@ -84,7 +83,7 @@ public class LagrangeWeakformAssemblier extends PenaltyWeakformAssemblier implem
     public LagrangeWeakformAssemblier synchronizeClone() {
         LagrangeWeakformAssemblier result = new LagrangeWeakformAssemblier();
         result.setConstitutiveLaw(constitutiveLaw);
-        result.setDirichletNodesNums(diriNum);
+        result.setDirichletNodesNum(diriNum);
         result.setMatrixDense(isMatrixDense());
         result.setNodesNum(nodesNum);
         result.prepare();

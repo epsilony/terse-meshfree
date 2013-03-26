@@ -1,7 +1,6 @@
 /* (c) Copyright by Man YUAN */
-package net.epsilony.tsmf.assemblier;
+package net.epsilony.tsmf.process.assemblier;
 
-import net.epsilony.tsmf.process.assemblier.PenaltyWeakformAssemblier;
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
@@ -16,9 +15,9 @@ import org.junit.Test;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class PenaltyWFAssemblierTest {
+public class PenaltyWeakformAssemblierTest {
 
-    public PenaltyWFAssemblierTest() {
+    public PenaltyWeakformAssemblierTest() {
     }
 
     public ConstitutiveLaw sampleConstutiveLaw(final boolean isSym) {
@@ -81,9 +80,9 @@ public class PenaltyWFAssemblierTest {
             PenaltyWeakformAssemblier asm = sampleAsm(nodesSize, penalty, upperSym);
             for (int test = 1; test <= 2; test++) {
                 asm.setWeight(weight);
-                asm.setShapeFunctionValues(nodesAssemblyIndes, shapeFuncVals);
+                asm.setShapeFunctionValue(nodesAssemblyIndes, shapeFuncVals);
                 asm.setLoad(volumnForce, null);
-                asm.asmVolume();
+                asm.assembleVolume();
                 Matrix acts = asm.getMainMatrix();
                 for (int i = 0; i < acts.numRows(); i++) {
                     for (int j = 0; j < acts.numColumns(); j++) {
@@ -104,9 +103,9 @@ public class PenaltyWFAssemblierTest {
                 }
             }
             asm.setWeight(weight);
-            asm.setShapeFunctionValues(nodesAssemblyIndes, shapeFuncVals);
+            asm.setShapeFunctionValue(nodesAssemblyIndes, shapeFuncVals);
             asm.setLoad(volumnForce, null);
-            asm.asmNeumann();
+            asm.assembleNeumann();
             DenseVector act_v = asm.getMainVector();
             for (int i = 0; i < act_v.size(); i++) {
                 assertEquals(exps_v[i] * 3 * weight, act_v.get(i), 1e-10);
@@ -147,9 +146,9 @@ public class PenaltyWFAssemblierTest {
             PenaltyWeakformAssemblier asm = sampleAsm(nodesSize, penalty, upperSym);
             for (int test = 1; test <= 2; test++) {
                 asm.setWeight(weight);
-                asm.setShapeFunctionValues(nodesAssemblyIndes, shapeFuncVals);
+                asm.setShapeFunctionValue(nodesAssemblyIndes, shapeFuncVals);
                 asm.setLoad(volumnForce, new boolean[]{true, true});
-                asm.asmDirichlet();
+                asm.assembleDirichlet();
                 Matrix acts = asm.getMainMatrix();
                 for (int i = 0; i < acts.numRows(); i++) {
                     for (int j = 0; j < acts.numColumns(); j++) {

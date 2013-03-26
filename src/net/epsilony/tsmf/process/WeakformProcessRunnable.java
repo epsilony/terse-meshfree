@@ -39,9 +39,9 @@ public class WeakformProcessRunnable implements Runnable {
             }
             Mixer.MixResult mixResult = mixer.mix(pt.coord, pt.segment);
             assemblier.setWeight(pt.weight);
-            assemblier.setShapeFunctionValues(mixResult.nodesAssemblyIndes, mixResult.shapeFunctionValueLists);
+            assemblier.setShapeFunctionValue(mixResult.nodesAssemblyIndes, mixResult.shapeFunctionValueLists);
             assemblier.setLoad(pt.value, null);
-            assemblier.asmVolume();
+            assemblier.assembleVolume();
             if (null != observer) {
                 observer.volumeProcessed(this);
             }
@@ -60,9 +60,9 @@ public class WeakformProcessRunnable implements Runnable {
             }
             Mixer.MixResult mixResult = mixer.mix(pt.coord, pt.segment);
             assemblier.setWeight(pt.weight);
-            assemblier.setShapeFunctionValues(mixResult.nodesAssemblyIndes, mixResult.shapeFunctionValueLists);
+            assemblier.setShapeFunctionValue(mixResult.nodesAssemblyIndes, mixResult.shapeFunctionValueLists);
             assemblier.setLoad(pt.value, null);
-            assemblier.asmNeumann();
+            assemblier.assembleNeumann();
             if (null != observer) {
                 observer.neumannProcessed(this);
             }
@@ -75,19 +75,27 @@ public class WeakformProcessRunnable implements Runnable {
         }
         mixer.setDiffOrder(assemblier.getDirichletDiffOrder());
         boolean lagDiri = isAssemblyDirichletByLagrange();
+        SupportLagrange lagAssemblier = null;
+        if (lagDiri) {
+            lagAssemblier = (SupportLagrange) assemblier;
+        }
         while (true) {
             WeakformQuadraturePoint pt = dirichletSynchronizedIterator.nextItem();
             if (pt == null) {
                 break;
             }
             Mixer.MixResult mixResult = mixer.mix(pt.coord, pt.segment);
-            if (lagDiri) {
-                lagProcessor.process(pt, mixResult.nodesAssemblyIndes, mixResult.shapeFunctionValueLists[0]);
-            }
+
             assemblier.setWeight(pt.weight);
-            assemblier.setShapeFunctionValues(mixResult.nodesAssemblyIndes, mixResult.shapeFunctionValueLists);
+            assemblier.setShapeFunctionValue(mixResult.nodesAssemblyIndes, mixResult.shapeFunctionValueLists);
+            if (null != lagAssemblier) {
+                lagProcessor.process(pt);
+                lagAssemblier.setLagrangeShapeFunctionValue(
+                        lagProcessor.getLagrangleAssemblyIndes(),
+                        lagProcessor.getLagrangleShapeFunctionValue());
+            }
             assemblier.setLoad(pt.value, pt.mark);
-            assemblier.asmDirichlet();
+            assemblier.assembleDirichlet();
             if (null != observer) {
                 observer.dirichletProcessed(this);
             }

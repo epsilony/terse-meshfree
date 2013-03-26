@@ -27,6 +27,7 @@ public class WeakformProcessorTimoshenkoCantileverTest {
         double expErr = 1e-15;
         System.out.println("err = " + err);
         assertTrue(err <= expErr);
+        assertEquals(1.0734441657185E-16, err, 1e-16);
     }
 
     @Test
@@ -39,6 +40,7 @@ public class WeakformProcessorTimoshenkoCantileverTest {
         double expErr = 1e-17;
         System.out.println("err = " + err);
         assertTrue(err <= expErr);
+        assertEquals(6.193751199703141E-18, err, 1e-18);
     }
 
     public double integrateErrorSquareOnCurve(GenericFunction<Double, double[]> curve, boolean displacementU) {

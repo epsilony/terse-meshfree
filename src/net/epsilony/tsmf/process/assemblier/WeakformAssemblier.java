@@ -15,15 +15,15 @@ import no.uib.cipr.matrix.Matrix;
  */
 public interface WeakformAssemblier extends NeedPreparation, SynchronizedClonable<WeakformAssemblier> {
 
-    void asmVolume();
+    void assembleVolume();
 
-    void asmDirichlet();
+    void assembleDirichlet();
 
-    void asmNeumann();
+    void assembleNeumann();
 
     void setWeight(double weight);
 
-    void setShapeFunctionValues(TIntArrayList nodesAssemblyIndes, TDoubleArrayList[] shapeFunValues);
+    void setShapeFunctionValue(TIntArrayList nodesAssemblyIndes, TDoubleArrayList[] shapeFunValues);
 
     void setLoad(double[] value, boolean[] validity);
 

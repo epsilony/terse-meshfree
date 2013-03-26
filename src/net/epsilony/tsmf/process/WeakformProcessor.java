@@ -72,7 +72,7 @@ public class WeakformProcessor implements NeedPreparation {
             WeakformProcessRunnable runnable = new WeakformProcessRunnable();
             runnable.setAssemblier(assemblierAvators.get(i));
             runnable.setMixer(mixer);
-            runnable.setLagrangeProcessor(lagProcessor);
+            runnable.setLagrangeProcessor(lagProcessor.synchronizeClone());
             runnable.setVolumeSynchronizedIterator(volumeIteratorWrapper);
             runnable.setDirichletSynchronizedIterator(dirichletIteratorWrapper);
             runnable.setNeumannSynchronizedIterator(neumannIteratorWrapper);
@@ -191,7 +191,7 @@ public class WeakformProcessor implements NeedPreparation {
         if (isAssemblyDirichletByLagrange()) {
             lagProcessor = new LinearLagrangeDirichletProcessor(nodesProcessDataMap);
             SupportLagrange sL = (SupportLagrange) assemblier;
-            sL.setDirichletNodesNums(lagProcessor.getDirichletNodesSize());
+            sL.setDirichletNodesNum(lagProcessor.getDirichletNodesSize());
         }
         assemblier.prepare();
     }

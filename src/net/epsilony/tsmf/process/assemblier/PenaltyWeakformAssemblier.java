@@ -1,7 +1,6 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.process.assemblier;
 
-import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
@@ -66,7 +65,7 @@ public class PenaltyWeakformAssemblier implements WeakformAssemblier {
     }
 
     @Override
-    public void asmVolume() {
+    public void assembleVolume() {
         double[] volumnForce = load;
         TDoubleArrayList v = shapeFunctionValues[0];
         TDoubleArrayList v_x = shapeFunctionValues[1];
@@ -139,7 +138,7 @@ public class PenaltyWeakformAssemblier implements WeakformAssemblier {
     }
 
     @Override
-    public void asmNeumann() {
+    public void assembleNeumann() {
         DenseVector vec = mainVector;
         double[] neumannVal = load;
         double valueX = neumannVal[0] * weight;
@@ -164,7 +163,7 @@ public class PenaltyWeakformAssemblier implements WeakformAssemblier {
     }
 
     @Override
-    public void asmDirichlet() {
+    public void assembleDirichlet() {
         double[] dirichletVal = load;
         boolean[] dirichletMark = loadValidity;
         double factor = weight * penalty;
@@ -286,7 +285,7 @@ public class PenaltyWeakformAssemblier implements WeakformAssemblier {
     }
 
     @Override
-    public void setShapeFunctionValues(TIntArrayList nodesAssemblyIndes, TDoubleArrayList[] shapeFunValues) {
+    public void setShapeFunctionValue(TIntArrayList nodesAssemblyIndes, TDoubleArrayList[] shapeFunValues) {
         this.nodesAssemblyIndes = nodesAssemblyIndes;
         this.shapeFunctionValues = shapeFunValues;
     }
