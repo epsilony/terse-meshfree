@@ -62,7 +62,7 @@ public class LagrangeWeakformAssemblier extends PenaltyWeakformAssemblier implem
                 return i + 1;
             }
         }
-        throw new IllegalStateException("nodesIds should contains both Lagrange-node ids and normal-nodes ids");
+        throw new IllegalStateException("nodeAssemblyIndes should contains both Lagrange-node ids and normal-nodes ids");
     }
 
     @Override

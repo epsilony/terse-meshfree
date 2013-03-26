@@ -15,13 +15,13 @@ public class LinearLagrangeDirichletProcessor {
 
     private final IntIdentityMap<Node, ProcessNodeData> nodesProcessDatasMap;
 
-    public void process(WeakformQuadraturePoint pt, TIntArrayList nodesIds, TDoubleArrayList shapeFuncVal) {
-        nodesIds.ensureCapacity(nodesIds.size() + 2);
+    public void process(WeakformQuadraturePoint pt, TIntArrayList nodesAssemblyIndes, TDoubleArrayList shapeFuncVal) {
+        nodesAssemblyIndes.ensureCapacity(nodesAssemblyIndes.size() + 2);
         shapeFuncVal.ensureCapacity(shapeFuncVal.size() + 2);
         Node head = pt.segment.getHead();
         Node rear = pt.segment.getRear();
-        nodesIds.add(getLagrangeId(head));
-        nodesIds.add(getLagrangeId(rear));
+        nodesAssemblyIndes.add(getLagrangeId(head));
+        nodesAssemblyIndes.add(getLagrangeId(rear));
         double[] funcV = Linear2D.values(pt.coord, head.getCoord(), rear.getCoord(), null);
         shapeFuncVal.addAll(funcV);
     }

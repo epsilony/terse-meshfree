@@ -47,7 +47,7 @@ public class PenaltyWFAssemblierTest {
     double[] volumnForce = new double[]{2.7, -3.6};
     int nodesSize = 10;
     double penalty = 1e4;
-    TIntArrayList nodesIds = sampleNodeIds();
+    TIntArrayList nodesAssemblyIndes = sampleNodeIds();
     TDoubleArrayList[] shapeFuncVals = sampleShapeFuncVals();
 
     @Test
@@ -81,7 +81,7 @@ public class PenaltyWFAssemblierTest {
             PenaltyWeakformAssemblier asm = sampleAsm(nodesSize, penalty, upperSym);
             for (int test = 1; test <= 2; test++) {
                 asm.setWeight(weight);
-                asm.setShapeFunctionValues(nodesIds, shapeFuncVals);
+                asm.setShapeFunctionValues(nodesAssemblyIndes, shapeFuncVals);
                 asm.setLoad(volumnForce, null);
                 asm.asmVolume();
                 Matrix acts = asm.getMainMatrix();
@@ -104,7 +104,7 @@ public class PenaltyWFAssemblierTest {
                 }
             }
             asm.setWeight(weight);
-            asm.setShapeFunctionValues(nodesIds, shapeFuncVals);
+            asm.setShapeFunctionValues(nodesAssemblyIndes, shapeFuncVals);
             asm.setLoad(volumnForce, null);
             asm.asmNeumann();
             DenseVector act_v = asm.getMainVector();
@@ -147,7 +147,7 @@ public class PenaltyWFAssemblierTest {
             PenaltyWeakformAssemblier asm = sampleAsm(nodesSize, penalty, upperSym);
             for (int test = 1; test <= 2; test++) {
                 asm.setWeight(weight);
-                asm.setShapeFunctionValues(nodesIds, shapeFuncVals);
+                asm.setShapeFunctionValues(nodesAssemblyIndes, shapeFuncVals);
                 asm.setLoad(volumnForce, new boolean[]{true, true});
                 asm.asmDirichlet();
                 Matrix acts = asm.getMainMatrix();

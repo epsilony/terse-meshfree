@@ -27,7 +27,7 @@ public class LagrangeWFAssemblierTest {
     public void setUp() {
     }
     TDoubleArrayList[] shapeFuncVal = new TDoubleArrayList[]{new TDoubleArrayList(new double[]{-1.1, 2.01, 3.42, 14, 50})};
-    TIntArrayList nodesIds = new TIntArrayList(new int[]{5, 2, 0, 8, 6});
+    TIntArrayList nodesAssemblyIndes = new TIntArrayList(new int[]{5, 2, 0, 8, 6});
     int nodesSize = 6;
     int lagNodesSize = 4;
     double[] dirichletVal = new double[]{3.4, -1.2};
@@ -71,7 +71,7 @@ public class LagrangeWFAssemblierTest {
             lag.prepare();
             for (int test = 1; test <= 2; test++) {
                 lag.setWeight(weight);
-                lag.setShapeFunctionValues(nodesIds, shapeFuncVal);
+                lag.setShapeFunctionValues(nodesAssemblyIndes, shapeFuncVal);
                 lag.setLoad(dirichletVal, new boolean[]{true, true});
                 lag.asmDirichlet();
                 Matrix mat = lag.getMainMatrix();
