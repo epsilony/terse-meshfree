@@ -7,7 +7,6 @@ import net.epsilony.tsmf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.tsmf.shape_func.ShapeFunction;
 import net.epsilony.tsmf.util.IntIdentityMap;
 import net.epsilony.tsmf.util.WithDiffOrderUtil;
-import no.uib.cipr.matrix.Vector;
 
 /**
  *
@@ -15,28 +14,27 @@ import no.uib.cipr.matrix.Vector;
  */
 public class PostProcessor extends Mixer {
 
-    Vector nodesProcessDatasMap;
+    int nodeValueDimension;
 
     public PostProcessor(
-            ShapeFunction shapeFunction, 
-            SupportDomainSearcher supportDomainSearcher, 
-            IntIdentityMap<Node,ProcessNodeData> nodesProcessDatasMap, 
-            Vector nodesValues) {
+            ShapeFunction shapeFunction,
+            SupportDomainSearcher supportDomainSearcher,
+            IntIdentityMap<Node, ProcessNodeData> nodesProcessDatasMap, int nodeValueDimension) {
         super(shapeFunction, supportDomainSearcher, nodesProcessDatasMap);
-        this.nodesProcessDatasMap = nodesValues;
+        this.nodeValueDimension = nodeValueDimension;
     }
 
     public double[] value(double[] center, LinearSegment2D bnd) {
         MixResult mixResult = mix(center, bnd);
-        double[] output = new double[WithDiffOrderUtil.outputLength2D(getDiffOrder()) * 2];
+        double[] output = new double[WithDiffOrderUtil.outputLength2D(getDiffOrder()) * nodeValueDimension];
         for (int i = 0; i < mixResult.nodeIds.size(); i++) {
             int nodeId = mixResult.nodeIds.getQuick(i);
-            double nu = nodesProcessDatasMap.get(nodeId * 2);
-            double nv = nodesProcessDatasMap.get(nodeId * 2 + 1);
+            double[] value = nodesProcessDatasMap.getById(nodeId).getValue();
             for (int j = 0; j < mixResult.shapeFunctionValueLists.length; j++) {
                 double sv = mixResult.shapeFunctionValueLists[j].get(i);
-                output[j * 2] += nu * sv;
-                output[j * 2 + 1] += nv * sv;
+                for (int k = 0; k < nodeValueDimension; k++) {
+                    output[j * nodeValueDimension + k] += value[k] * sv;
+                }
             }
         }
         return output;

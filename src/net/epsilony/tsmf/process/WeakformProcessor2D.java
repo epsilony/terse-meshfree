@@ -39,7 +39,6 @@ public class WeakformProcessor2D implements NeedPreparation {
     WeakformAssemblier assemblier;
     LinearLagrangeDirichletProcessor lagProcessor;
     ConstitutiveLaw constitutiveLaw;
-    DenseVector nodesValue;
     private List<WeakformQuadraturePoint> volumeProcessPoints;
     private List<WeakformQuadraturePoint> dirichletProcessPoints;
     private List<WeakformQuadraturePoint> neumannProcessPoints;
@@ -205,11 +204,36 @@ public class WeakformProcessor2D implements NeedPreparation {
         Matrix mainMatrix = assemblier.getMainMatrix();
         DenseVector mainVector = assemblier.getMainVector();
         ReverseCuthillMcKeeSolver rcm = new ReverseCuthillMcKeeSolver(mainMatrix, assemblier.isUpperSymmertric());
-        nodesValue = rcm.solve(mainVector);
+        DenseVector nodesValue = rcm.solve(mainVector);
+        int nodeValueDimension = getNodeValueDimension();
+        for (ProcessNodeData nodeData : nodesProcessDataMap) {
+
+            int nodeValueIndex = nodeData.getAssemblyIndex() * nodeValueDimension;
+            if (nodeValueIndex >= 0) {
+                double[] nodeValue = new double[nodeValueDimension];
+                for (int i = 0; i < nodeValueDimension; i++) {
+                    nodeValue[i] = nodesValue.get(i + nodeValueIndex);
+                    nodeData.setValue(nodeValue);
+                }
+            }
+
+            int lagrangeValueIndex = nodeData.getLagrangeAssemblyIndex() * nodeValueDimension;
+            if (lagrangeValueIndex >= 0) {
+                double[] lagrangeValue = new double[nodeValueDimension];
+                for (int i = 0; i < nodeValueDimension; i++) {
+                    lagrangeValue[i] = nodesValue.get(i + lagrangeValueIndex);
+                    nodeData.setLagrangleValue(lagrangeValue);
+                }
+            }
+
+        }
     }
 
     public PostProcessor postProcessor() {
-        return new PostProcessor(shapeFunction, supportDomainSearcherFactory.produce(), nodesProcessDataMap, nodesValue);
+        return new PostProcessor(
+                shapeFunction,
+                supportDomainSearcherFactory.produce(),
+                nodesProcessDataMap, getNodeValueDimension());
     }
 
     public WeakformQuadratureTask getWeakformQuadratureTask() {
@@ -278,5 +302,9 @@ public class WeakformProcessor2D implements NeedPreparation {
         process.solve();
         PostProcessor pp = process.postProcessor();
         pp.value(new double[]{0.1, 0}, null);
+    }
+
+    public int getNodeValueDimension() {
+        return assemblier.getNodeValueDimension();
     }
 }

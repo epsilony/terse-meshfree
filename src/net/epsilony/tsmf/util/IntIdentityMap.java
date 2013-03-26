@@ -39,6 +39,10 @@ public class IntIdentityMap<K extends IntIdentity, V> implements Iterable<V> {
 
     public V get(K key) {
         final int keyId = key.getId();
+        return getById(keyId);
+    }
+
+    public V getById(int keyId) {
         if (keyId > NULL_INDEX_SUPREMUM && keyId < values.size()) {
             return values.get(keyId);
         } else {

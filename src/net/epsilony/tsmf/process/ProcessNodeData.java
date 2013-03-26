@@ -10,6 +10,8 @@ public class ProcessNodeData {
     double influenceRadius;
     int assemblyIndex = -1;
     int lagrangeAssemblyIndex = -1;
+    double[] value;
+    double[] lagrangleValue;
 
     public double getInfluenceRadius() {
         return influenceRadius;
@@ -33,5 +35,21 @@ public class ProcessNodeData {
 
     public void setLagrangeAssemblyIndex(int lagrangeAssemblyIndex) {
         this.lagrangeAssemblyIndex = lagrangeAssemblyIndex;
+    }
+
+    public double[] getValue() {
+        return value;
+    }
+
+    public void setValue(double[] value) {
+        this.value = value;
+    }
+
+    public double[] getLagrangleValue() {
+        return lagrangleValue;
+    }
+
+    public void setLagrangleValue(double[] lagrangleValue) {
+        this.lagrangleValue = lagrangleValue;
     }
 }
