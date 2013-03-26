@@ -3,11 +3,9 @@ package net.epsilony.tsmf.process;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
-import java.util.Arrays;
-import java.util.List;
 import net.epsilony.tsmf.model.Node;
-import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.shape_func.Linear2D;
+import net.epsilony.tsmf.util.IntIdentityMap;
 
 /**
  *
@@ -15,8 +13,7 @@ import net.epsilony.tsmf.shape_func.Linear2D;
  */
 public class LinearLagrangeDirichletProcessor {
 
-    int[] idMap;
-    int dirichletNodesSize;
+    private final IntIdentityMap<Node, ProcessNodeData> processNodesDatas;
 
     public void process(WeakformQuadraturePoint pt, TIntArrayList nodesIds, TDoubleArrayList shapeFuncVal) {
         nodesIds.ensureCapacity(nodesIds.size() + 2);
@@ -29,31 +26,21 @@ public class LinearLagrangeDirichletProcessor {
         shapeFuncVal.addAll(funcV);
     }
 
-    public LinearLagrangeDirichletProcessor(List<WeakformQuadraturePoint> pts, int baseNodesNum) {
-        idMap = new int[baseNodesNum];
-        Arrays.fill(idMap, -1);
-        int id = baseNodesNum;
-        for (WeakformQuadraturePoint pt : pts) {
-            Segment2D seg = pt.segment;
-            Node head = seg.getHead();
-            Node rear = seg.getRear();
-            if (idMap[head.getId()] < 0) {
-                idMap[head.getId()] = id;
-                id++;
-            }
-            if (idMap[rear.getId()] < 0) {
-                idMap[rear.getId()] = id;
-                id++;
-            }
-        }
-        dirichletNodesSize = id - baseNodesNum;
+    public LinearLagrangeDirichletProcessor(IntIdentityMap<Node, ProcessNodeData> processNodesDatas) {
+        this.processNodesDatas = processNodesDatas;
     }
 
     public int getLagrangeId(Node nd) {
-        return idMap[nd.getId()];
+        return processNodesDatas.get(nd).getLagrangeAssemblyIndex();
     }
 
     public int getDirichletNodesSize() {
-        return dirichletNodesSize;
+        int num = 0;
+        for (ProcessNodeData ndData : processNodesDatas) {
+            if (ndData.getLagrangeAssemblyIndex() >= 0) {
+                num++;
+            }
+        }
+        return num;
     }
 }

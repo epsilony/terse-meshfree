@@ -80,8 +80,9 @@ public class Mixer implements WithDiffOrder {
         infRads.ensureCapacity(nodes.size());
         for (Node nd : nodes) {
             coords.add(nd.getCoord());
-            ids.add(nd.getId());
-            infRads.add(processNodesDatas.get(nd).getInfluenceRadius());
+            final ProcessNodeData processNodeData = processNodesDatas.get(nd);
+            ids.add(processNodeData.getAssemblyIndex());
+            infRads.add(processNodeData.getInfluenceRadius());
         }
     }
 

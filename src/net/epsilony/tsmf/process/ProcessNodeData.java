@@ -8,8 +8,8 @@ package net.epsilony.tsmf.process;
 public class ProcessNodeData {
 
     double influenceRadius;
-    int assemblyIndex;
-    int lagrangeAssemblyIndex;
+    int assemblyIndex = -1;
+    int lagrangeAssemblyIndex = -1;
 
     public double getInfluenceRadius() {
         return influenceRadius;

@@ -137,10 +137,18 @@ public class WeakformProcessor2D implements NeedPreparation {
 
     @Override
     public void prepare() {
+        prepareProcessIteratorWrappers();
+
         prepareSupportDomainSearcherFactoryWithoutInfluenceRadiusFilter();
+
         prepareProcessNodesDatas();
 
         supportDomainSearcherFactory.setProcessNodesDatas(processNodesDatas);
+
+        prepareAssemblier();
+    }
+
+    private void prepareProcessIteratorWrappers() {
         volumeProcessPoints = weakformQuadratureTask.volumeTasks();
         dirichletProcessPoints = weakformQuadratureTask.dirichletTasks();
         neumannProcessPoints = weakformQuadratureTask.neumannTasks();
@@ -150,7 +158,6 @@ public class WeakformProcessor2D implements NeedPreparation {
                 new SynchronizedIteratorWrapper<>(neumannProcessPoints.iterator());
         dirichletIteratorWrapper =
                 new SynchronizedIteratorWrapper<>(dirichletProcessPoints.iterator());
-        prepareAssemblier();
     }
 
     private void prepareSupportDomainSearcherFactoryWithoutInfluenceRadiusFilter() {
@@ -179,6 +186,25 @@ public class WeakformProcessor2D implements NeedPreparation {
             data.setAssemblyIndex(index++);
             processNodesDatas.put(nd, data);
         }
+
+        if (isAssemblyDirichletByLagrange()) {
+            for (WeakformQuadraturePoint qp : dirichletProcessPoints) {
+                ProcessNodeData[] datas = new ProcessNodeData[]{
+                    processNodesDatas.get(qp.segment.getHead()),
+                    processNodesDatas.get(qp.segment.getRear())};
+                for (ProcessNodeData lagNodeData : datas) {
+                    if (null != lagNodeData) {
+                        if (lagNodeData.getLagrangeAssemblyIndex() < 0) {
+                            lagNodeData.setLagrangeAssemblyIndex(index++);
+                        }
+                    } else {
+                        ProcessNodeData newData = new ProcessNodeData();
+                        newData.setLagrangeAssemblyIndex(index++);
+                        processNodesDatas.put(qp.segment.getHead(), newData);
+                    }
+                }
+            }
+        }
     }
 
     void prepareAssemblier() {
@@ -187,7 +213,7 @@ public class WeakformProcessor2D implements NeedPreparation {
         boolean dense = model.getAllNodes().size() <= DENSE_MATRIC_SIZE_THRESHOLD;
         assemblier.setMatrixDense(dense);
         if (isAssemblyDirichletByLagrange()) {
-            lagProcessor = new LinearLagrangeDirichletProcessor(dirichletProcessPoints, model.getAllNodes().size());
+            lagProcessor = new LinearLagrangeDirichletProcessor(processNodesDatas);
             SupportLagrange sL = (SupportLagrange) assemblier;
             sL.setDirichletNodesNums(lagProcessor.getDirichletNodesSize());
         }
