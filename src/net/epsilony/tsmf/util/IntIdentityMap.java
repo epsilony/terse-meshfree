@@ -2,12 +2,13 @@
 package net.epsilony.tsmf.util;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  *
  * @author <a href="mailto:epsionyuan@gmail.com">Man YUAN</a>
  */
-public class IntIdentityMap<K extends IntIdentity, V> {
+public class IntIdentityMap<K extends IntIdentity, V> implements Iterable<V>{
 
     public static final int NULL_INDEX_SUPREMUM = -1;
     ArrayList<V> values;
@@ -59,4 +60,9 @@ public class IntIdentityMap<K extends IntIdentity, V> {
             values.add(null);
         }
     }
+
+    @Override
+    public Iterator<V> iterator() {
+        return values.iterator();
+    }  
 }

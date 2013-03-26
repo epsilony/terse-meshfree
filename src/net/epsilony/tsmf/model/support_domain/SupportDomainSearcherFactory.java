@@ -3,11 +3,12 @@ package net.epsilony.tsmf.model.support_domain;
 
 import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.Segment2D;
-import net.epsilony.tsmf.model.influence.InfluenceRadiusMapper;
 import net.epsilony.tsmf.model.search.LRTreeNodesSphereSearcher;
 import net.epsilony.tsmf.model.search.LRTreeSegmentChordIntersectingSphereSearcher;
 import net.epsilony.tsmf.model.search.SphereSearcher;
+import net.epsilony.tsmf.process.ProcessNodeData;
 import net.epsilony.tsmf.util.Factory;
+import net.epsilony.tsmf.util.IntIdentityMap;
 
 /**
  *
@@ -19,7 +20,7 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
     public static final boolean DEFAULT_IGNORGE_INVISIBLE_NODES_INFORMATION = true;
     SphereSearcher<Node> nodesSearcher;
     SphereSearcher<Segment2D> segmentsSearcher;
-    InfluenceRadiusMapper influenceDomainRadiusMapper;
+    IntIdentityMap<Node,ProcessNodeData> processNodesDatas;
     boolean useCenterPerturb = DEFAULT_USE_CENTER_PERTURB;
     boolean ignoreInvisibleNodesInformation = DEFAULT_IGNORGE_INVISIBLE_NODES_INFORMATION;
 
@@ -45,26 +46,26 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
     public SupportDomainSearcherFactory(
             SphereSearcher<Node> nodesSearcher,
             SphereSearcher<Segment2D> segmentsSearcher,
-            InfluenceRadiusMapper influenceDomainRadiusMapper) {
-        this(nodesSearcher, segmentsSearcher, influenceDomainRadiusMapper, DEFAULT_USE_CENTER_PERTURB);
+            IntIdentityMap<Node,ProcessNodeData> processNodesDatas) {
+        this(nodesSearcher, segmentsSearcher, processNodesDatas, DEFAULT_USE_CENTER_PERTURB);
     }
 
     public SupportDomainSearcherFactory(
             SphereSearcher<Node> nodesSearcher,
             SphereSearcher<Segment2D> segmentsSearcher,
-            InfluenceRadiusMapper influenceDomainRadiusMapper,
+            IntIdentityMap<Node,ProcessNodeData> processNodesDatas,
             boolean useCenterPerturb) {
         this.nodesSearcher = nodesSearcher;
         this.segmentsSearcher = segmentsSearcher;
-        this.influenceDomainRadiusMapper = influenceDomainRadiusMapper;
+        this.processNodesDatas = processNodesDatas;
         this.useCenterPerturb = DEFAULT_USE_CENTER_PERTURB;
     }
 
     @Override
     public SupportDomainSearcher produce() {
         SupportDomainSearcher result = new RawSupportDomainSearcher(nodesSearcher, segmentsSearcher);
-        if (influenceDomainRadiusMapper != null) {
-            result = new FilterByInfluenceDomain(result, influenceDomainRadiusMapper);
+        if (processNodesDatas != null) {
+            result = new FilterByInfluenceDomain(result, processNodesDatas);
         }
         if (useCenterPerturb) {
             result = new CenterPerturbVisibleSupportDomainSearcher(result, ignoreInvisibleNodesInformation);
@@ -90,8 +91,8 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
         return segmentsSearcher;
     }
 
-    public void setInfluenceDomainRadiusMapper(InfluenceRadiusMapper influenceDomainRadiusMapper) {
-        this.influenceDomainRadiusMapper = influenceDomainRadiusMapper;
+    public void setProcessNodesDatas(IntIdentityMap<Node,ProcessNodeData> processNodesDatas) {
+        this.processNodesDatas = processNodesDatas;
     }
 
     public void setUseCenterPerturb(boolean useCenterPerturb) {

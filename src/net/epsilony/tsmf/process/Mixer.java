@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.Segment2D;
-import net.epsilony.tsmf.model.influence.InfluenceRadiusMapper;
 import net.epsilony.tsmf.model.support_domain.SupportDomainData;
 import net.epsilony.tsmf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.tsmf.shape_func.ShapeFunction;
+import net.epsilony.tsmf.util.IntIdentityMap;
 import net.epsilony.tsmf.util.WithDiffOrder;
 
 /**
@@ -26,14 +26,25 @@ public class Mixer implements WithDiffOrder {
     SupportDomainSearcher supportDomainSearcher;
     ShapeFunction shapeFunction;
     double maxInfluenceRad;
-    InfluenceRadiusMapper influenceRadiusMapper;
+    IntIdentityMap<Node, ProcessNodeData> processNodesDatas;
 
-    public Mixer(ShapeFunction shapeFunction, SupportDomainSearcher supportDomainSearcher, InfluenceRadiusMapper influenceRadiusMapper) {
+    public Mixer(ShapeFunction shapeFunction, SupportDomainSearcher supportDomainSearcher, IntIdentityMap<Node, ProcessNodeData> processNodesDatas) {
         this.shapeFunction = shapeFunction;
         shapeFunction.setDiffOrder(0);
         this.supportDomainSearcher = supportDomainSearcher;
-        this.influenceRadiusMapper = influenceRadiusMapper;
-        this.maxInfluenceRad = influenceRadiusMapper.getMaximumInfluenceRadius();
+        this.processNodesDatas = processNodesDatas;
+        this.maxInfluenceRad = getMaxInfluenceRadius(processNodesDatas);
+    }
+
+    public static double getMaxInfluenceRadius(IntIdentityMap<Node, ProcessNodeData> processNodesDatas) {
+        double maxRadius = 0;
+        for (ProcessNodeData nodeData : processNodesDatas) {
+            final double influenceRadius = nodeData.getInfluenceRadius();
+            if (maxRadius < influenceRadius) {
+                maxRadius = influenceRadius;
+            }
+        }
+        return maxRadius;
     }
 
     public MixResult mix(double[] center, Segment2D bnd) {
@@ -70,7 +81,7 @@ public class Mixer implements WithDiffOrder {
         for (Node nd : nodes) {
             coords.add(nd.getCoord());
             ids.add(nd.getId());
-            infRads.add(influenceRadiusMapper.getInfluenceRadius(nd));
+            infRads.add(processNodesDatas.get(nd).getInfluenceRadius());
         }
     }
 

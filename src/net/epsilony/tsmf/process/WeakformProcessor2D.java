@@ -10,11 +10,12 @@ import net.epsilony.tsmf.process.assemblier.SupportLagrange;
 import net.epsilony.tsmf.process.assemblier.WeakformAssemblier;
 import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
 import net.epsilony.tsmf.model.Model2D;
-import net.epsilony.tsmf.model.influence.ArrayInfluenceDomianRadiusMapperFactory;
+import net.epsilony.tsmf.model.Node;
+import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.model.influence.InfluenceRadiusCalculator;
-import net.epsilony.tsmf.model.influence.InfluenceRadiusMapper;
 import net.epsilony.tsmf.model.support_domain.SupportDomainSearcherFactory;
 import net.epsilony.tsmf.shape_func.ShapeFunction;
+import net.epsilony.tsmf.util.IntIdentityMap;
 import net.epsilony.tsmf.util.NeedPreparation;
 import net.epsilony.tsmf.util.TimoshenkoAnalyticalBeam2D;
 import net.epsilony.tsmf.util.matrix.ReverseCuthillMcKeeSolver;
@@ -45,7 +46,7 @@ public class WeakformProcessor2D implements NeedPreparation {
     SynchronizedIteratorWrapper<WeakformQuadraturePoint> volumeIteratorWrapper;
     SynchronizedIteratorWrapper<WeakformQuadraturePoint> neumannIteratorWrapper;
     SynchronizedIteratorWrapper<WeakformQuadraturePoint> dirichletIteratorWrapper;
-    private InfluenceRadiusMapper influenceRadiusMapper;
+    IntIdentityMap<Node, ProcessNodeData> processNodesDatas;
     SupportDomainSearcherFactory supportDomainSearcherFactory;
     boolean enableMultiThread = DEFAULT_ENABLE_MULTITHREAD;
 
@@ -70,7 +71,7 @@ public class WeakformProcessor2D implements NeedPreparation {
     private void singleThreadProcess() {
 
         Mixer mixer = new Mixer(
-                shapeFunction, supportDomainSearcherFactory.produce(), influenceRadiusMapper);
+                shapeFunction, supportDomainSearcherFactory.produce(), processNodesDatas);
         WeakformProcessRunnable runnable = new WeakformProcessRunnable();
         runnable.setAssemblier(assemblier);
         runnable.setMixer(mixer);
@@ -91,7 +92,7 @@ public class WeakformProcessor2D implements NeedPreparation {
         ExecutorService executor = Executors.newFixedThreadPool(coreNum);
         for (int i = 0; i < assemblierAvators.size(); i++) {
             Mixer mixer = new Mixer(
-                    shapeFunction.synchronizeClone(), supportDomainSearcherFactory.produce(), influenceRadiusMapper);
+                    shapeFunction.synchronizeClone(), supportDomainSearcherFactory.produce(), processNodesDatas);
             WeakformProcessRunnable runnable = new WeakformProcessRunnable();
             runnable.setAssemblier(assemblierAvators.get(i));
             runnable.setMixer(mixer);
@@ -136,14 +137,10 @@ public class WeakformProcessor2D implements NeedPreparation {
 
     @Override
     public void prepare() {
-        supportDomainSearcherFactory = new SupportDomainSearcherFactory();
-        supportDomainSearcherFactory.getNodesSearcher().setAll(model.getAllNodes());
-        supportDomainSearcherFactory.getSegmentsSearcher().setAll(model.getPolygon().getSegments());
-        influenceRadiusMapper = new ArrayInfluenceDomianRadiusMapperFactory(
-                model, influenceRadiusCalculator,
-                supportDomainSearcherFactory.produce())
-                .produce();
-        supportDomainSearcherFactory.setInfluenceDomainRadiusMapper(influenceRadiusMapper);
+        prepareSupportDomainSearcherFactoryWithoutInfluenceRadiusFilter();
+        prepareProcessNodesDatas();
+
+        supportDomainSearcherFactory.setProcessNodesDatas(processNodesDatas);
         volumeProcessPoints = weakformQuadratureTask.volumeTasks();
         dirichletProcessPoints = weakformQuadratureTask.dirichletTasks();
         neumannProcessPoints = weakformQuadratureTask.neumannTasks();
@@ -154,6 +151,34 @@ public class WeakformProcessor2D implements NeedPreparation {
         dirichletIteratorWrapper =
                 new SynchronizedIteratorWrapper<>(dirichletProcessPoints.iterator());
         prepareAssemblier();
+    }
+
+    private void prepareSupportDomainSearcherFactoryWithoutInfluenceRadiusFilter() {
+        supportDomainSearcherFactory = new SupportDomainSearcherFactory();
+        supportDomainSearcherFactory.getNodesSearcher().setAll(model.getAllNodes());
+        supportDomainSearcherFactory.getSegmentsSearcher().setAll(model.getPolygon().getSegments());
+    }
+
+    private void prepareProcessNodesDatas() {
+        processNodesDatas = new IntIdentityMap<>();
+        processNodesDatas.appendNullValues(model.getAllNodes().size());
+        int index = 0;
+        for (Node nd : model.getSpaceNodes()) {
+            double rad = influenceRadiusCalculator.calcInflucenceRadius(nd, null);
+            ProcessNodeData data = new ProcessNodeData();
+            data.setInfluenceRadius(rad);
+            data.setAssemblyIndex(index++);
+            processNodesDatas.put(nd, data);
+        }
+
+        for (Segment2D seg : model.getPolygon()) {
+            Node nd = seg.getHead();
+            double rad = influenceRadiusCalculator.calcInflucenceRadius(nd, seg);
+            ProcessNodeData data = new ProcessNodeData();
+            data.setInfluenceRadius(rad);
+            data.setAssemblyIndex(index++);
+            processNodesDatas.put(nd, data);
+        }
     }
 
     void prepareAssemblier() {
@@ -181,7 +206,7 @@ public class WeakformProcessor2D implements NeedPreparation {
     }
 
     public PostProcessor postProcessor() {
-        return new PostProcessor(shapeFunction, supportDomainSearcherFactory.produce(), influenceRadiusMapper, nodesValue);
+        return new PostProcessor(shapeFunction, supportDomainSearcherFactory.produce(), processNodesDatas, nodesValue);
     }
 
     public WeakformQuadratureTask getWeakformQuadratureTask() {

@@ -2,9 +2,10 @@
 package net.epsilony.tsmf.process;
 
 import net.epsilony.tsmf.model.LinearSegment2D;
-import net.epsilony.tsmf.model.influence.InfluenceRadiusMapper;
+import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.tsmf.shape_func.ShapeFunction;
+import net.epsilony.tsmf.util.IntIdentityMap;
 import net.epsilony.tsmf.util.WithDiffOrderUtil;
 import no.uib.cipr.matrix.Vector;
 
@@ -16,8 +17,8 @@ public class PostProcessor extends Mixer {
 
     Vector nodesValues;
 
-    public PostProcessor(ShapeFunction shapeFunction, SupportDomainSearcher supportDomainSearcher, InfluenceRadiusMapper influenceRadiusMapper, Vector nodesValues) {
-        super(shapeFunction, supportDomainSearcher, influenceRadiusMapper);
+    public PostProcessor(ShapeFunction shapeFunction, SupportDomainSearcher supportDomainSearcher, IntIdentityMap<Node,ProcessNodeData> processNodesDatas, Vector nodesValues) {
+        super(shapeFunction, supportDomainSearcher, processNodesDatas);
         this.nodesValues = nodesValues;
     }
 

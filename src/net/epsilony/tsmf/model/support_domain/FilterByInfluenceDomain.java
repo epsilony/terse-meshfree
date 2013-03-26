@@ -4,7 +4,8 @@ package net.epsilony.tsmf.model.support_domain;
 import java.util.Iterator;
 import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.Segment2D;
-import net.epsilony.tsmf.model.influence.InfluenceRadiusMapper;
+import net.epsilony.tsmf.process.ProcessNodeData;
+import net.epsilony.tsmf.util.IntIdentityMap;
 import net.epsilony.tsmf.util.Math2D;
 
 /**
@@ -14,11 +15,11 @@ import net.epsilony.tsmf.util.Math2D;
 public class FilterByInfluenceDomain implements SupportDomainSearcher {
 
     SupportDomainSearcher supportDomainSearcher;
-    InfluenceRadiusMapper influenceDomainMapper;
+    IntIdentityMap<Node, ProcessNodeData> processNodesDatas;
 
-    public FilterByInfluenceDomain(SupportDomainSearcher supportDomainSearcher, InfluenceRadiusMapper influenceDomainMapper) {
+    public FilterByInfluenceDomain(SupportDomainSearcher supportDomainSearcher, IntIdentityMap<Node, ProcessNodeData> processNodesDatas) {
         this.supportDomainSearcher = supportDomainSearcher;
-        this.influenceDomainMapper = influenceDomainMapper;
+        this.processNodesDatas = processNodesDatas;
     }
 
     @Override
@@ -32,7 +33,7 @@ public class FilterByInfluenceDomain implements SupportDomainSearcher {
         Iterator<Node> nodesIter = filterAim.allNodes.iterator();
         while (nodesIter.hasNext()) {
             Node node = nodesIter.next();
-            double rad = influenceDomainMapper.getInfluenceRadius(node);
+            double rad = processNodesDatas.get(node).getInfluenceRadius();
             if (rad <= Math2D.distance(node.getCoord(), center)) {
                 nodesIter.remove();
             }
