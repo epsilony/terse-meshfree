@@ -31,14 +31,17 @@ public class WeakformProcessRunnable implements Runnable {
         if (null == volumeSynchronizedIterator) {
             return;
         }
-        mixer.setDiffOrder(assemblier.volumeDiffOrder());
+        mixer.setDiffOrder(assemblier.getVolumeDiffOrder());
         while (true) {
             WeakformQuadraturePoint pt = volumeSynchronizedIterator.nextItem();
             if (pt == null) {
                 break;
             }
             Mixer.MixResult mixResult = mixer.mix(pt.coord, pt.segment);
-            assemblier.asmVolume(pt.weight, mixResult.nodesAssemblyIndes, mixResult.shapeFunctionValueLists, pt.value);
+            assemblier.setWeight(pt.weight);
+            assemblier.setShapeFunctionValues(mixResult.nodesAssemblyIndes, mixResult.shapeFunctionValueLists);
+            assemblier.setLoad(pt.value, null);
+            assemblier.asmVolume();
             if (null != observer) {
                 observer.volumeProcessed(this);
             }
@@ -49,14 +52,17 @@ public class WeakformProcessRunnable implements Runnable {
         if (null == neumannSynchronizedIterator) {
             return;
         }
-        mixer.setDiffOrder(assemblier.neumannDiffOrder());
+        mixer.setDiffOrder(assemblier.getNeumannDiffOrder());
         while (true) {
             WeakformQuadraturePoint pt = neumannSynchronizedIterator.nextItem();
             if (pt == null) {
                 break;
             }
             Mixer.MixResult mixResult = mixer.mix(pt.coord, pt.segment);
-            assemblier.asmNeumann(pt.weight, mixResult.nodesAssemblyIndes, mixResult.shapeFunctionValueLists, pt.value);
+            assemblier.setWeight(pt.weight);
+            assemblier.setShapeFunctionValues(mixResult.nodesAssemblyIndes, mixResult.shapeFunctionValueLists);
+            assemblier.setLoad(pt.value, null);
+            assemblier.asmNeumann();
             if (null != observer) {
                 observer.neumannProcessed(this);
             }
@@ -67,7 +73,7 @@ public class WeakformProcessRunnable implements Runnable {
         if (null == dirichletSynchronizedIterator) {
             return;
         }
-        mixer.setDiffOrder(assemblier.dirichletDiffOrder());
+        mixer.setDiffOrder(assemblier.getDirichletDiffOrder());
         boolean lagDiri = isAssemblyDirichletByLagrange();
         while (true) {
             WeakformQuadraturePoint pt = dirichletSynchronizedIterator.nextItem();
@@ -78,7 +84,10 @@ public class WeakformProcessRunnable implements Runnable {
             if (lagDiri) {
                 lagProcessor.process(pt, mixResult.nodesAssemblyIndes, mixResult.shapeFunctionValueLists[0]);
             }
-            assemblier.asmDirichlet(pt.weight, mixResult.nodesAssemblyIndes, mixResult.shapeFunctionValueLists, pt.value, pt.mark);
+            assemblier.setWeight(pt.weight);
+            assemblier.setShapeFunctionValues(mixResult.nodesAssemblyIndes, mixResult.shapeFunctionValueLists);
+            assemblier.setLoad(pt.value, pt.mark);
+            assemblier.asmDirichlet();
             if (null != observer) {
                 observer.dirichletProcessed(this);
             }

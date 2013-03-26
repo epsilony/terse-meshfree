@@ -70,7 +70,10 @@ public class LagrangeWFAssemblierTest {
             lag.setDirichletNodesNums(lagNodesSize);
             lag.prepare();
             for (int test = 1; test <= 2; test++) {
-                lag.asmDirichlet(weight, nodesIds, shapeFuncVal, dirichletVal, new boolean[]{true, true});
+                lag.setWeight(weight);
+                lag.setShapeFunctionValues(nodesIds, shapeFuncVal);
+                lag.setLoad(dirichletVal, new boolean[]{true, true});
+                lag.asmDirichlet();
                 Matrix mat = lag.getMainMatrix();
                 DenseVector vec = lag.getMainVector();
                 boolean getHere = false;

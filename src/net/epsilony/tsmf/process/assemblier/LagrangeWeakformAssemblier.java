@@ -3,7 +3,6 @@ package net.epsilony.tsmf.process.assemblier;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
-import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
 
@@ -11,23 +10,21 @@ import no.uib.cipr.matrix.Matrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class LagrangeWeakformAssemblier implements WeakformAssemblier, SupportLagrange {
+public class LagrangeWeakformAssemblier extends PenaltyWeakformAssemblier implements SupportLagrange {
 
     int diriNum;
-    PenaltyWeakformAssemblier basePenaltyAssemblier;
 
     public LagrangeWeakformAssemblier() {
-        basePenaltyAssemblier = new PenaltyWeakformAssemblier(0);
+        super(0);
     }
 
     @Override
-    public void asmDirichlet(
-            double weight, TIntArrayList nodesAssemblyIndes, TDoubleArrayList[] shapeFuncVals,
-            double[] dirichletVal, boolean[] dirichletMark) {
-        Matrix mat = basePenaltyAssemblier.mainMatrix;
-        DenseVector vec = basePenaltyAssemblier.mainVector;
-
-        TDoubleArrayList vs = shapeFuncVals[0];
+    public void asmDirichlet() {
+        Matrix mat = mainMatrix;
+        DenseVector vec = mainVector;
+        TDoubleArrayList vs = shapeFunctionValues[0];
+        boolean[] dirichletMark = loadValidity;
+        double[] dirichletVal = load;
         final boolean dirichletX = dirichletMark[0];
         final boolean dirichletY = dirichletMark[1];
         double drk1 = dirichletVal[0];
@@ -61,7 +58,7 @@ public class LagrangeWeakformAssemblier implements WeakformAssemblier, SupportLa
 
     private int firstLagIndex(TIntArrayList nodesAssemblyIndes) {
         for (int i = nodesAssemblyIndes.size() - 1; i >= 0; i--) {
-            if (nodesAssemblyIndes.getQuick(i) < basePenaltyAssemblier.nodesNum) {
+            if (nodesAssemblyIndes.getQuick(i) < nodesNum) {
                 return i + 1;
             }
         }
@@ -80,90 +77,17 @@ public class LagrangeWeakformAssemblier implements WeakformAssemblier, SupportLa
 
     @Override
     public void prepare() {
-        basePenaltyAssemblier.initMainMatrixVector(2 * (basePenaltyAssemblier.nodesNum + diriNum));
-    }
-
-    @Override
-    public void asmVolume(double weight, TIntArrayList nodesAssemblyIndes, TDoubleArrayList[] shapeFunVals, double[] volumnForce) {
-        basePenaltyAssemblier.asmVolume(weight, nodesAssemblyIndes, shapeFunVals, volumnForce);
-    }
-
-    @Override
-    public void asmNeumann(double weight, TIntArrayList nodesAssemblyIndes, TDoubleArrayList[] shapeFunVals, double[] neumannVal) {
-        basePenaltyAssemblier.asmNeumann(weight, nodesAssemblyIndes, shapeFunVals, neumannVal);
-    }
-
-    @Override
-    public void setNodesNum(int nodesNum) {
-        basePenaltyAssemblier.setNodesNum(nodesNum);
-    }
-
-    @Override
-    public void setMatrixDense(boolean dense) {
-        basePenaltyAssemblier.setMatrixDense(dense);
-    }
-
-    @Override
-    public void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw) {
-        basePenaltyAssemblier.setConstitutiveLaw(constitutiveLaw);
-    }
-
-    @Override
-    public Matrix getMainMatrix() {
-        return basePenaltyAssemblier.getMainMatrix();
-    }
-
-    @Override
-    public DenseVector getMainVector() {
-        return basePenaltyAssemblier.getMainVector();
-    }
-
-    @Override
-    public boolean isUpperSymmertric() {
-        return basePenaltyAssemblier.isUpperSymmertric();
+        initMainMatrixVector(2 * (nodesNum + diriNum));
     }
 
     @Override
     public LagrangeWeakformAssemblier synchronizeClone() {
         LagrangeWeakformAssemblier result = new LagrangeWeakformAssemblier();
-        result.setConstitutiveLaw(basePenaltyAssemblier.constitutiveLaw);
+        result.setConstitutiveLaw(constitutiveLaw);
         result.setDirichletNodesNums(diriNum);
         result.setMatrixDense(isMatrixDense());
-        result.setNodesNum(basePenaltyAssemblier.nodesNum);
+        result.setNodesNum(nodesNum);
         result.prepare();
         return result;
-    }
-
-    @Override
-    public void mergeWithBrother(WeakformAssemblier assemblier) {
-        if (isUpperSymmertric() != assemblier.isUpperSymmertric()) {
-            throw new IllegalArgumentException("the input assemblier should have same symmetricity");
-        }
-        basePenaltyAssemblier.mergeWithBrother(assemblier);
-    }
-
-    @Override
-    public boolean isMatrixDense() {
-        return basePenaltyAssemblier.isMatrixDense();
-    }
-
-    @Override
-    public int volumeDiffOrder() {
-        return 1;
-    }
-
-    @Override
-    public int neumannDiffOrder() {
-        return 0;
-    }
-
-    @Override
-    public int dirichletDiffOrder() {
-        return 0;
-    }
-
-    @Override
-    public int getNodeValueDimension() {
-        return 2;
     }
 }

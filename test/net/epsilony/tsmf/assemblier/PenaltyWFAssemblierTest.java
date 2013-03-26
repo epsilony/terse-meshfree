@@ -80,7 +80,10 @@ public class PenaltyWFAssemblierTest {
         for (boolean upperSym : new boolean[]{true, false}) {
             PenaltyWeakformAssemblier asm = sampleAsm(nodesSize, penalty, upperSym);
             for (int test = 1; test <= 2; test++) {
-                asm.asmVolume(weight, nodesIds, shapeFuncVals, volumnForce);
+                asm.setWeight(weight);
+                asm.setShapeFunctionValues(nodesIds, shapeFuncVals);
+                asm.setLoad(volumnForce, null);
+                asm.asmVolume();
                 Matrix acts = asm.getMainMatrix();
                 for (int i = 0; i < acts.numRows(); i++) {
                     for (int j = 0; j < acts.numColumns(); j++) {
@@ -100,8 +103,10 @@ public class PenaltyWFAssemblierTest {
                     assertEquals(exps_v[i] * test * weight, act_v.get(i), 1e-10);
                 }
             }
-
-            asm.asmNeumann(weight, nodesIds, shapeFuncVals, volumnForce);
+            asm.setWeight(weight);
+            asm.setShapeFunctionValues(nodesIds, shapeFuncVals);
+            asm.setLoad(volumnForce, null);
+            asm.asmNeumann();
             DenseVector act_v = asm.getMainVector();
             for (int i = 0; i < act_v.size(); i++) {
                 assertEquals(exps_v[i] * 3 * weight, act_v.get(i), 1e-10);
@@ -141,7 +146,10 @@ public class PenaltyWFAssemblierTest {
         for (boolean upperSym : new boolean[]{true, false}) {
             PenaltyWeakformAssemblier asm = sampleAsm(nodesSize, penalty, upperSym);
             for (int test = 1; test <= 2; test++) {
-                asm.asmDirichlet(weight, nodesIds, shapeFuncVals, volumnForce, new boolean[]{true, true});
+                asm.setWeight(weight);
+                asm.setShapeFunctionValues(nodesIds, shapeFuncVals);
+                asm.setLoad(volumnForce, new boolean[]{true, true});
+                asm.asmDirichlet();
                 Matrix acts = asm.getMainMatrix();
                 for (int i = 0; i < acts.numRows(); i++) {
                     for (int j = 0; j < acts.numColumns(); j++) {

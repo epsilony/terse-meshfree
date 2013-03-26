@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.process.assemblier;
 
+import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
@@ -22,6 +23,11 @@ public class PenaltyWeakformAssemblier implements WeakformAssemblier {
     double penalty;
     boolean dense;
     private DenseMatrix constitutiveLawMatrixCopy;
+    double weight;
+    TIntArrayList nodesAssemblyIndes;
+    TDoubleArrayList[] shapeFunctionValues;
+    double[] load;
+    boolean[] loadValidity;
 
     public double getPenalty() {
         return penalty;
@@ -55,12 +61,16 @@ public class PenaltyWeakformAssemblier implements WeakformAssemblier {
     }
 
     @Override
-    public void asmVolume(
-            double weight, TIntArrayList nodesAssemblyIndes, TDoubleArrayList[] shapeFunVals,
-            double[] volumnForce) {
-        TDoubleArrayList v = shapeFunVals[0];
-        TDoubleArrayList v_x = shapeFunVals[1];
-        TDoubleArrayList v_y = shapeFunVals[2];
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+
+    @Override
+    public void asmVolume() {
+        double[] volumnForce = load;
+        TDoubleArrayList v = shapeFunctionValues[0];
+        TDoubleArrayList v_x = shapeFunctionValues[1];
+        TDoubleArrayList v_y = shapeFunctionValues[2];
         double b1 = 0, b2 = 0;
         if (volumnForce != null) {
             b1 = volumnForce[0] * weight;
@@ -129,13 +139,12 @@ public class PenaltyWeakformAssemblier implements WeakformAssemblier {
     }
 
     @Override
-    public void asmNeumann(
-            double weight, TIntArrayList nodesAssemblyIndes, TDoubleArrayList[] shapeFunVals,
-            double[] neumannVal) {
+    public void asmNeumann() {
         DenseVector vec = mainVector;
+        double[] neumannVal = load;
         double valueX = neumannVal[0] * weight;
         double valueY = neumannVal[1] * weight;
-        TDoubleArrayList vs = shapeFunVals[0];
+        TDoubleArrayList vs = shapeFunctionValues[0];
         final boolean vali1 = valueX != 0;
         final boolean vali2 = valueY != 0;
         for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
@@ -155,13 +164,13 @@ public class PenaltyWeakformAssemblier implements WeakformAssemblier {
     }
 
     @Override
-    public void asmDirichlet(
-            double weight, TIntArrayList nodesAssemblyIndes, TDoubleArrayList[] shapeFuncVals,
-            double[] dirichletVal, boolean[] dirichletMark) {
+    public void asmDirichlet() {
+        double[] dirichletVal = load;
+        boolean[] dirichletMark = loadValidity;
         double factor = weight * penalty;
         Matrix mat = mainMatrix;
         DenseVector vec = mainVector;
-        TDoubleArrayList vs = shapeFuncVals[0];
+        TDoubleArrayList vs = shapeFunctionValues[0];
 
         final boolean dirichletX = dirichletMark[0];
         final boolean dirichletY = dirichletMark[1];
@@ -257,22 +266,34 @@ public class PenaltyWeakformAssemblier implements WeakformAssemblier {
     }
 
     @Override
-    public int volumeDiffOrder() {
+    public int getVolumeDiffOrder() {
         return 1;
     }
 
     @Override
-    public int neumannDiffOrder() {
+    public int getNeumannDiffOrder() {
         return 0;
     }
 
     @Override
-    public int dirichletDiffOrder() {
+    public int getDirichletDiffOrder() {
         return 0;
     }
 
     @Override
     public int getNodeValueDimension() {
         return 2;
+    }
+
+    @Override
+    public void setShapeFunctionValues(TIntArrayList nodesAssemblyIndes, TDoubleArrayList[] shapeFunValues) {
+        this.nodesAssemblyIndes = nodesAssemblyIndes;
+        this.shapeFunctionValues = shapeFunValues;
+    }
+
+    @Override
+    public void setLoad(double[] value, boolean[] validity) {
+        this.load = value;
+        this.loadValidity = validity;
     }
 }
