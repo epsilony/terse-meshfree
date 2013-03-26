@@ -122,4 +122,8 @@ public class RectangleWithHoles implements ArrvarFunction, GenericFunction<doubl
         }
         return chainsHeads;
     }
+    
+    public void genModelAndWeakformProject(){
+        
+    }
 }

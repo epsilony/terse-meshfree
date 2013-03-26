@@ -270,4 +270,9 @@ public class PenaltyWeakformAssemblier implements WeakformAssemblier {
     public int dirichletDiffOrder() {
         return 0;
     }
+
+    @Override
+    public int getNodeValueDimension() {
+        return 2;
+    }
 }

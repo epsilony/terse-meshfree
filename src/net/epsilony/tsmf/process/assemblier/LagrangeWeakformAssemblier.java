@@ -161,4 +161,9 @@ public class LagrangeWeakformAssemblier implements WeakformAssemblier, SupportLa
     public int dirichletDiffOrder() {
         return 0;
     }
+
+    @Override
+    public int getNodeValueDimension() {
+        return 2;
+    }
 }

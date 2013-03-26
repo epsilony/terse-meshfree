@@ -42,4 +42,6 @@ public interface WeakformAssemblier extends NeedPreparation, SynchronizedClonabl
     boolean isUpperSymmertric();
 
     void mergeWithBrother(WeakformAssemblier brother);
+
+    int getNodeValueDimension();
 }
