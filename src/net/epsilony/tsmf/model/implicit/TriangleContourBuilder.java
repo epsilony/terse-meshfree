@@ -8,6 +8,7 @@ import net.epsilony.tsmf.adaptive.AdaptiveCellEdge;
 import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.LinearSegment2D;
 import net.epsilony.tsmf.util.GenericFunction;
+import net.epsilony.tsmf.util.IntIdentityMap;
 import net.epsilony.tsmf.util.Math2D;
 import net.epsilony.tsmf.util.MiscellaneousUtils;
 
@@ -25,6 +26,7 @@ public class TriangleContourBuilder {
     protected LinkedList<TriangleContourCell> openRingHeadCells;
     protected LinkedList<LinearSegment2D> openRingHeadSegments;
     protected Iterator<TriangleContourCell> cellsIterator;
+    IntIdentityMap<Node, double[]> nodesValuesMap = new IntIdentityMap<>();
 
     public void setCells(List<TriangleContourCell> cells) {
         this.cells = cells;
@@ -58,9 +60,25 @@ public class TriangleContourBuilder {
             cell.setVisited(false);
             AdaptiveCellEdge[] edges = cell.getEdges();
             for (AdaptiveCellEdge edge : edges) {
-                edge.getHead().setData(null);
+                edge.getHead().setId(-1);
             }
         }
+
+        int nodesNum = 0;
+        for (TriangleContourCell cell : cells) {
+            AdaptiveCellEdge[] edges = cell.getEdges();
+            for (AdaptiveCellEdge edge : edges) {
+                Node head = edge.getHead();
+                if (head.getId() > -1) {
+                    continue;
+                }
+                head.setId(nodesNum++);
+            }
+        }
+
+        nodesValuesMap.clear();
+        nodesValuesMap.appendNullValues(nodesNum);
+
         contourHeads = new LinkedList<>();
         openRingHeadCells = new LinkedList<>();
         openRingHeadSegments = new LinkedList<>();
@@ -135,19 +153,20 @@ public class TriangleContourBuilder {
     private void setupFunctionData(TriangleContourCell cell) {
         AdaptiveCellEdge[] edges = cell.getEdges();
         for (int i = 0; i < edges.length; i++) {
-            double[] nodeValue = cell.getNodeValue(i);
+            Node nd = cell.getNode(i);
+            double[] nodeValue = nodesValuesMap.get(nd);
             if (null == nodeValue) {
-                cell.setNodeValue(i, levelSetFunction.value(edges[i].getHeadCoord(), null));
+                nodesValuesMap.put(nd, levelSetFunction.value(edges[i].getHeadCoord(), null));
             }
         }
-        cell.updateStatus(contourLevel);
+        cell.updateStatus(contourLevel, nodesValuesMap);
     }
 
     private Node genContourNode(LinearSegment2D contourSourceEdge) {
         double[] headCoord = contourSourceEdge.getHeadCoord();
         double[] rearCoord = contourSourceEdge.getRearCoord();
-        double headValue = ((double[]) contourSourceEdge.getHead().getData())[0];
-        double rearValue = ((double[]) contourSourceEdge.getRear().getData())[0];
+        double headValue = nodesValuesMap.get(contourSourceEdge.getHead())[0];
+        double rearValue = nodesValuesMap.get(contourSourceEdge.getRear())[0];
         double t = headValue / (headValue - rearValue);
         double[] resultCoord = Math2D.pointOnSegment(headCoord, rearCoord, t, null);
         return new Node(resultCoord);
@@ -184,5 +203,9 @@ public class TriangleContourBuilder {
 
     public GenericFunction<double[], double[]> getLevelSetFunction() {
         return levelSetFunction;
+    }
+
+    public IntIdentityMap<Node, double[]> getNodesValuesMap() {
+        return nodesValuesMap;
     }
 }

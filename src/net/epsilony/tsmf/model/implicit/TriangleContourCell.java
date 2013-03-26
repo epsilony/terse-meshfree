@@ -3,6 +3,8 @@ package net.epsilony.tsmf.model.implicit;
 
 import net.epsilony.tsmf.adaptive.TriangleAdaptiveCell;
 import net.epsilony.tsmf.model.LinearSegment2D;
+import net.epsilony.tsmf.model.Node;
+import net.epsilony.tsmf.util.IntIdentityMap;
 
 /**
  *
@@ -23,11 +25,11 @@ public class TriangleContourCell extends TriangleAdaptiveCell {
         this.visited = polygonized;
     }
 
-    public void updateStatus(double contourLevel) {
+    public void updateStatus(double contourLevel, IntIdentityMap<Node, double[]> nodesValuesMap) {
         double w = 1;
         status = 0;
         for (int i = 0; i < getEdges().length; i++) {
-            double[] funcValues = getNodeValue(i);
+            double[] funcValues = nodesValuesMap.get(edges[i].getHead());
             if (funcValues[0] >= contourLevel) {
                 status += w;
             }
@@ -75,11 +77,7 @@ public class TriangleContourCell extends TriangleAdaptiveCell {
         return (TriangleContourCell) getEdges()[index].getOpposite(0).getOwner();
     }
 
-    public double[] getNodeValue(int index) {
-        return (double[]) getEdges()[index].getHead().getData();
-    }
-
-    public void setNodeValue(int index, double[] value) {
-        getEdges()[index].getHead().setData(value);
+    public Node getNode(int index) {
+        return edges[index].getHead();
     }
 }

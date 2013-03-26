@@ -10,8 +10,10 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import net.epsilony.tsmf.adaptive.AdaptiveCellEdge;
+import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.implicit.TriangleContourCell;
 import net.epsilony.tsmf.model.ui.NodeDrawer;
+import net.epsilony.tsmf.util.IntIdentityMap;
 import net.epsilony.tsmf.util.ui.ModelDrawerAdapter;
 
 /**
@@ -37,9 +39,11 @@ public class TriangleContourCellDemoDrawer extends ModelDrawerAdapter {
     NodeDrawer nodeDrawer = new NodeDrawer();
     Color nodeDataNullColor = DEFAULT_NODE_NULL_DATA_COLOR;
     boolean nodesVisible;
+    IntIdentityMap<Node, double[]> nodesValuesMap;
 
-    public TriangleContourCellDemoDrawer(TriangleContourCell cell) {
+    public TriangleContourCellDemoDrawer(TriangleContourCell cell, IntIdentityMap<Node, double[]> nodesValuesMap) {
         this.cell = cell;
+        this.nodesValuesMap = nodesValuesMap;
         genSegmentsPathInModelSpace();
     }
 
@@ -78,7 +82,8 @@ public class TriangleContourCellDemoDrawer extends ModelDrawerAdapter {
             AdaptiveCellEdge[] edges = cell.getEdges();
             for (AdaptiveCellEdge edge : edges) {
                 nodeDrawer.setNode(edge.getHead());
-                double[] data = (double[]) edge.getHead().getData();
+                Node node = edge.getHead();
+                double[] data = nodesValuesMap.get(node);
                 if (null == data) {
                     continue;
                 } else if (data[0] < value) {

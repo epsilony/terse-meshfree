@@ -143,7 +143,6 @@ public class TriangleContourBuilderDemo extends MouseAdapter {
         }
         polygonizer.genContour();
         panel.repaint();
-
     }
 
     public static int genDragStatus(MouseEvent e) {
@@ -172,7 +171,7 @@ public class TriangleContourBuilderDemo extends MouseAdapter {
         frame.getMainPanel().addMouseListener(this);
         frame.getMainPanel().addMouseMotionListener(this);
         frame.getMainPanel().addAndSetupModelDrawer(new DraggingDrawer());
-        frame.getContentPane().add(new JLabel("Draw with left key or +SHILF"));
+        frame.getContentPane().add(new JLabel("Draw with right key or +SHILF"));
         frame.getContentPane().setLayout(new FlowLayout());
         frame.pack();
         frame.setVisible(true);
