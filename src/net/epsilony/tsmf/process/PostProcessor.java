@@ -15,11 +15,15 @@ import no.uib.cipr.matrix.Vector;
  */
 public class PostProcessor extends Mixer {
 
-    Vector nodesValues;
+    Vector nodesProcessDatasMap;
 
-    public PostProcessor(ShapeFunction shapeFunction, SupportDomainSearcher supportDomainSearcher, IntIdentityMap<Node,ProcessNodeData> processNodesDatas, Vector nodesValues) {
-        super(shapeFunction, supportDomainSearcher, processNodesDatas);
-        this.nodesValues = nodesValues;
+    public PostProcessor(
+            ShapeFunction shapeFunction, 
+            SupportDomainSearcher supportDomainSearcher, 
+            IntIdentityMap<Node,ProcessNodeData> nodesProcessDatasMap, 
+            Vector nodesValues) {
+        super(shapeFunction, supportDomainSearcher, nodesProcessDatasMap);
+        this.nodesProcessDatasMap = nodesValues;
     }
 
     public double[] value(double[] center, LinearSegment2D bnd) {
@@ -27,8 +31,8 @@ public class PostProcessor extends Mixer {
         double[] output = new double[WithDiffOrderUtil.outputLength2D(getDiffOrder()) * 2];
         for (int i = 0; i < mixResult.nodeIds.size(); i++) {
             int nodeId = mixResult.nodeIds.getQuick(i);
-            double nu = nodesValues.get(nodeId * 2);
-            double nv = nodesValues.get(nodeId * 2 + 1);
+            double nu = nodesProcessDatasMap.get(nodeId * 2);
+            double nv = nodesProcessDatasMap.get(nodeId * 2 + 1);
             for (int j = 0; j < mixResult.shapeFunctionValueLists.length; j++) {
                 double sv = mixResult.shapeFunctionValueLists[j].get(i);
                 output[j * 2] += nu * sv;

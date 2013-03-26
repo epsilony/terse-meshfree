@@ -13,7 +13,7 @@ import net.epsilony.tsmf.util.IntIdentityMap;
  */
 public class LinearLagrangeDirichletProcessor {
 
-    private final IntIdentityMap<Node, ProcessNodeData> processNodesDatas;
+    private final IntIdentityMap<Node, ProcessNodeData> nodesProcessDatasMap;
 
     public void process(WeakformQuadraturePoint pt, TIntArrayList nodesIds, TDoubleArrayList shapeFuncVal) {
         nodesIds.ensureCapacity(nodesIds.size() + 2);
@@ -26,17 +26,17 @@ public class LinearLagrangeDirichletProcessor {
         shapeFuncVal.addAll(funcV);
     }
 
-    public LinearLagrangeDirichletProcessor(IntIdentityMap<Node, ProcessNodeData> processNodesDatas) {
-        this.processNodesDatas = processNodesDatas;
+    public LinearLagrangeDirichletProcessor(IntIdentityMap<Node, ProcessNodeData> nodesProcessDatasMap) {
+        this.nodesProcessDatasMap = nodesProcessDatasMap;
     }
 
     public int getLagrangeId(Node nd) {
-        return processNodesDatas.get(nd).getLagrangeAssemblyIndex();
+        return nodesProcessDatasMap.get(nd).getLagrangeAssemblyIndex();
     }
 
     public int getDirichletNodesSize() {
         int num = 0;
-        for (ProcessNodeData ndData : processNodesDatas) {
+        for (ProcessNodeData ndData : nodesProcessDatasMap) {
             if (ndData.getLagrangeAssemblyIndex() >= 0) {
                 num++;
             }

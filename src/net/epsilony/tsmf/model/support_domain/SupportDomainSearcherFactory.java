@@ -20,7 +20,7 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
     public static final boolean DEFAULT_IGNORGE_INVISIBLE_NODES_INFORMATION = true;
     SphereSearcher<Node> nodesSearcher;
     SphereSearcher<Segment2D> segmentsSearcher;
-    IntIdentityMap<Node,ProcessNodeData> processNodesDatas;
+    IntIdentityMap<Node,ProcessNodeData> nodesProcessDatasMap;
     boolean useCenterPerturb = DEFAULT_USE_CENTER_PERTURB;
     boolean ignoreInvisibleNodesInformation = DEFAULT_IGNORGE_INVISIBLE_NODES_INFORMATION;
 
@@ -57,15 +57,15 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
             boolean useCenterPerturb) {
         this.nodesSearcher = nodesSearcher;
         this.segmentsSearcher = segmentsSearcher;
-        this.processNodesDatas = processNodesDatas;
+        this.nodesProcessDatasMap = processNodesDatas;
         this.useCenterPerturb = DEFAULT_USE_CENTER_PERTURB;
     }
 
     @Override
     public SupportDomainSearcher produce() {
         SupportDomainSearcher result = new RawSupportDomainSearcher(nodesSearcher, segmentsSearcher);
-        if (processNodesDatas != null) {
-            result = new FilterByInfluenceDomain(result, processNodesDatas);
+        if (nodesProcessDatasMap != null) {
+            result = new FilterByInfluenceDomain(result, nodesProcessDatasMap);
         }
         if (useCenterPerturb) {
             result = new CenterPerturbVisibleSupportDomainSearcher(result, ignoreInvisibleNodesInformation);
@@ -91,8 +91,8 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
         return segmentsSearcher;
     }
 
-    public void setProcessNodesDatas(IntIdentityMap<Node,ProcessNodeData> processNodesDatas) {
-        this.processNodesDatas = processNodesDatas;
+    public void setNodesProcessDatasMap(IntIdentityMap<Node,ProcessNodeData> nodesProcessDatasMap) {
+        this.nodesProcessDatasMap = nodesProcessDatasMap;
     }
 
     public void setUseCenterPerturb(boolean useCenterPerturb) {

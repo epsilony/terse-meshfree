@@ -26,14 +26,14 @@ public class Mixer implements WithDiffOrder {
     SupportDomainSearcher supportDomainSearcher;
     ShapeFunction shapeFunction;
     double maxInfluenceRad;
-    IntIdentityMap<Node, ProcessNodeData> processNodesDatas;
+    IntIdentityMap<Node, ProcessNodeData> nodesProcessDatasMap;
 
-    public Mixer(ShapeFunction shapeFunction, SupportDomainSearcher supportDomainSearcher, IntIdentityMap<Node, ProcessNodeData> processNodesDatas) {
+    public Mixer(ShapeFunction shapeFunction, SupportDomainSearcher supportDomainSearcher, IntIdentityMap<Node, ProcessNodeData> nodesProcessDatasMap) {
         this.shapeFunction = shapeFunction;
         shapeFunction.setDiffOrder(0);
         this.supportDomainSearcher = supportDomainSearcher;
-        this.processNodesDatas = processNodesDatas;
-        this.maxInfluenceRad = getMaxInfluenceRadius(processNodesDatas);
+        this.nodesProcessDatasMap = nodesProcessDatasMap;
+        this.maxInfluenceRad = getMaxInfluenceRadius(nodesProcessDatasMap);
     }
 
     public static double getMaxInfluenceRadius(IntIdentityMap<Node, ProcessNodeData> processNodesDatas) {
@@ -80,7 +80,7 @@ public class Mixer implements WithDiffOrder {
         infRads.ensureCapacity(nodes.size());
         for (Node nd : nodes) {
             coords.add(nd.getCoord());
-            final ProcessNodeData processNodeData = processNodesDatas.get(nd);
+            final ProcessNodeData processNodeData = nodesProcessDatasMap.get(nd);
             ids.add(processNodeData.getAssemblyIndex());
             infRads.add(processNodeData.getInfluenceRadius());
         }
