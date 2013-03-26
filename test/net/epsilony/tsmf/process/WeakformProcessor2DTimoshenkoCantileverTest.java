@@ -61,6 +61,7 @@ public class WeakformProcessor2DTimoshenkoCantileverTest {
     public void prepareTimoshenkoStandardCantileverPostProcessor() {
         timoProcessor = WeakformProcessor2D.genTimoshenkoProjectProcess();
         System.out.println("Multi Processing: " + timoProcessor.isActuallyMultiThreadable());
+        timoProcessor.prepare();
         timoProcessor.process();
         timoProcessor.solve();
         timoPostProcessor = timoProcessor.postProcessor();

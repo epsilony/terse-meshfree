@@ -60,29 +60,6 @@ public class WeakformProcessor2D implements NeedPreparation {
     }
 
     public void process() {
-        prepare();
-        if (isActuallyMultiThreadable()) {
-            multiThreadProcess();
-        } else {
-            singleThreadProcess();
-        }
-    }
-
-    private void singleThreadProcess() {
-
-        Mixer mixer = new Mixer(
-                shapeFunction, supportDomainSearcherFactory.produce(), processNodesDatas);
-        WeakformProcessRunnable runnable = new WeakformProcessRunnable();
-        runnable.setAssemblier(assemblier);
-        runnable.setMixer(mixer);
-        runnable.setLagrangeProcessor(lagProcessor);
-        runnable.setVolumeSynchronizedIterator(volumeIteratorWrapper);
-        runnable.setDirichletSynchronizedIterator(dirichletIteratorWrapper);
-        runnable.setNeumannSynchronizedIterator(neumannIteratorWrapper);
-        runnable.run();
-    }
-
-    private void multiThreadProcess() {
         int coreNum = Runtime.getRuntime().availableProcessors();
         ArrayList<WeakformAssemblier> assemblierAvators = new ArrayList<>(coreNum);
         assemblierAvators.add(assemblier);
@@ -296,6 +273,7 @@ public class WeakformProcessor2D implements NeedPreparation {
 
     public static void main(String[] args) {
         WeakformProcessor2D process = genTimoshenkoProjectProcess();
+        process.prepare();
         process.process();
         process.solve();
         PostProcessor pp = process.postProcessor();
