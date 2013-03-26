@@ -21,7 +21,7 @@ public class Mixer implements WithDiffOrder {
 
     public static final int DEFAULT_CACHE_CAPACITY = 60;
     ArrayList<double[]> coords = new ArrayList<>(DEFAULT_CACHE_CAPACITY);
-    TIntArrayList nodesIds = new TIntArrayList(DEFAULT_CACHE_CAPACITY, -1);
+    TIntArrayList nodesAssemblierIndes = new TIntArrayList(DEFAULT_CACHE_CAPACITY, -1);
     TDoubleArrayList infRads = new TDoubleArrayList(DEFAULT_CACHE_CAPACITY);
     SupportDomainSearcher supportDomainSearcher;
     ShapeFunction shapeFunction;
@@ -52,9 +52,9 @@ public class Mixer implements WithDiffOrder {
         if (WeakformProcessor.SUPPORT_COMPLEX_CRITERION) {
             throw new UnsupportedOperationException();
         }
-        fromNodesToIdsCoordsInfRads(searchResult.visibleNodes, nodesIds, coords, infRads);
+        fromNodesToIdsCoordsInfRads(searchResult.visibleNodes, nodesAssemblierIndes, coords, infRads);
         TDoubleArrayList[] shapeFunctionValueLists = shapeFunction.values(center, coords, infRads, null);
-        return new MixResult(shapeFunctionValueLists, nodesIds);
+        return new MixResult(shapeFunctionValueLists, nodesAssemblierIndes);
     }
 
     @Override
@@ -69,19 +69,19 @@ public class Mixer implements WithDiffOrder {
 
     void fromNodesToIdsCoordsInfRads(
             Collection<? extends Node> nodes,
-            TIntArrayList ids,
+            TIntArrayList nodesAssemblyIndes,
             ArrayList<double[]> coords,
             TDoubleArrayList infRads) {
         coords.clear();
         coords.ensureCapacity(nodes.size());
-        ids.resetQuick();
-        ids.ensureCapacity(nodes.size());
+        nodesAssemblyIndes.resetQuick();
+        nodesAssemblyIndes.ensureCapacity(nodes.size());
         infRads.resetQuick();
         infRads.ensureCapacity(nodes.size());
         for (Node nd : nodes) {
             coords.add(nd.getCoord());
             final ProcessNodeData processNodeData = nodesProcessDatasMap.get(nd);
-            ids.add(processNodeData.getAssemblyIndex());
+            nodesAssemblyIndes.add(processNodeData.getAssemblyIndex());
             infRads.add(processNodeData.getInfluenceRadius());
         }
     }
@@ -89,11 +89,11 @@ public class Mixer implements WithDiffOrder {
     public static class MixResult {
 
         public TDoubleArrayList[] shapeFunctionValueLists;
-        public TIntArrayList nodeIds;
+        public TIntArrayList nodesAssemblyIndes;
 
         public MixResult(TDoubleArrayList[] shapeFunctionValueLists, TIntArrayList nodeIds) {
             this.shapeFunctionValueLists = shapeFunctionValueLists;
-            this.nodeIds = nodeIds;
+            this.nodesAssemblyIndes = nodeIds;
         }
     }
 }

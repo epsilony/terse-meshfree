@@ -38,7 +38,7 @@ public class WeakformProcessRunnable implements Runnable {
                 break;
             }
             Mixer.MixResult mixResult = mixer.mix(pt.coord, pt.segment);
-            assemblier.asmVolume(pt.weight, mixResult.nodeIds, mixResult.shapeFunctionValueLists, pt.value);
+            assemblier.asmVolume(pt.weight, mixResult.nodesAssemblyIndes, mixResult.shapeFunctionValueLists, pt.value);
             if (null != observer) {
                 observer.volumeProcessed(this);
             }
@@ -56,7 +56,7 @@ public class WeakformProcessRunnable implements Runnable {
                 break;
             }
             Mixer.MixResult mixResult = mixer.mix(pt.coord, pt.segment);
-            assemblier.asmNeumann(pt.weight, mixResult.nodeIds, mixResult.shapeFunctionValueLists, pt.value);
+            assemblier.asmNeumann(pt.weight, mixResult.nodesAssemblyIndes, mixResult.shapeFunctionValueLists, pt.value);
             if (null != observer) {
                 observer.neumannProcessed(this);
             }
@@ -76,9 +76,9 @@ public class WeakformProcessRunnable implements Runnable {
             }
             Mixer.MixResult mixResult = mixer.mix(pt.coord, pt.segment);
             if (lagDiri) {
-                lagProcessor.process(pt, mixResult.nodeIds, mixResult.shapeFunctionValueLists[0]);
+                lagProcessor.process(pt, mixResult.nodesAssemblyIndes, mixResult.shapeFunctionValueLists[0]);
             }
-            assemblier.asmDirichlet(pt.weight, mixResult.nodeIds, mixResult.shapeFunctionValueLists, pt.value, pt.mark);
+            assemblier.asmDirichlet(pt.weight, mixResult.nodesAssemblyIndes, mixResult.shapeFunctionValueLists, pt.value, pt.mark);
             if (null != observer) {
                 observer.dirichletProcessed(this);
             }

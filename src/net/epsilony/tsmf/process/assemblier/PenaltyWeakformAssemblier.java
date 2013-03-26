@@ -56,7 +56,7 @@ public class PenaltyWeakformAssemblier implements WeakformAssemblier {
 
     @Override
     public void asmVolume(
-            double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFunVals,
+            double weight, TIntArrayList nodesAssemblyIndes, TDoubleArrayList[] shapeFunVals,
             double[] volumnForce) {
         TDoubleArrayList v = shapeFunVals[0];
         TDoubleArrayList v_x = shapeFunVals[1];
@@ -67,8 +67,8 @@ public class PenaltyWeakformAssemblier implements WeakformAssemblier {
             b2 = volumnForce[1] * weight;
         }
         Matrix mat = mainMatrix;
-        for (int i = 0; i < nodesIds.size(); i++) {
-            int row = nodesIds.getQuick(i) * 2;
+        for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
+            int row = nodesAssemblyIndes.getQuick(i) * 2;
             double v_x_i = v_x.getQuick(i);
             double v_y_i = v_y.getQuick(i);
             double v_i = v.getQuick(i);
@@ -80,8 +80,8 @@ public class PenaltyWeakformAssemblier implements WeakformAssemblier {
             if (isUpperSymmertric()) {
                 jStart = i;
             }
-            for (int j = jStart; j < nodesIds.size(); j++) {
-                int col = nodesIds.getQuick(j) * 2;
+            for (int j = jStart; j < nodesAssemblyIndes.size(); j++) {
+                int col = nodesAssemblyIndes.getQuick(j) * 2;
                 double v_x_j = v_x.getQuick(j);
                 double v_y_j = v_y.getQuick(j);
 
@@ -130,7 +130,7 @@ public class PenaltyWeakformAssemblier implements WeakformAssemblier {
 
     @Override
     public void asmNeumann(
-            double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFunVals,
+            double weight, TIntArrayList nodesAssemblyIndes, TDoubleArrayList[] shapeFunVals,
             double[] neumannVal) {
         DenseVector vec = mainVector;
         double valueX = neumannVal[0] * weight;
@@ -138,8 +138,8 @@ public class PenaltyWeakformAssemblier implements WeakformAssemblier {
         TDoubleArrayList vs = shapeFunVals[0];
         final boolean vali1 = valueX != 0;
         final boolean vali2 = valueY != 0;
-        for (int i = 0; i < nodesIds.size(); i++) {
-            int vecIndex = nodesIds.getQuick(i) * 2;
+        for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
+            int vecIndex = nodesAssemblyIndes.getQuick(i) * 2;
             double v = vs.getQuick(i);
             if (vali1) {
                 vec.add(vecIndex, valueX * v);
@@ -156,7 +156,7 @@ public class PenaltyWeakformAssemblier implements WeakformAssemblier {
 
     @Override
     public void asmDirichlet(
-            double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFuncVals,
+            double weight, TIntArrayList nodesAssemblyIndes, TDoubleArrayList[] shapeFuncVals,
             double[] dirichletVal, boolean[] dirichletMark) {
         double factor = weight * penalty;
         Matrix mat = mainMatrix;
@@ -165,8 +165,8 @@ public class PenaltyWeakformAssemblier implements WeakformAssemblier {
 
         final boolean dirichletX = dirichletMark[0];
         final boolean dirichletY = dirichletMark[1];
-        for (int i = 0; i < nodesIds.size(); i++) {
-            int row = nodesIds.getQuick(i) * 2;
+        for (int i = 0; i < nodesAssemblyIndes.size(); i++) {
+            int row = nodesAssemblyIndes.getQuick(i) * 2;
             double vi = vs.getQuick(i);
             if (dirichletX) {
                 vec.add(row, vi * dirichletVal[0] * factor);
@@ -178,8 +178,8 @@ public class PenaltyWeakformAssemblier implements WeakformAssemblier {
             if (isUpperSymmertric()) {
                 jStart = i;
             }
-            for (int j = jStart; j < nodesIds.size(); j++) {
-                int col = nodesIds.getQuick(j) * 2;
+            for (int j = jStart; j < nodesAssemblyIndes.size(); j++) {
+                int col = nodesAssemblyIndes.getQuick(j) * 2;
                 double vij = factor * vi * vs.getQuick(j);
                 int tRow;
                 int tCol;

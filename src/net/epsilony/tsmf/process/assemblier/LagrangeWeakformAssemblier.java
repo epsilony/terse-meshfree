@@ -22,7 +22,7 @@ public class LagrangeWeakformAssemblier implements WeakformAssemblier, SupportLa
 
     @Override
     public void asmDirichlet(
-            double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFuncVals,
+            double weight, TIntArrayList nodesAssemblyIndes, TDoubleArrayList[] shapeFuncVals,
             double[] dirichletVal, boolean[] dirichletMark) {
         Matrix mat = basePenaltyAssemblier.mainMatrix;
         DenseVector vec = basePenaltyAssemblier.mainVector;
@@ -33,11 +33,11 @@ public class LagrangeWeakformAssemblier implements WeakformAssemblier, SupportLa
         double drk1 = dirichletVal[0];
         double drk2 = dirichletVal[1];
 
-        int lagIndex = firstLagIndex(nodesIds);
+        int lagIndex = firstLagIndex(nodesAssemblyIndes);
 
-        for (int j = lagIndex; j < nodesIds.size(); j++) {
+        for (int j = lagIndex; j < nodesAssemblyIndes.size(); j++) {
             double v_j_w = vs.getQuick(j) * weight;
-            int col = nodesIds.getQuick(j) * 2;
+            int col = nodesAssemblyIndes.getQuick(j) * 2;
             if (dirichletX) {
                 vec.add(col, -v_j_w * drk1);
             }
@@ -46,7 +46,7 @@ public class LagrangeWeakformAssemblier implements WeakformAssemblier, SupportLa
             }
             for (int i = 0; i < lagIndex; i++) {
                 double v_i = vs.getQuick(i);
-                int row = nodesIds.getQuick(i) * 2;
+                int row = nodesAssemblyIndes.getQuick(i) * 2;
 
                 double d = -v_i * v_j_w;
                 mat.add(row, col, d);
@@ -59,9 +59,9 @@ public class LagrangeWeakformAssemblier implements WeakformAssemblier, SupportLa
         }
     }
 
-    private int firstLagIndex(TIntArrayList nodesIds) {
-        for (int i = nodesIds.size() - 1; i >= 0; i--) {
-            if (nodesIds.getQuick(i) < basePenaltyAssemblier.nodesNum) {
+    private int firstLagIndex(TIntArrayList nodesAssemblyIndes) {
+        for (int i = nodesAssemblyIndes.size() - 1; i >= 0; i--) {
+            if (nodesAssemblyIndes.getQuick(i) < basePenaltyAssemblier.nodesNum) {
                 return i + 1;
             }
         }
@@ -84,13 +84,13 @@ public class LagrangeWeakformAssemblier implements WeakformAssemblier, SupportLa
     }
 
     @Override
-    public void asmVolume(double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFunVals, double[] volumnForce) {
-        basePenaltyAssemblier.asmVolume(weight, nodesIds, shapeFunVals, volumnForce);
+    public void asmVolume(double weight, TIntArrayList nodesAssemblyIndes, TDoubleArrayList[] shapeFunVals, double[] volumnForce) {
+        basePenaltyAssemblier.asmVolume(weight, nodesAssemblyIndes, shapeFunVals, volumnForce);
     }
 
     @Override
-    public void asmNeumann(double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFunVals, double[] neumannVal) {
-        basePenaltyAssemblier.asmNeumann(weight, nodesIds, shapeFunVals, neumannVal);
+    public void asmNeumann(double weight, TIntArrayList nodesAssemblyIndes, TDoubleArrayList[] shapeFunVals, double[] neumannVal) {
+        basePenaltyAssemblier.asmNeumann(weight, nodesAssemblyIndes, shapeFunVals, neumannVal);
     }
 
     @Override

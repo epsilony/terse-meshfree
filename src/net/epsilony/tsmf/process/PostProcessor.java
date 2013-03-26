@@ -27,8 +27,8 @@ public class PostProcessor extends Mixer {
     public double[] value(double[] center, LinearSegment2D bnd) {
         MixResult mixResult = mix(center, bnd);
         double[] output = new double[WithDiffOrderUtil.outputLength2D(getDiffOrder()) * nodeValueDimension];
-        for (int i = 0; i < mixResult.nodeIds.size(); i++) {
-            int nodeId = mixResult.nodeIds.getQuick(i);
+        for (int i = 0; i < mixResult.nodesAssemblyIndes.size(); i++) {
+            int nodeId = mixResult.nodesAssemblyIndes.getQuick(i);
             double[] value = nodesProcessDatasMap.getById(nodeId).getValue();
             for (int j = 0; j < mixResult.shapeFunctionValueLists.length; j++) {
                 double sv = mixResult.shapeFunctionValueLists[j].get(i);

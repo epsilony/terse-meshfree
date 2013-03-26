@@ -15,15 +15,26 @@ import no.uib.cipr.matrix.Matrix;
  */
 public interface WeakformAssemblier extends NeedPreparation, SynchronizedClonable<WeakformAssemblier> {
 
-    void asmVolume(double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFunVals, double[] volumnForce);
+    void asmVolume(
+            double weight,
+            TIntArrayList nodesAssemblyIndes,
+            TDoubleArrayList[] shapeFunVals,
+            double[] volumnForce);
 
     int volumeDiffOrder();
 
-    void asmNeumann(double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFunVals, double[] neumannVal);
+    void asmNeumann(double weight, 
+            TIntArrayList nodesAssemblyIndes, 
+            TDoubleArrayList[] shapeFunVals, 
+            double[] neumannVal);
 
     int neumannDiffOrder();
 
-    void asmDirichlet(double weight, TIntArrayList nodesIds, TDoubleArrayList[] shapeFunVals, double[] dirichletVal, boolean[] dirichletMark);
+    void asmDirichlet(double weight, 
+            TIntArrayList nodesAssemblyIndes, 
+            TDoubleArrayList[] shapeFunVals, 
+            double[] dirichletVal, 
+            boolean[] dirichletMark);
 
     int dirichletDiffOrder();
 
