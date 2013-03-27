@@ -32,6 +32,9 @@ public class Segment2DQuadrature implements Iterable<QuadraturePoint> {
         prepare();
     }
 
+    public Segment2DQuadrature() {
+    }
+
     public void setDegree(int degree) {
         this.degree = degree;
     }
