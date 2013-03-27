@@ -11,7 +11,7 @@ import static java.lang.Math.PI;
 import static java.lang.Math.sin;
 import static java.lang.Math.cos;
 import net.epsilony.tsmf.model.Node;
-import net.epsilony.tsmf.util.MiscellaneousUtils;
+import net.epsilony.tsmf.model.Segment2DUtils;
 
 /**
  *
@@ -113,7 +113,7 @@ public class Circle implements ArrvarFunction, GenericFunction<double[], double[
             } else {
                 succArc = headArc;
             }
-            MiscellaneousUtils.link(arc, succArc);
+            Segment2DUtils.link(arc, succArc);
             arc = succArc;
             i++;
         }

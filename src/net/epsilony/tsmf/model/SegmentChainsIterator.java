@@ -3,7 +3,6 @@ package net.epsilony.tsmf.model;
 
 import java.util.Iterator;
 import java.util.List;
-import net.epsilony.tsmf.util.MiscellaneousUtils;
 
 /**
  *
@@ -52,6 +51,6 @@ class SegmentChainsIterator<T extends Segment2D> implements Iterator<T> {
         if (last.getPred().getPred() == last.getSucc()) {
             throw new IllegalStateException("The chain is only a triangle, and no segments can be removed!");
         }
-        MiscellaneousUtils.link(last.getPred(), last.getSucc());
+        Segment2DUtils.link(last.getPred(), last.getSucc());
     }
 }

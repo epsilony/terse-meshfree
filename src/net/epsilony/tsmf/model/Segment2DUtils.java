@@ -62,4 +62,9 @@ public class Segment2DUtils {
         }
         return maxLength;
     }
+
+    public static void link(Segment2D asPred, Segment2D asSucc) {
+        asPred.setSucc(asSucc);
+        asSucc.setPred(asPred);
+    }
 }

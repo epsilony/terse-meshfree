@@ -7,10 +7,10 @@ import java.util.List;
 import net.epsilony.tsmf.adaptive.AdaptiveCellEdge;
 import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.LinearSegment2D;
+import net.epsilony.tsmf.model.Segment2DUtils;
 import net.epsilony.tsmf.util.GenericFunction;
 import net.epsilony.tsmf.util.IntIdentityMap;
 import net.epsilony.tsmf.util.Math2D;
-import net.epsilony.tsmf.util.MiscellaneousUtils;
 
 /**
  *
@@ -119,14 +119,14 @@ public class TriangleContourBuilder {
             TriangleContourCell nextContourCell = contourCell.nextContourCell();
             if (null == nextContourCell) {
                 LinearSegment2D newSucc = new LinearSegment2D(genContourNode(contourCell.getContourDestinationEdge()));
-                MiscellaneousUtils.link(segment, newSucc);
+                Segment2DUtils.link(segment, newSucc);
                 break;
             } else {
                 contourCell = nextContourCell;
             }
 
             if (contourCell == headCell) {
-                MiscellaneousUtils.link(segment, chainHead);
+                Segment2DUtils.link(segment, chainHead);
                 openRingHeadCells.remove(headCell);
                 openRingHeadSegments.remove(chainHead);
                 break;
@@ -144,7 +144,7 @@ public class TriangleContourBuilder {
             setupFunctionData(contourCell);
 
             LinearSegment2D newSucc = new LinearSegment2D(genContourNode(contourCell.getContourSourceEdge()));
-            MiscellaneousUtils.link(segment, newSucc);
+            Segment2DUtils.link(segment, newSucc);
             segment = newSucc;
 
         }
@@ -182,7 +182,7 @@ public class TriangleContourBuilder {
             if (cell == contourCell) {
                 openHeadCellIter.remove();
                 openHeadSegIter.remove();
-                MiscellaneousUtils.link(segment, openRingHead);
+                Segment2DUtils.link(segment, openRingHead);
 
                 contourHeads.remove(openRingHead);
 
