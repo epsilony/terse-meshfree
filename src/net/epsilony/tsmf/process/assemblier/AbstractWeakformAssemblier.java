@@ -45,6 +45,11 @@ public abstract class AbstractWeakformAssemblier implements WeakformAssemblier {
         return 0;
     }
 
+    @Override
+    public void prepare() {
+        initMainMatrixVector();
+    }
+
     protected final void initMainMatrixVector() {
         int numRowCol = getMainMatrixSize();
         if (dense) {

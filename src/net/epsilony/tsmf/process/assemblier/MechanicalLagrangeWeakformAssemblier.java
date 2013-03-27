@@ -75,11 +75,6 @@ public class MechanicalLagrangeWeakformAssemblier extends MechanicalPenaltyWeakf
     }
 
     @Override
-    public void prepare() {
-        initMainMatrixVector();
-    }
-
-    @Override
     protected int getMainMatrixSize() {
         return getNodeValueDimension() * (nodesNum + dirichletNodesNum);
     }

@@ -38,6 +38,4 @@ public abstract class AbstractWeakformLagrangeAssemblier extends AbstractWeakfor
     public void setDirichletNodesNum(int dirichletNodesNum) {
         this.dirichletNodesNum = dirichletNodesNum;
     }
-
-   
 }

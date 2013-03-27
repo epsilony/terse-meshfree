@@ -159,11 +159,6 @@ public class MechanicalPenaltyWeakformAssemblier extends AbstractWeakformAssembl
     }
 
     @Override
-    public void prepare() {
-        initMainMatrixVector();
-    }
-
-    @Override
     protected int getMainMatrixSize() {
         return nodesNum * 2;
     }
