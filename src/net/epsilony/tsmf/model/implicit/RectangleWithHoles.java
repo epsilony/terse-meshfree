@@ -8,23 +8,47 @@ import java.util.LinkedList;
 import java.util.List;
 import net.epsilony.tsmf.model.Polygon2D;
 import net.epsilony.tsmf.model.LinearSegment2D;
+import net.epsilony.tsmf.model.Model2D;
+import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.Segment2D;
+import net.epsilony.tsmf.model.SegmentChainsIterator;
+import net.epsilony.tsmf.process.WeakformQuadraturePoint;
+import net.epsilony.tsmf.process.WeakformQuadratureTask;
 import net.epsilony.tsmf.util.ArrvarFunction;
 import net.epsilony.tsmf.util.GenericFunction;
+import net.epsilony.tsmf.util.IntIdentityMap;
+import net.epsilony.tsmf.util.MiscellaneousUtils;
+import net.epsilony.tsmf.util.NeedPreparation;
+import net.epsilony.tsmf.util.quadrature.QuadraturePoint;
+import net.epsilony.tsmf.util.quadrature.Segment2DQuadrature;
+import net.epsilony.tsmf.util.quadrature.SymTriangleQuadrature;
 import net.epsilony.tsmf.util.ui.UIUtils;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class RectangleWithHoles implements ArrvarFunction, GenericFunction<double[], double[]> {
+public class RectangleWithHoles implements ArrvarFunction, GenericFunction<double[], double[]>, NeedPreparation {
 
+    public static double DEFAULT_MODEL_NODES_EXTENTION = 10;
+    public static double DEFAULT_QUADRATURE_DOMAIN_SIZE = 10;
+    public static double DEFAULT_SEGMENT_SIZE = 10;
+    public static int DEFAULT_QUADRATURE_POWER = 2;
     Rectangle2D rectangle;
     Polygon2D rectanglePolygon;
     double holeRadius, holeDistance;
     int numOfHoleRows;
     int numOfHoleCols;
     List<Circle> holes;
+    double spacesNodesExtension = DEFAULT_MODEL_NODES_EXTENTION;
+    double triangleSize = DEFAULT_QUADRATURE_DOMAIN_SIZE;
+    double segmentSize = DEFAULT_SEGMENT_SIZE;
+    List<TriangleContourCell> triangles;
+    List<Node> spaceNodes;
+    List<QuadraturePoint> volumeQuadraturePoints;
+    List<QuadraturePoint> boundaryQuadraturePoints;
+    List<Segment2D> chainsHeads;
+    int quadraturePower = DEFAULT_QUADRATURE_POWER;
 
     public RectangleWithHoles(Rectangle2D rectangle, double holeRadius, double holeDistance) {
         this.rectangle = UIUtils.tidyRectangle2D(rectangle, null);
@@ -35,10 +59,43 @@ public class RectangleWithHoles implements ArrvarFunction, GenericFunction<doubl
             throw new IllegalArgumentException("hole radius or hold distance is too large ("
                     + rectangle + ", holeRadius" + holeRadius + ", holeDistance)");
         }
-        genNumOfHoleRows();
-        genNumOfHoleCols();
         genHoles();
         genRectanglePolygon();
+    }
+
+    public void setSegmentSize(double segmentSize) {
+        this.segmentSize = segmentSize;
+    }
+
+    public void setQuadraturePower(int quadraturePower) {
+        this.quadraturePower = quadraturePower;
+    }
+
+    public void setSpaceNodesExtension(double spaceNodesExtension) {
+        this.spacesNodesExtension = spaceNodesExtension;
+    }
+
+    public void setTriangleSize(double triangleSize) {
+        if (triangleSize <= 0) {
+            throw new IllegalArgumentException("quadrature domain size should be positive");
+        }
+        this.triangleSize = triangleSize;
+    }
+
+    @Override
+    public void prepare() {
+        genTriangleContourCells();
+        genSpaceNodes();
+        genVolumeQuadraturePoints();
+        genBoundaryQuadraturePoints();
+    }
+
+    public Model2D getModel() {
+        return new Model2D(null, spaceNodes);
+    }
+
+    public WeakformQuadratureTask getWeakformQuadratureTask() {
+        return new ZeroLevelTask();
     }
 
     private void genNumOfHoleRows() {
@@ -51,6 +108,8 @@ public class RectangleWithHoles implements ArrvarFunction, GenericFunction<doubl
     }
 
     private void genHoles() {
+        genNumOfHoleRows();
+        genNumOfHoleCols();
         final double r = holeRadius + holeDistance / 2;
         final double d = 2 * r;
         final double x0 = rectangle.getX() + r + (rectangle.getWidth() - d * numOfHoleCols) / 2;
@@ -72,15 +131,14 @@ public class RectangleWithHoles implements ArrvarFunction, GenericFunction<doubl
                 Circle circle = new Circle(holeCenterX, holeCenterY, holeRadius);
                 circle.setConcrete(false);
                 holes.add(circle);
-
             }
         }
     }
 
     private void genRectanglePolygon() {
-        List<LinearSegment2D> chainsHeads = UIUtils.pathIteratorToSegment2DChains(rectangle.getPathIterator(null));
+        List<LinearSegment2D> polygonChainsHeads = UIUtils.pathIteratorToSegment2DChains(rectangle.getPathIterator(null));
         rectanglePolygon = new Polygon2D();
-        rectanglePolygon.setChainsHeads(chainsHeads);
+        rectanglePolygon.setChainsHeads(polygonChainsHeads);
     }
 
     @Override
@@ -113,17 +171,128 @@ public class RectangleWithHoles implements ArrvarFunction, GenericFunction<doubl
         return output;
     }
 
-    public List<Segment2D> toSegmentChains(double segLengthSup) {
-        List<Segment2D> chainsHeads = new LinkedList<>();
-        Polygon2D rectFraction = rectanglePolygon.fractionize(segLengthSup);
+    public void genSegmentChains() {
+        chainsHeads = new LinkedList<>();
+        Polygon2D rectFraction = rectanglePolygon.fractionize(segmentSize);
         chainsHeads.addAll(rectFraction.getChainsHeads());
         for (Circle cir : holes) {
-            chainsHeads.add(cir.toArcs(segLengthSup));
+            chainsHeads.add(cir.toArcs(segmentSize));
         }
-        return chainsHeads;
     }
-    
-    public void genModelAndWeakformProject(){
-        
+
+    private void genSpaceNodes() {
+        spaceNodes = new LinkedList<>();
+        for (TriangleContourCell cell : triangles) {
+            for (Segment2D seg : cell.getEdges()) {
+                Node node = seg.getHead();
+                if (node.getId() <= IntIdentityMap.NULL_INDEX_SUPREMUM) {
+                    spaceNodes.add(node);
+                    node.setId(Integer.MAX_VALUE);
+                }
+            }
+        }
+        for (Node nd : spaceNodes) {
+            nd.setId(Integer.MIN_VALUE);
+        }
+    }
+
+    private void genVolumeQuadraturePoints() {
+        volumeQuadraturePoints = new LinkedList<>();
+        SymTriangleQuadrature symTriangleQuadrature = new SymTriangleQuadrature();
+        symTriangleQuadrature.setPower(quadraturePower);
+        for (TriangleContourCell cell : triangles) {
+            symTriangleQuadrature.setTriangle(
+                    cell.getNode(0).getCoord()[0], cell.getNode(0).getCoord()[1],
+                    cell.getNode(1).getCoord()[0], cell.getNode(1).getCoord()[1],
+                    cell.getNode(2).getCoord()[0], cell.getNode(2).getCoord()[1]);
+            for (QuadraturePoint qp : symTriangleQuadrature) {
+                volumeQuadraturePoints.add(qp);
+            }
+        }
+    }
+
+    private void genBoundaryQuadraturePoints() {
+        genSegmentChains();
+        SegmentChainsIterator<Segment2D> iterator = new SegmentChainsIterator<>(chainsHeads);
+        Segment2DQuadrature segment2DQuadrature = new Segment2DQuadrature(quadraturePower);
+        boundaryQuadraturePoints = new LinkedList<>();
+        while (iterator.hasNext()) {
+            Segment2D segment = iterator.next();
+            segment2DQuadrature.setSegment(segment);
+            for (QuadraturePoint qp : segment2DQuadrature) {
+                boundaryQuadraturePoints.add(qp);
+            }
+        }
+    }
+
+    private void genTriangleContourCells() {
+        Rectangle2D nodesBounds = genNodesBounds();
+        TriangleContourCellFactory factory = new TriangleContourCellFactory();
+        TriangleContourCell[][] coverRectangle = factory.coverRectangle(nodesBounds, triangleSize);
+        triangles = new LinkedList<>();
+        MiscellaneousUtils.addToList(coverRectangle, triangles);
+    }
+
+    private Rectangle2D genNodesBounds() {
+        Rectangle2D nodesBounds = new Rectangle2D.Double(
+                rectangle.getX() - spacesNodesExtension,
+                rectangle.getY() - spacesNodesExtension,
+                rectangle.getWidth() + 2 * spacesNodesExtension,
+                rectangle.getHeight() + 2 * spacesNodesExtension);
+        return nodesBounds;
+    }
+
+    public double getTriangleSize() {
+        return triangleSize;
+    }
+
+    public double getSegmentSize() {
+        return segmentSize;
+    }
+
+    public Rectangle2D getRectangle() {
+        return rectangle;
+    }
+
+    public List<Circle> getHoles() {
+        return holes;
+    }
+
+    public List<QuadraturePoint> getBoundaryQuadraturePoints() {
+        return boundaryQuadraturePoints;
+    }
+
+    public List<TriangleContourCell> getTriangles() {
+        return triangles;
+    }
+
+    class ZeroLevelTask implements WeakformQuadratureTask {
+
+        @Override
+        public List<WeakformQuadraturePoint> volumeTasks() {
+            List<WeakformQuadraturePoint> result = new LinkedList<>();
+            for (QuadraturePoint qp : volumeQuadraturePoints) {
+                WeakformQuadraturePoint taskPoint = new WeakformQuadraturePoint(qp, new double[]{value(qp.coord)}, null);
+                result.add(taskPoint);
+            }
+            return result;
+        }
+
+        @Override
+        public List<WeakformQuadraturePoint> neumannTasks() {
+            return null;
+        }
+
+        @Override
+        public List<WeakformQuadraturePoint> dirichletTasks() {
+            List<WeakformQuadraturePoint> result = new LinkedList<>();
+            double[] value = new double[]{0};
+            boolean[] validity = new boolean[]{true};
+            for (QuadraturePoint qp : boundaryQuadraturePoints) {
+                WeakformQuadraturePoint taskPoint = new WeakformQuadraturePoint(qp, value, validity);
+                result.add(taskPoint);
+            }
+            return result;
+        }
     }
 }

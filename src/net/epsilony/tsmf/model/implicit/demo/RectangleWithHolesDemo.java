@@ -1,15 +1,16 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.model.implicit.demo;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.geom.Rectangle2D;
-import java.util.LinkedList;
+import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import net.epsilony.tsmf.model.implicit.RectangleWithHoles;
 import net.epsilony.tsmf.model.implicit.TriangleContourBuilder;
-import net.epsilony.tsmf.model.implicit.TriangleContourCell;
-import net.epsilony.tsmf.model.implicit.TriangleContourCellFactory;
-import net.epsilony.tsmf.util.MiscellaneousUtils;
+import net.epsilony.tsmf.util.ui.BasicModelPanel;
 import net.epsilony.tsmf.util.ui.CommonFrame;
 import net.epsilony.tsmf.util.ui.SingleModelShapeDrawer;
 
@@ -25,15 +26,15 @@ public class RectangleWithHolesDemo {
     RectangleWithHoles rectangleWithHoles = new RectangleWithHoles(rectangle, holeRadius, holeDistance);
     SingleModelShapeDrawer singleShapeDrawer = new SingleModelShapeDrawer(rectangleWithHoles.genShape());
     double triangleSize = 1;
+    double spaceNodesExtention = triangleSize * 2;
     TriangleContourBuilderDemoDrawer triangleContourDrawer;
 
     private void genTriangleContourDrawer() {
-        TriangleContourCellFactory factory = new TriangleContourCellFactory();
-        TriangleContourCell[][] cellGrid = factory.coverRectangle(rectangle, triangleSize);
-        LinkedList<TriangleContourCell> cells = new LinkedList<>();
-        MiscellaneousUtils.addToList(cellGrid, cells);
+        rectangleWithHoles.setTriangleSize(triangleSize);
+        rectangleWithHoles.setSpaceNodesExtension(spaceNodesExtention);
+        rectangleWithHoles.prepare();
         TriangleContourBuilder contourBuilder = new TriangleContourBuilder();
-        contourBuilder.setCells(cells);
+        contourBuilder.setCells(rectangleWithHoles.getTriangles());
         contourBuilder.setLevelSetFunction(rectangleWithHoles);
         contourBuilder.genContour();
         triangleContourDrawer = new TriangleContourBuilderDemoDrawer(contourBuilder);
