@@ -2,66 +2,20 @@
 package net.epsilony.tsmf.process.assemblier;
 
 import gnu.trove.list.array.TDoubleArrayList;
-import gnu.trove.list.array.TIntArrayList;
-import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
 import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
-import no.uib.cipr.matrix.UpperSymmDenseMatrix;
-import no.uib.cipr.matrix.sparse.FlexCompRowMatrix;
 
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class PenaltyWeakformAssemblier implements WeakformAssemblier {
+public class PenaltyWeakformAssemblier extends AbstractWeakformAssemblier {
 
-    Matrix mainMatrix;
-    DenseVector mainVector;
-    ConstitutiveLaw constitutiveLaw;
     double penalty;
-    boolean dense;
-    private DenseMatrix constitutiveLawMatrixCopy;
-    double weight;
-    TIntArrayList nodesAssemblyIndes;
-    TDoubleArrayList[] shapeFunctionValues;
-    double[] load;
-    boolean[] loadValidity;
-
-    public double getPenalty() {
-        return penalty;
-    }
-
-    public void setPenalty(double penalty) {
-        this.penalty = penalty;
-    }
-    int nodesNum;
 
     public PenaltyWeakformAssemblier(double neumannPenalty) {
         this.penalty = neumannPenalty;
-    }
-
-    protected final void initMainMatrixVector(int numRowCol) {
-        if (dense) {
-            if (constitutiveLaw.isSymmetric()) {
-                mainMatrix = new UpperSymmDenseMatrix(numRowCol);
-            } else {
-                mainMatrix = new DenseMatrix(numRowCol, numRowCol);
-            }
-        } else {
-            mainMatrix = new FlexCompRowMatrix(numRowCol, numRowCol);
-        }
-        mainVector = new DenseVector(numRowCol);
-    }
-
-    @Override
-    public boolean isUpperSymmertric() {
-        return constitutiveLaw.isSymmetric();
-    }
-
-    @Override
-    public void setWeight(double weight) {
-        this.weight = weight;
     }
 
     @Override
@@ -158,10 +112,6 @@ public class PenaltyWeakformAssemblier implements WeakformAssemblier {
         }
     }
 
-    double getNeumannPenalty() {
-        return penalty;
-    }
-
     @Override
     public void assembleDirichlet() {
         double[] dirichletVal = load;
@@ -209,34 +159,13 @@ public class PenaltyWeakformAssemblier implements WeakformAssemblier {
     }
 
     @Override
-    public Matrix getMainMatrix() {
-        return mainMatrix;
-    }
-
-    @Override
-    public DenseVector getMainVector() {
-        return mainVector;
-    }
-
-    @Override
-    public void setNodesNum(int nodesNum) {
-        this.nodesNum = nodesNum;
-    }
-
-    @Override
-    public void setConstitutiveLaw(ConstitutiveLaw constitutiveLaw) {
-        this.constitutiveLaw = constitutiveLaw;
-        constitutiveLawMatrixCopy = new DenseMatrix(constitutiveLaw.getMatrix());
-    }
-
-    @Override
     public void prepare() {
-        initMainMatrixVector(nodesNum * 2);
+        initMainMatrixVector();
     }
 
     @Override
-    public void setMatrixDense(boolean dense) {
-        this.dense = dense;
+    protected int getMainMatrixSize() {
+        return nodesNum * 2;
     }
 
     @Override
@@ -250,28 +179,8 @@ public class PenaltyWeakformAssemblier implements WeakformAssemblier {
     }
 
     @Override
-    public void mergeWithBrother(WeakformAssemblier otherAssemblier) {
-        if (otherAssemblier.isUpperSymmertric() != isUpperSymmertric()) {
-            throw new IllegalArgumentException("the assemblier to add in should be with same symmetricity");
-        }
-        Matrix otherMat = otherAssemblier.getMainMatrix();
-        mainMatrix.add(otherMat);
-        mainVector.add(otherAssemblier.getMainVector());
-    }
-
-    @Override
-    public boolean isMatrixDense() {
-        return dense;
-    }
-
-    @Override
     public int getVolumeDiffOrder() {
         return 1;
-    }
-
-    @Override
-    public int getNeumannDiffOrder() {
-        return 0;
     }
 
     @Override
@@ -279,20 +188,11 @@ public class PenaltyWeakformAssemblier implements WeakformAssemblier {
         return 0;
     }
 
-    @Override
-    public int getNodeValueDimension() {
-        return 2;
+    public double getPenalty() {
+        return penalty;
     }
 
-    @Override
-    public void setShapeFunctionValue(TIntArrayList nodesAssemblyIndes, TDoubleArrayList[] shapeFunValues) {
-        this.nodesAssemblyIndes = nodesAssemblyIndes;
-        this.shapeFunctionValues = shapeFunValues;
-    }
-
-    @Override
-    public void setLoad(double[] value, boolean[] validity) {
-        this.load = value;
-        this.loadValidity = validity;
+    public void setPenalty(double penalty) {
+        this.penalty = penalty;
     }
 }

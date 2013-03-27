@@ -76,7 +76,12 @@ public class LagrangeWeakformAssemblier extends PenaltyWeakformAssemblier implem
 
     @Override
     public void prepare() {
-        initMainMatrixVector(2 * (nodesNum + diriNum));
+        initMainMatrixVector();
+    }
+
+    @Override
+    protected int getMainMatrixSize() {
+        return 2 * (nodesNum + diriNum);
     }
 
     @Override
