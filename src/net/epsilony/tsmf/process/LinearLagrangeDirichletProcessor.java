@@ -4,7 +4,6 @@ package net.epsilony.tsmf.process;
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.tsmf.model.Node;
-import net.epsilony.tsmf.shape_func.Linear2D;
 import net.epsilony.tsmf.util.IntIdentityMap;
 import net.epsilony.tsmf.util.synchron.SynchronizedClonable;
 
@@ -16,19 +15,19 @@ public class LinearLagrangeDirichletProcessor implements SynchronizedClonable<Li
 
     private final IntIdentityMap<Node, ProcessNodeData> nodesProcessDatasMap;
     TIntArrayList lagrangleAssemblyIndes = new TIntArrayList();
-    TDoubleArrayList lagrangleShapeFunction = new TDoubleArrayList();
+    TDoubleArrayList lagrangleShapeFunctionValue = new TDoubleArrayList();
 
     public void process(WeakformQuadraturePoint pt) {
         lagrangleAssemblyIndes.resetQuick();
-        lagrangleShapeFunction.resetQuick();
+        lagrangleShapeFunctionValue.resetQuick();
         lagrangleAssemblyIndes.ensureCapacity(2);
-        lagrangleShapeFunction.ensureCapacity(2);
+        lagrangleShapeFunctionValue.ensureCapacity(2);
         Node head = pt.segment.getHead();
         Node rear = pt.segment.getRear();
         lagrangleAssemblyIndes.add(getLagrangeId(head));
         lagrangleAssemblyIndes.add(getLagrangeId(rear));
-        double[] funcV = Linear2D.values(pt.coord, head.getCoord(), rear.getCoord(), null);
-        lagrangleShapeFunction.addAll(funcV);
+        lagrangleShapeFunctionValue.add(1 - pt.segmentParameter);
+        lagrangleShapeFunctionValue.add(pt.segmentParameter);
     }
 
     public TIntArrayList getLagrangleAssemblyIndes() {
@@ -36,7 +35,7 @@ public class LinearLagrangeDirichletProcessor implements SynchronizedClonable<Li
     }
 
     public TDoubleArrayList getLagrangleShapeFunctionValue() {
-        return lagrangleShapeFunction;
+        return lagrangleShapeFunctionValue;
     }
 
     public LinearLagrangeDirichletProcessor(IntIdentityMap<Node, ProcessNodeData> nodesProcessDatasMap) {
