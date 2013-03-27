@@ -8,14 +8,14 @@ import java.util.List;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-class SegmentChainsIterator<T extends Segment2D> implements Iterator<T> {
+public class SegmentChainsIterator<T extends Segment2D> implements Iterator<T> {
 
     Iterator<T> headIterator;
     T seg;
     T last;
     T head;
 
-    SegmentChainsIterator(List<T> chainsHeads) {
+    public SegmentChainsIterator(List<T> chainsHeads) {
         headIterator = chainsHeads.iterator();
         seg = headIterator.hasNext() ? headIterator.next() : null;
         head = seg;
