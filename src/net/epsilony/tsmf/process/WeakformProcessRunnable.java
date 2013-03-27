@@ -1,7 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.process;
 
-import net.epsilony.tsmf.process.assemblier.SupportLagrange;
+import net.epsilony.tsmf.process.assemblier.WeakformLagrangeAssemblier;
 import net.epsilony.tsmf.process.assemblier.WeakformAssemblier;
 import net.epsilony.tsmf.util.synchron.SynchronizedIteratorWrapper;
 
@@ -24,7 +24,7 @@ public class WeakformProcessRunnable implements Runnable {
     }
 
     public boolean isAssemblyDirichletByLagrange() {
-        return lagProcessor != null && assemblier instanceof SupportLagrange;
+        return lagProcessor != null && assemblier instanceof WeakformLagrangeAssemblier;
     }
 
     public void processVolume() {
@@ -75,9 +75,9 @@ public class WeakformProcessRunnable implements Runnable {
         }
         mixer.setDiffOrder(assemblier.getDirichletDiffOrder());
         boolean lagDiri = isAssemblyDirichletByLagrange();
-        SupportLagrange lagAssemblier = null;
+        WeakformLagrangeAssemblier lagAssemblier = null;
         if (lagDiri) {
-            lagAssemblier = (SupportLagrange) assemblier;
+            lagAssemblier = (WeakformLagrangeAssemblier) assemblier;
         }
         while (true) {
             WeakformQuadraturePoint pt = dirichletSynchronizedIterator.nextItem();

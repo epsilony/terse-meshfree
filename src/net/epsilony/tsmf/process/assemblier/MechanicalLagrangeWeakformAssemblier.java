@@ -10,9 +10,9 @@ import no.uib.cipr.matrix.Matrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MechanicalLagrangeWeakformAssemblier extends MechanicalPenaltyWeakformAssemblier implements SupportLagrange {
+public class MechanicalLagrangeWeakformAssemblier extends MechanicalPenaltyWeakformAssemblier implements WeakformLagrangeAssemblier {
 
-    int diriNum;
+    int dirichletNodesNum;
     TIntArrayList lagrangeAssemblyIndes;
     TDoubleArrayList lagrangeShapeFunctionValue;
 
@@ -65,13 +65,13 @@ public class MechanicalLagrangeWeakformAssemblier extends MechanicalPenaltyWeakf
     }
 
     @Override
-    public void setDirichletNodesNum(int diriNum) {
-        this.diriNum = diriNum;
+    public void setDirichletNodesNum(int dirichletNodesNum) {
+        this.dirichletNodesNum = dirichletNodesNum;
     }
 
     @Override
     public int getDirichletNodesNum() {
-        return diriNum;
+        return dirichletNodesNum;
     }
 
     @Override
@@ -81,14 +81,14 @@ public class MechanicalLagrangeWeakformAssemblier extends MechanicalPenaltyWeakf
 
     @Override
     protected int getMainMatrixSize() {
-        return 2 * (nodesNum + diriNum);
+        return getNodeValueDimension() * (nodesNum + dirichletNodesNum);
     }
 
     @Override
     public MechanicalLagrangeWeakformAssemblier synchronizeClone() {
         MechanicalLagrangeWeakformAssemblier result = new MechanicalLagrangeWeakformAssemblier();
         result.setConstitutiveLaw(constitutiveLaw);
-        result.setDirichletNodesNum(diriNum);
+        result.setDirichletNodesNum(dirichletNodesNum);
         result.setMatrixDense(isMatrixDense());
         result.setNodesNum(nodesNum);
         result.prepare();

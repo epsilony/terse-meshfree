@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import net.epsilony.tsmf.process.assemblier.SupportLagrange;
+import net.epsilony.tsmf.process.assemblier.WeakformLagrangeAssemblier;
 import net.epsilony.tsmf.process.assemblier.WeakformAssemblier;
 import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
 import net.epsilony.tsmf.model.Model2D;
@@ -190,14 +190,14 @@ public class WeakformProcessor implements NeedPreparation {
         assemblier.setMatrixDense(dense);
         if (isAssemblyDirichletByLagrange()) {
             lagProcessor = new LinearLagrangeDirichletProcessor(nodesProcessDataMap);
-            SupportLagrange sL = (SupportLagrange) assemblier;
+            WeakformLagrangeAssemblier sL = (WeakformLagrangeAssemblier) assemblier;
             sL.setDirichletNodesNum(lagProcessor.getDirichletNodesSize());
         }
         assemblier.prepare();
     }
 
     public boolean isAssemblyDirichletByLagrange() {
-        return assemblier instanceof SupportLagrange;
+        return assemblier instanceof WeakformLagrangeAssemblier;
     }
 
     public void solve() {

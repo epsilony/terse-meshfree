@@ -195,4 +195,9 @@ public class MechanicalPenaltyWeakformAssemblier extends AbstractWeakformAssembl
     public void setPenalty(double penalty) {
         this.penalty = penalty;
     }
+
+    @Override
+    public int getNodeValueDimension() {
+        return 2;
+    }
 }

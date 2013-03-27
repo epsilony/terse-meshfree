@@ -45,11 +45,6 @@ public abstract class AbstractWeakformAssemblier implements WeakformAssemblier {
         return 0;
     }
 
-    @Override
-    public int getNodeValueDimension() {
-        return 2;
-    }
-
     protected final void initMainMatrixVector() {
         int numRowCol = getMainMatrixSize();
         if (dense) {
@@ -64,7 +59,9 @@ public abstract class AbstractWeakformAssemblier implements WeakformAssemblier {
         mainVector = new DenseVector(numRowCol);
     }
 
-    abstract protected int getMainMatrixSize();
+    protected int getMainMatrixSize() {
+        return getNodeValueDimension() * nodesNum;
+    }
 
     @Override
     public boolean isMatrixDense() {
