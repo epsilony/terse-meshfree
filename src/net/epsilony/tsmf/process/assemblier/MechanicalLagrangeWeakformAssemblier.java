@@ -10,13 +10,13 @@ import no.uib.cipr.matrix.Matrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class LagrangeWeakformAssemblier extends PenaltyWeakformAssemblier implements SupportLagrange {
+public class MechanicalLagrangeWeakformAssemblier extends MechanicalPenaltyWeakformAssemblier implements SupportLagrange {
 
     int diriNum;
     TIntArrayList lagrangeAssemblyIndes;
     TDoubleArrayList lagrangeShapeFunctionValue;
 
-    public LagrangeWeakformAssemblier() {
+    public MechanicalLagrangeWeakformAssemblier() {
         super(0);
     }
 
@@ -85,8 +85,8 @@ public class LagrangeWeakformAssemblier extends PenaltyWeakformAssemblier implem
     }
 
     @Override
-    public LagrangeWeakformAssemblier synchronizeClone() {
-        LagrangeWeakformAssemblier result = new LagrangeWeakformAssemblier();
+    public MechanicalLagrangeWeakformAssemblier synchronizeClone() {
+        MechanicalLagrangeWeakformAssemblier result = new MechanicalLagrangeWeakformAssemblier();
         result.setConstitutiveLaw(constitutiveLaw);
         result.setDirichletNodesNum(diriNum);
         result.setMatrixDense(isMatrixDense());

@@ -10,11 +10,11 @@ import no.uib.cipr.matrix.Matrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class PenaltyWeakformAssemblier extends AbstractWeakformAssemblier {
+public class MechanicalPenaltyWeakformAssemblier extends AbstractWeakformAssemblier {
 
     double penalty;
 
-    public PenaltyWeakformAssemblier(double neumannPenalty) {
+    public MechanicalPenaltyWeakformAssemblier(double neumannPenalty) {
         this.penalty = neumannPenalty;
     }
 
@@ -169,8 +169,8 @@ public class PenaltyWeakformAssemblier extends AbstractWeakformAssemblier {
     }
 
     @Override
-    public PenaltyWeakformAssemblier synchronizeClone() {
-        PenaltyWeakformAssemblier result = new PenaltyWeakformAssemblier(penalty);
+    public MechanicalPenaltyWeakformAssemblier synchronizeClone() {
+        MechanicalPenaltyWeakformAssemblier result = new MechanicalPenaltyWeakformAssemblier(penalty);
         result.setNodesNum(nodesNum);
         result.setConstitutiveLaw(constitutiveLaw);
         result.setMatrixDense(dense);

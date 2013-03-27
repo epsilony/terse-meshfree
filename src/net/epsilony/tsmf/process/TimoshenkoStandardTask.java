@@ -2,7 +2,7 @@
 package net.epsilony.tsmf.process;
 
 import java.util.List;
-import net.epsilony.tsmf.process.assemblier.LagrangeWeakformAssemblier;
+import net.epsilony.tsmf.process.assemblier.MechanicalLagrangeWeakformAssemblier;
 import net.epsilony.tsmf.process.assemblier.WeakformAssemblier;
 import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
 import net.epsilony.tsmf.model.Model2D;
@@ -65,7 +65,7 @@ public class TimoshenkoStandardTask implements WeakformQuadratureTask {
         Model2D model = rectProject.model(spaceNdsGap);
         ShapeFunction shapeFunc = new MLS();
         ConstitutiveLaw constitutiveLaw = timoBeam.constitutiveLaw();
-        WeakformAssemblier assemblier = new LagrangeWeakformAssemblier();
+        WeakformAssemblier assemblier = new MechanicalLagrangeWeakformAssemblier();
         InfluenceRadiusCalculator influenceRadsCalc = new ConstantInfluenceRadiusCalculator(influenceRad);
         return new SimpleWeakformProject(project, model, influenceRadsCalc, assemblier, shapeFunc, constitutiveLaw);
     }

@@ -38,10 +38,10 @@ public class MLSTest {
     public double[] polynomialSample(double[] xy) {
         double x = xy[0], y = xy[1];
         return new double[]{
-                    1.1 + 3 * x + 4.4 * y - x * x - 1.3 * x * y + 2.2 * y * y,
-                    3 - 2 * x - 1.3 * y,
-                    4.4 - 1.3 * x + 4.4 * y
-                };
+            1.1 + 3 * x + 4.4 * y - x * x - 1.3 * x * y + 2.2 * y * y,
+            3 - 2 * x - 1.3 * y,
+            4.4 - 1.3 * x + 4.4 * y
+        };
     }
 
     public double[] sin_cos_sample(double[] xy) {
@@ -108,6 +108,7 @@ public class MLSTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testFitness() {
         int numPerDim = 50;
         int testPerDim = 7;

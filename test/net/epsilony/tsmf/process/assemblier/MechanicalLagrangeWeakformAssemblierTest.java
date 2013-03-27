@@ -17,9 +17,9 @@ import org.junit.Test;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class LagrangeWeakformAssemblierTest {
+public class MechanicalLagrangeWeakformAssemblierTest {
 
-    public LagrangeWeakformAssemblierTest() {
+    public MechanicalLagrangeWeakformAssemblierTest() {
     }
 
     @Before
@@ -35,7 +35,7 @@ public class LagrangeWeakformAssemblierTest {
     double weight = 0.23;
 
     /**
-     * Test of assembleDirichlet method, of class LagrangeWeakformAssemblier.
+     * Test of assembleDirichlet method, of class MechanicalLagrangeWeakformAssemblier.
      */
     @Test
     public void testAsmDirichlet() {
@@ -64,7 +64,7 @@ public class LagrangeWeakformAssemblierTest {
         double[] exp_v = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -170.0, 60.0, 0.0, 0.0, -47.6, 16.8, 0.0, 0.0};
 
         for (boolean upperSym : new boolean[]{true, false}) {
-            LagrangeWeakformAssemblier lag = new LagrangeWeakformAssemblier();
+            MechanicalLagrangeWeakformAssemblier lag = new MechanicalLagrangeWeakformAssemblier();
             lag.setConstitutiveLaw(new RawConstitutiveLaw(upperSym, new DenseMatrix(3, 3)));
             lag.setNodesNum(nodesSize);
             lag.setMatrixDense(upperSym);
