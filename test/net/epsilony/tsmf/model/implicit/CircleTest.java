@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.model.implicit;
 
 import net.epsilony.tsmf.model.ArcSegment2D;
@@ -10,7 +7,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author epsilon
+ * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
 public class CircleTest {
 

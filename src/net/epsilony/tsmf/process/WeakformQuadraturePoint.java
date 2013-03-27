@@ -1,7 +1,6 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.process;
 
-import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.util.quadrature.QuadraturePoint;
 
 /**
