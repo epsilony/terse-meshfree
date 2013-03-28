@@ -18,17 +18,17 @@ import no.uib.cipr.matrix.sparse.FlexCompRowMatrix;
  */
 public abstract class AbstractWeakformAssemblier implements WeakformAssemblier {
 
-    ConstitutiveLaw constitutiveLaw;
+    protected ConstitutiveLaw constitutiveLaw;
     protected DenseMatrix constitutiveLawMatrixCopy;
-    boolean dense;
-    double[] load;
-    boolean[] loadValidity;
-    Matrix mainMatrix;
-    DenseVector mainVector;
-    TIntArrayList nodesAssemblyIndes;
-    int nodesNum;
-    TDoubleArrayList[] shapeFunctionValues;
-    double weight;
+    protected boolean dense;
+    protected double[] load;
+    protected boolean[] loadValidity;
+    protected Matrix mainMatrix;
+    protected DenseVector mainVector;
+    protected TIntArrayList nodesAssemblyIndes;
+    protected int nodesNum;
+    protected TDoubleArrayList[] shapeFunctionValues;
+    protected double weight;
 
     @Override
     public Matrix getMainMatrix() {

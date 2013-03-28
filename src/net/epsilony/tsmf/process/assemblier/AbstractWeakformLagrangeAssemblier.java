@@ -12,9 +12,9 @@ import gnu.trove.list.array.TIntArrayList;
  */
 public abstract class AbstractWeakformLagrangeAssemblier extends AbstractWeakformAssemblier implements WeakformLagrangeAssemblier {
 
-    int dirichletNodesNum;
-    TIntArrayList lagrangeAssemblyIndes;
-    TDoubleArrayList lagrangeShapeFunctionValue;
+    protected int dirichletNodesNum;
+    protected TIntArrayList lagrangeAssemblyIndes;
+    protected TDoubleArrayList lagrangeShapeFunctionValue;
 
     @Override
     protected int getMainMatrixSize() {
