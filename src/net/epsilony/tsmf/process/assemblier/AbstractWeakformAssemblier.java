@@ -53,7 +53,7 @@ public abstract class AbstractWeakformAssemblier implements WeakformAssemblier {
     protected final void initMainMatrixVector() {
         int numRowCol = getMainMatrixSize();
         if (dense) {
-            if (constitutiveLaw.isSymmetric()) {
+            if (isUpperSymmertric()) {
                 mainMatrix = new UpperSymmDenseMatrix(numRowCol);
             } else {
                 mainMatrix = new DenseMatrix(numRowCol, numRowCol);
