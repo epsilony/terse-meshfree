@@ -1,6 +1,7 @@
 /* (c) Copyright by Man YUAN */
 package net.epsilony.tsmf.process;
 
+import net.epsilony.tsmf.model.influence.EnsureNodesNum;
 import net.epsilony.tsmf.util.GenericFunction;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.integration.SimpsonIntegrator;
@@ -19,31 +20,78 @@ public class WeakformProcessorTimoshenkoCantileverTest {
     @Test
     public void testErrSquareIntegrationOnXAxis() {
         System.out.println("test Timoshenko standard beam, x axis");
+        genTimoshenkoStandardCantileverProcessor();
+        processAndGenPostProcessor();
         timoPostProcessor.setDiffOrder(0);
 
         CurveOnXAxis xAxisCure = new CurveOnXAxis();
         boolean compareDistanceU = false;
-        double err = integrateErrorSquareOnCurve(xAxisCure, compareDistanceU);
-        double expErr = 1e-15;
+        double[] results = integrateErrorSquareOnCurve(xAxisCure, compareDistanceU);
+        double err = results[0];
+        double accurateValue = results[1];
+        double expErr = 1e-11*accurateValue;
         System.out.println("err = " + err);
+        System.out.println("acurateValue = " + accurateValue);
         assertTrue(err <= expErr);
-        assertEquals(1.0734441657185E-16, err, 1e-16);
+        //assertEquals(1.0728621297419604E-16, err, 1e-16); //typical value
     }
 
     @Test
     public void testErrSquareIntegrationOnLeftSide() {
         System.out.println("test Timoshinko standard beam, left edge");
+        genTimoshenkoStandardCantileverProcessor();
+        processAndGenPostProcessor();
         timoPostProcessor.setDiffOrder(0);
         CurveOnLeftSide curve = new CurveOnLeftSide();
         boolean compareDistanceU = false;
-        double err = integrateErrorSquareOnCurve(curve, compareDistanceU);
-        double expErr = 1e-17;
+        double[] results = integrateErrorSquareOnCurve(curve, compareDistanceU);
+        double err = results[0];
+        double accurateValue = results[1];
+        double expErr = 1e-8*accurateValue;
         System.out.println("err = " + err);
+        System.out.println("acurateValue = " + accurateValue);
         assertTrue(err <= expErr);
-        assertEquals(6.193751199703141E-18, err, 1e-18);
+        //assertEquals(5.9676721435783116E-18, err, 1e-18); //typical value
     }
 
-    public double integrateErrorSquareOnCurve(GenericFunction<Double, double[]> curve, boolean displacementU) {
+    @Test
+    public void testOnLeftSide_EnsureNodesNum() {
+        System.out.println("test Timoshinko standard beam, left edge");
+        genTimoshenkoStandardCantileverProcessor();
+        timoProcessor.setInfluenceRadiusCalculator(new EnsureNodesNum(4, 10));
+        processAndGenPostProcessor();
+        timoPostProcessor.setDiffOrder(0);
+        CurveOnLeftSide curve = new CurveOnLeftSide();
+        boolean compareDistanceU = false;
+        double[] results = integrateErrorSquareOnCurve(curve, compareDistanceU);
+        double err = results[0];
+        double accurateValue = results[1];
+        double expErr = 1e-7*accurateValue;
+        System.out.println("err = " + err);
+        System.out.println("acurateValue = " + accurateValue);
+        assertTrue(err <= expErr);
+    }
+
+    @Test
+    public void testOnXAxis_EnsureNodesNum() {
+        System.out.println("test Timoshenko standard beam, x axis");
+        genTimoshenkoStandardCantileverProcessor();
+        timoProcessor.setInfluenceRadiusCalculator(new EnsureNodesNum(4, 10));
+        processAndGenPostProcessor();
+        timoPostProcessor.setDiffOrder(0);
+
+        CurveOnXAxis xAxisCure = new CurveOnXAxis();
+        boolean compareDistanceU = false;
+        double[] results = integrateErrorSquareOnCurve(xAxisCure, compareDistanceU);
+        double err = results[0];
+        double accurateValue = results[1];
+        double expErr = 1e-7*accurateValue;
+        System.out.println("err = " + err);
+        System.out.println("acurateValue = " + accurateValue);
+        assertTrue(err <= expErr);
+    }
+
+    public double[] integrateErrorSquareOnCurve(GenericFunction<Double, double[]> curve, boolean displacementU) {
         final UnivariateFunction actFunc = new NumericalDisplacementOnCurve(curve, displacementU);
         final UnivariateFunction expFunc = new PreciseValueOnCurve(curve, displacementU);
         UnivariateFunction func = new UnivariateFunction() {
@@ -53,22 +101,34 @@ public class WeakformProcessorTimoshenkoCantileverTest {
                 return d * d;
             }
         };
+
+        UnivariateFunction oriFunc = new UnivariateFunction() {
+            @Override
+            public double value(double x) {
+                double d = actFunc.value(x);
+                return d * d;
+            }
+        };
         SimpsonIntegrator integrator = new SimpsonIntegrator();
-        return integrator.integrate(10000, func, 0, 1);
+        double oriValue = integrator.integrate(10000, oriFunc, 0, 1);
+        double errValue = integrator.integrate(10000, func, 0, 1);
+        return new double[]{errValue, oriValue};
     }
     PostProcessor timoPostProcessor;
     WeakformProcessor timoProcessor;
 
-    @org.junit.Before
-    public void prepareTimoshenkoStandardCantileverPostProcessor() {
+    public void genTimoshenkoStandardCantileverProcessor() {
         timoProcessor = WeakformProcessor.genTimoshenkoProjectProcess();
+    }
+
+    private void processAndGenPostProcessor() {
         System.out.println("Multi Processing: " + timoProcessor.isActuallyMultiThreadable());
         timoProcessor.prepare();
         timoProcessor.process();
         timoProcessor.solve();
         timoPostProcessor = timoProcessor.postProcessor();
     }
-    public static final double SHRINK = 0.001;
+    public static final double SHRINK = 0.000001;
 
     public class CurveOnXAxis implements GenericFunction<Double, double[]> {
 

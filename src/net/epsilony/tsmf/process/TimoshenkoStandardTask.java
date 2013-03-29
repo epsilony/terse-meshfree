@@ -7,6 +7,7 @@ import net.epsilony.tsmf.process.assemblier.WeakformAssemblier;
 import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
 import net.epsilony.tsmf.model.Model2D;
 import net.epsilony.tsmf.model.influence.ConstantInfluenceRadiusCalculator;
+import net.epsilony.tsmf.model.influence.EnsureNodesNum;
 import net.epsilony.tsmf.model.influence.InfluenceRadiusCalculator;
 import net.epsilony.tsmf.shape_func.MLS;
 import net.epsilony.tsmf.shape_func.ShapeFunction;
@@ -67,6 +68,7 @@ public class TimoshenkoStandardTask implements WeakformQuadratureTask {
         ConstitutiveLaw constitutiveLaw = timoBeam.constitutiveLaw();
         WeakformAssemblier assemblier = new MechanicalLagrangeWeakformAssemblier();
         InfluenceRadiusCalculator influenceRadsCalc = new ConstantInfluenceRadiusCalculator(influenceRad);
+//        InfluenceRadiusCalculator influenceRadsCalc = new EnsureNodesNum(4, 10);
         return new SimpleWeakformProject(project, model, influenceRadsCalc, assemblier, shapeFunc, constitutiveLaw);
     }
 }

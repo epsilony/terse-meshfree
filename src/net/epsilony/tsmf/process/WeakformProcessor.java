@@ -146,6 +146,7 @@ public class WeakformProcessor implements NeedPreparation {
         nodesProcessDataMap = new IntIdentityMap<>();
         nodesProcessDataMap.appendNullValues(model.getAllNodes().size());
         int index = 0;
+        influenceRadiusCalculator.setSupportDomainSearcher(supportDomainSearcherFactory.produce());
         for (Node nd : model.getSpaceNodes()) {
             double rad = influenceRadiusCalculator.calcInflucenceRadius(nd, null);
             ProcessNodeData data = new ProcessNodeData();
