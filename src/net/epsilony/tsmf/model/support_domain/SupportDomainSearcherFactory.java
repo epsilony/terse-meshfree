@@ -20,7 +20,7 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
     public static final boolean DEFAULT_IGNORGE_INVISIBLE_NODES_INFORMATION = true;
     SphereSearcher<Node> nodesSearcher;
     SphereSearcher<Segment2D> segmentsSearcher;
-    IntIdentityMap<Node,ProcessNodeData> nodesProcessDatasMap;
+    IntIdentityMap<Node, ProcessNodeData> nodesProcessDatasMap;
     boolean useCenterPerturb = DEFAULT_USE_CENTER_PERTURB;
     boolean ignoreInvisibleNodesInformation = DEFAULT_IGNORGE_INVISIBLE_NODES_INFORMATION;
 
@@ -46,14 +46,14 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
     public SupportDomainSearcherFactory(
             SphereSearcher<Node> nodesSearcher,
             SphereSearcher<Segment2D> segmentsSearcher,
-            IntIdentityMap<Node,ProcessNodeData> processNodesDatas) {
+            IntIdentityMap<Node, ProcessNodeData> processNodesDatas) {
         this(nodesSearcher, segmentsSearcher, processNodesDatas, DEFAULT_USE_CENTER_PERTURB);
     }
 
     public SupportDomainSearcherFactory(
             SphereSearcher<Node> nodesSearcher,
             SphereSearcher<Segment2D> segmentsSearcher,
-            IntIdentityMap<Node,ProcessNodeData> processNodesDatas,
+            IntIdentityMap<Node, ProcessNodeData> processNodesDatas,
             boolean useCenterPerturb) {
         this.nodesSearcher = nodesSearcher;
         this.segmentsSearcher = segmentsSearcher;
@@ -91,7 +91,7 @@ public class SupportDomainSearcherFactory implements Factory<SupportDomainSearch
         return segmentsSearcher;
     }
 
-    public void setNodesProcessDatasMap(IntIdentityMap<Node,ProcessNodeData> nodesProcessDatasMap) {
+    public void setNodesProcessDatasMap(IntIdentityMap<Node, ProcessNodeData> nodesProcessDatasMap) {
         this.nodesProcessDatasMap = nodesProcessDatasMap;
     }
 
