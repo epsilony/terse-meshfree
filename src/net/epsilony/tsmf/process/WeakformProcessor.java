@@ -169,19 +169,21 @@ public class WeakformProcessor implements NeedPreparation {
 
         if (isAssemblyDirichletByLagrange()) {
             for (WeakformQuadraturePoint qp : dirichletProcessPoints) {
-                ProcessNodeData[] datas = new ProcessNodeData[]{
-                    nodesProcessDataMap.get(qp.segment.getHead()),
-                    nodesProcessDataMap.get(qp.segment.getRear())};
-                for (ProcessNodeData lagNodeData : datas) {
-                    if (null != lagNodeData) {
-                        if (lagNodeData.getLagrangeAssemblyIndex() < 0) {
-                            lagNodeData.setLagrangeAssemblyIndex(index++);
+                Node node = qp.segment.getHead();
+                ProcessNodeData nodeData = nodesProcessDataMap.get(node);
+                for (int i = 0; i < 2; i++) {
+                    if (null != nodeData) {
+                        if (nodeData.getLagrangeAssemblyIndex() < 0) {
+                            nodeData.setLagrangeAssemblyIndex(index++);
                         }
                     } else {
+                        node.setId(IntIdentityMap.NULL_INDEX_SUPREMUM);
                         ProcessNodeData newData = new ProcessNodeData();
                         newData.setLagrangeAssemblyIndex(index++);
-                        nodesProcessDataMap.put(qp.segment.getHead(), newData);
+                        nodesProcessDataMap.put(node, newData);
                     }
+                    node = qp.segment.getRear();
+                    nodeData = nodesProcessDataMap.get(node);
                 }
             }
         }
