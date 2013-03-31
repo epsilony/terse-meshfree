@@ -131,18 +131,22 @@ public class WeakformProcessor implements NeedPreparation {
         volumeProcessPoints = weakformQuadratureTask.volumeTasks();
         dirichletProcessPoints = weakformQuadratureTask.dirichletTasks();
         neumannProcessPoints = weakformQuadratureTask.neumannTasks();
-        volumeIteratorWrapper =
-                new SynchronizedIteratorWrapper<>(volumeProcessPoints.iterator());
-        neumannIteratorWrapper =
-                new SynchronizedIteratorWrapper<>(neumannProcessPoints.iterator());
-        dirichletIteratorWrapper =
-                new SynchronizedIteratorWrapper<>(dirichletProcessPoints.iterator());
+        volumeIteratorWrapper = volumeProcessPoints == null ? null
+                : new SynchronizedIteratorWrapper<>(volumeProcessPoints.iterator());
+        neumannIteratorWrapper = neumannProcessPoints == null ? null
+                : new SynchronizedIteratorWrapper<>(neumannProcessPoints.iterator());
+        dirichletIteratorWrapper = dirichletProcessPoints == null ? null
+                : new SynchronizedIteratorWrapper<>(dirichletProcessPoints.iterator());
     }
 
     private void prepareSupportDomainSearcherFactoryWithoutInfluenceRadiusFilter() {
         supportDomainSearcherFactory = new SupportDomainSearcherFactory();
         supportDomainSearcherFactory.getNodesSearcher().setAll(model.getAllNodes());
-        supportDomainSearcherFactory.getSegmentsSearcher().setAll(model.getPolygon().getSegments());
+        if (null != model.getPolygon()) {
+            supportDomainSearcherFactory.getSegmentsSearcher().setAll(model.getPolygon().getSegments());
+        } else {
+            supportDomainSearcherFactory.setSegmentsSearcher(null);
+        }
     }
 
     private void prepareProcessNodesDatas() {
@@ -158,13 +162,15 @@ public class WeakformProcessor implements NeedPreparation {
             nodesProcessDataMap.put(nd, data);
         }
 
-        for (Segment2D seg : model.getPolygon()) {
-            Node nd = seg.getHead();
-            double rad = influenceRadiusCalculator.calcInflucenceRadius(nd, seg);
-            ProcessNodeData data = new ProcessNodeData();
-            data.setInfluenceRadius(rad);
-            data.setAssemblyIndex(index++);
-            nodesProcessDataMap.put(nd, data);
+        if (null != model.getPolygon()) {
+            for (Segment2D seg : model.getPolygon()) {
+                Node nd = seg.getHead();
+                double rad = influenceRadiusCalculator.calcInflucenceRadius(nd, seg);
+                ProcessNodeData data = new ProcessNodeData();
+                data.setInfluenceRadius(rad);
+                data.setAssemblyIndex(index++);
+                nodesProcessDataMap.put(nd, data);
+            }
         }
 
         if (isAssemblyDirichletByLagrange()) {
@@ -190,7 +196,9 @@ public class WeakformProcessor implements NeedPreparation {
     }
 
     void prepareAssemblier() {
-        assemblier.setConstitutiveLaw(constitutiveLaw);
+        if (null != constitutiveLaw) {
+            assemblier.setConstitutiveLaw(constitutiveLaw);
+        }
         assemblier.setNodesNum(model.getAllNodes().size());
         boolean dense = model.getAllNodes().size() <= DENSE_MATRIC_SIZE_THRESHOLD;
         assemblier.setMatrixDense(dense);
