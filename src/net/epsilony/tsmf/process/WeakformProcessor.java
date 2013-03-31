@@ -60,6 +60,9 @@ public class WeakformProcessor implements NeedPreparation {
 
     public void process() {
         int coreNum = Runtime.getRuntime().availableProcessors();
+        if (!enableMultiThread) {
+            coreNum = 1;
+        }
         ArrayList<WeakformAssemblier> assemblierAvators = new ArrayList<>(coreNum);
         assemblierAvators.add(assemblier);
         for (int i = 1; i < coreNum; i++) {
