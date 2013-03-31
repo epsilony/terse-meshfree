@@ -39,6 +39,10 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
     public SupportDomainData searchSupportDomain(double[] center, Segment2D bndOfCenter, double radius) {
         SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain(center, bndOfCenter, radius);
         prepairResult(searchResult);
+        if (null == searchResult.segments || searchResult.segments.isEmpty()) {
+            searchResult.visibleNodes.addAll(searchResult.allNodes);
+            return searchResult;
+        }
         double[] searchCenter = (null == bndOfCenter) ? center : perturbCenter(center, bndOfCenter, searchResult.segments);
         filetAllNodesToVisibleNodesByBndOfCenter(null, searchResult);
         filetVisibleNodeBySegments(searchCenter, null, searchResult);

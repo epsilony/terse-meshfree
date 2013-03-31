@@ -32,7 +32,13 @@ public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
     public SupportDomainData searchSupportDomain(double[] center, Segment2D bndOfCenter, double radius) {
         SupportDomainData result = supportDomainSearcher.searchSupportDomain(center, bndOfCenter, radius);
         prepairResult(result);
+        if (result.segments == null || result.segments.isEmpty()) {
+            result.visibleNodes.addAll(result.allNodes);
+            return result;
+        }
+
         filetAllNodesToVisibleNodesByBndOfCenter(bndOfCenter, result);
+
         filetVisibleNodeBySegments(center, bndOfCenter, result);
         return result;
     }
