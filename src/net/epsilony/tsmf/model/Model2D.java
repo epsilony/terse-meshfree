@@ -32,11 +32,13 @@ public class Model2D {
         this.polygon = polygon;
         this.spaceNodes = new ArrayList<>(spaceNodes);
         allNodes = new ArrayList<>(spaceNodes);
-        LinkedList<Node> segNds = new LinkedList<>();
-        for (LinearSegment2D seg : polygon) {
-            segNds.add(seg.getHead());
+        if (null != polygon) {
+            LinkedList<Node> segNds = new LinkedList<>();
+            for (LinearSegment2D seg : polygon) {
+                segNds.add(seg.getHead());
+            }
+            allNodes.addAll(segNds);
         }
-        allNodes.addAll(segNds);
         int id = 0;
         for (Node nd : allNodes) {
             nd.setId(id);
