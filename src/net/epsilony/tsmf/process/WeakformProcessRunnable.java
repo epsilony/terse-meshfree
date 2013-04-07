@@ -4,6 +4,8 @@ package net.epsilony.tsmf.process;
 import net.epsilony.tsmf.process.assemblier.WeakformLagrangeAssemblier;
 import net.epsilony.tsmf.process.assemblier.WeakformAssemblier;
 import net.epsilony.tsmf.util.synchron.SynchronizedIteratorWrapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -11,6 +13,7 @@ import net.epsilony.tsmf.util.synchron.SynchronizedIteratorWrapper;
  */
 public class WeakformProcessRunnable implements Runnable {
 
+    public static Logger logger = LogManager.getLogger(WeakformProcessRunnable.class);
     WeakformAssemblier assemblier;
     Mixer mixer;
     LinearLagrangeDirichletProcessor lagProcessor;
@@ -104,9 +107,13 @@ public class WeakformProcessRunnable implements Runnable {
 
     @Override
     public void run() {
+        logger.info("processing with :{}", mixer);
         processVolume();
+        logger.info("processed volume");
         processNeumann();
+        logger.info("processed neumann");
         processDirichlet();
+        logger.info("processed dirichlet");
     }
 
     public WeakformAssemblier getAssemblier() {
