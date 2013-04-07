@@ -35,6 +35,8 @@ public interface WeakformAssemblier extends NeedPreparation, SynchronizedClonabl
 
     void setNodesNum(int nodesNum);
 
+    int getNodesNum();
+
     void setMatrixDense(boolean dense);
 
     boolean isMatrixDense();

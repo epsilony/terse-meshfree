@@ -111,6 +111,11 @@ public abstract class AbstractWeakformAssemblier implements WeakformAssemblier {
     }
 
     @Override
+    public int getNodesNum() {
+        return nodesNum;
+    }
+
+    @Override
     public void setShapeFunctionValue(TIntArrayList nodesAssemblyIndes, TDoubleArrayList[] shapeFunValues) {
         this.nodesAssemblyIndes = nodesAssemblyIndes;
         this.shapeFunctionValues = shapeFunValues;
