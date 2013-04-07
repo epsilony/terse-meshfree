@@ -4,6 +4,7 @@ package net.epsilony.tsmf.shape_func;
 import gnu.trove.list.array.TDoubleArrayList;
 import java.util.List;
 import net.epsilony.tsmf.util.Math2D;
+import net.epsilony.tsmf.util.MiscellaneousUtils;
 import net.epsilony.tsmf.util.WithDiffOrderUtil;
 import net.epsilony.tsmf.util.synchron.SynchronizedClonable;
 import org.ejml.alg.dense.decomposition.lu.LUDecompositionNR;
@@ -227,5 +228,14 @@ public class MLS implements ShapeFunction, SynchronizedClonable<ShapeFunction> {
         ShapeFunction result = new MLS(weightFunc.synchronizeClone(), basisFunc.synchronizeClone());
         result.setDiffOrder(getDiffOrder());
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return MiscellaneousUtils.simpleToString(this)
+                + '{'
+                + "weightFunc=" + weightFunc
+                + ", basisFunc=" + basisFunc
+                + ", solver=" + solver + '}';
     }
 }
