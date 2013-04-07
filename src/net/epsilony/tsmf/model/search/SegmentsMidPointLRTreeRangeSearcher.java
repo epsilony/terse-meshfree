@@ -9,6 +9,7 @@ import net.epsilony.tsmf.model.LinearSegment2D;
 import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.model.Segment2DUtils;
 import net.epsilony.tsmf.util.DoubleArrayComparator;
+import net.epsilony.tsmf.util.MiscellaneousUtils;
 import net.epsilony.tsmf.util.pair.PairPack;
 import net.epsilony.tsmf.util.pair.WithPair;
 import net.epsilony.tsmf.util.rangesearch.LayeredRangeTree;
@@ -43,5 +44,10 @@ public class SegmentsMidPointLRTreeRangeSearcher implements RangeSearcher<double
     @Override
     public List<Segment2D> rangeSearch(double[] from, double[] to) {
         return segmentsTree.rangeSearch(from, to);
+    }
+
+    @Override
+    public String toString() {
+        return MiscellaneousUtils.simpleToString(this);
     }
 }

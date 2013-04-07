@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.model.Segment2DUtils;
+import net.epsilony.tsmf.util.MiscellaneousUtils;
 
 /**
  *
@@ -41,5 +42,12 @@ public class LRTreeSegmentChordIntersectingSphereSearcher implements SphereSearc
     public void setAll(Collection<? extends Segment2D> datas) {
         segmentsRangeSearcher = new SegmentsMidPointLRTreeRangeSearcher(datas, DEMENSION);
         maxSegmentLength = Segment2DUtils.maxChordLength(datas);
+    }
+
+    @Override
+    public String toString() {
+        return MiscellaneousUtils.simpleToString(this)
+                + '{' + "segment searcher " + segmentsRangeSearcher
+                + ", max segment length: " + maxSegmentLength + '}';
     }
 }

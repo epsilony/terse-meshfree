@@ -7,6 +7,7 @@ import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.process.ProcessNodeData;
 import net.epsilony.tsmf.util.IntIdentityMap;
 import net.epsilony.tsmf.util.Math2D;
+import net.epsilony.tsmf.util.MiscellaneousUtils;
 
 /**
  *
@@ -14,17 +15,17 @@ import net.epsilony.tsmf.util.Math2D;
  */
 public class FilterByInfluenceDomain implements SupportDomainSearcher {
 
-    SupportDomainSearcher supportDomainSearcher;
+    SupportDomainSearcher upperSearcher;
     IntIdentityMap<Node, ProcessNodeData> processNodesDatas;
 
     public FilterByInfluenceDomain(SupportDomainSearcher supportDomainSearcher, IntIdentityMap<Node, ProcessNodeData> processNodesDatas) {
-        this.supportDomainSearcher = supportDomainSearcher;
+        this.upperSearcher = supportDomainSearcher;
         this.processNodesDatas = processNodesDatas;
     }
 
     @Override
     public SupportDomainData searchSupportDomain(double[] center, Segment2D bndOfCenter, double radius) {
-        SupportDomainData result = supportDomainSearcher.searchSupportDomain(center, bndOfCenter, radius);
+        SupportDomainData result = upperSearcher.searchSupportDomain(center, bndOfCenter, radius);
         filter(center, result);
         return result;
     }
@@ -38,5 +39,10 @@ public class FilterByInfluenceDomain implements SupportDomainSearcher {
                 nodesIter.remove();
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return MiscellaneousUtils.simpleToString(this) + "{upper searcher: " + upperSearcher + "}";
     }
 }

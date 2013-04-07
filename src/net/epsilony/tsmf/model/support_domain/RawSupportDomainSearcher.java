@@ -4,6 +4,7 @@ package net.epsilony.tsmf.model.support_domain;
 import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.model.search.SphereSearcher;
+import net.epsilony.tsmf.util.MiscellaneousUtils;
 
 /**
  *
@@ -31,5 +32,13 @@ public class RawSupportDomainSearcher implements SupportDomainSearcher {
             result.segments = segmentSearcher.searchInSphere(center, radius);
         }
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return MiscellaneousUtils.simpleToString(this)
+                + "{" + "nodesSearcher="
+                + nodesSearcher
+                + ", segmentSearcher=" + segmentSearcher + '}';
     }
 }

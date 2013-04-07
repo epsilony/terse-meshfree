@@ -9,6 +9,7 @@ import net.epsilony.tsmf.model.LinearSegment2D;
 import net.epsilony.tsmf.model.Segment2D;
 import net.epsilony.tsmf.model.Segment2DUtils;
 import net.epsilony.tsmf.util.Math2D;
+import net.epsilony.tsmf.util.MiscellaneousUtils;
 
 /**
  *
@@ -104,5 +105,17 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
                         + Arrays.toString(perturbedCenter) + "\n\tseg: " + seg);
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(MiscellaneousUtils.simpleToString(this));
+        sb.append(String.format("{perterb ratio: %f, min vertes distance ration: %f, upper searcher:",
+                perterbDistanceRatio,
+                minVertexDistanceRatio));
+        sb.append(supportDomainSearcher);
+        sb.append("}");
+        return sb.toString();
     }
 }

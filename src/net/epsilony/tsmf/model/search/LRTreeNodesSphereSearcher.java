@@ -8,6 +8,7 @@ import java.util.List;
 import net.epsilony.tsmf.model.Node;
 import net.epsilony.tsmf.util.DoubleArrayComparator;
 import net.epsilony.tsmf.util.Math2D;
+import net.epsilony.tsmf.util.MiscellaneousUtils;
 import net.epsilony.tsmf.util.pair.PairPack;
 import net.epsilony.tsmf.util.pair.WithPair;
 import net.epsilony.tsmf.util.rangesearch.LayeredRangeTree;
@@ -55,5 +56,10 @@ public class LRTreeNodesSphereSearcher<T extends Node> implements SphereSearcher
 
     public void setDimension(int dimension) {
         this.dimension = dimension;
+    }
+
+    @Override
+    public String toString() {
+        return MiscellaneousUtils.simpleToString(this);
     }
 }
