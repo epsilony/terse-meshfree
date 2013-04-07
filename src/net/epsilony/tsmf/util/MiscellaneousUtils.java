@@ -15,4 +15,8 @@ public class MiscellaneousUtils {
             dst.addAll(Arrays.asList(array[i]));
         }
     }
+
+    public static String simpleToString(Object obj) {
+        return String.format("%s@%h", obj.getClass().getSimpleName(), obj.hashCode());
+    }
 }
