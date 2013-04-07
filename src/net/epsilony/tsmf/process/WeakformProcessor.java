@@ -70,8 +70,10 @@ public class WeakformProcessor implements NeedPreparation {
         }
         ExecutorService executor = Executors.newFixedThreadPool(coreNum);
         for (int i = 0; i < assemblierAvators.size(); i++) {
-            Mixer mixer = new Mixer(
-                    shapeFunction.synchronizeClone(), supportDomainSearcherFactory.produce(), nodesProcessDataMap);
+            Mixer mixer = new Mixer();
+            mixer.setShapeFunction(shapeFunction.synchronizeClone());
+            mixer.setSupportDomainSearcher(supportDomainSearcherFactory.produce());
+            mixer.setNodesProcessDatasMap(nodesProcessDataMap);
             WeakformProcessRunnable runnable = new WeakformProcessRunnable();
             runnable.setAssemblier(assemblierAvators.get(i));
             runnable.setMixer(mixer);
@@ -239,15 +241,17 @@ public class WeakformProcessor implements NeedPreparation {
                     nodeData.setLagrangleValue(lagrangeValue);
                 }
             }
-
         }
+        logger.info("filled nodes values to nodes processor data map");
     }
 
     public PostProcessor postProcessor() {
-        return new PostProcessor(
-                shapeFunction,
-                supportDomainSearcherFactory.produce(),
-                nodesProcessDataMap, getNodeValueDimension());
+        PostProcessor result = new PostProcessor();
+        result.setShapeFunction(shapeFunction.synchronizeClone());
+        result.setNodeValueDimension(getNodeValueDimension());
+        result.setSupportDomainSearcher(supportDomainSearcherFactory.produce());
+        result.setNodesProcessDatasMap(nodesProcessDataMap);
+        return result;
     }
 
     public WeakformQuadratureTask getWeakformQuadratureTask() {

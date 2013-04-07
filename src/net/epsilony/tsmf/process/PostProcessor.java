@@ -2,10 +2,6 @@
 package net.epsilony.tsmf.process;
 
 import net.epsilony.tsmf.model.LinearSegment2D;
-import net.epsilony.tsmf.model.Node;
-import net.epsilony.tsmf.model.support_domain.SupportDomainSearcher;
-import net.epsilony.tsmf.shape_func.ShapeFunction;
-import net.epsilony.tsmf.util.IntIdentityMap;
 import net.epsilony.tsmf.util.WithDiffOrderUtil;
 
 /**
@@ -16,11 +12,11 @@ public class PostProcessor extends Mixer {
 
     int nodeValueDimension;
 
-    public PostProcessor(
-            ShapeFunction shapeFunction,
-            SupportDomainSearcher supportDomainSearcher,
-            IntIdentityMap<Node, ProcessNodeData> nodesProcessDatasMap, int nodeValueDimension) {
-        super(shapeFunction, supportDomainSearcher, nodesProcessDatasMap);
+    public int getNodeValueDimension() {
+        return nodeValueDimension;
+    }
+
+    public void setNodeValueDimension(int nodeValueDimension) {
         this.nodeValueDimension = nodeValueDimension;
     }
 

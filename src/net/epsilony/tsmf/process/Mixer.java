@@ -28,14 +28,6 @@ public class Mixer implements WithDiffOrder {
     double maxInfluenceRad;
     IntIdentityMap<Node, ProcessNodeData> nodesProcessDatasMap;
 
-    public Mixer(ShapeFunction shapeFunction, SupportDomainSearcher supportDomainSearcher, IntIdentityMap<Node, ProcessNodeData> nodesProcessDatasMap) {
-        this.shapeFunction = shapeFunction;
-        shapeFunction.setDiffOrder(0);
-        this.supportDomainSearcher = supportDomainSearcher;
-        this.nodesProcessDatasMap = nodesProcessDatasMap;
-        this.maxInfluenceRad = getMaxInfluenceRadius(nodesProcessDatasMap);
-    }
-
     public static double getMaxInfluenceRadius(IntIdentityMap<Node, ProcessNodeData> processNodesDatas) {
         double maxRadius = 0;
         for (ProcessNodeData nodeData : processNodesDatas) {
@@ -84,6 +76,36 @@ public class Mixer implements WithDiffOrder {
             nodesAssemblyIndes.add(processNodeData.getAssemblyIndex());
             infRads.add(processNodeData.getInfluenceRadius());
         }
+    }
+
+    public SupportDomainSearcher getSupportDomainSearcher() {
+        return supportDomainSearcher;
+    }
+
+    public void setSupportDomainSearcher(SupportDomainSearcher supportDomainSearcher) {
+        this.supportDomainSearcher = supportDomainSearcher;
+    }
+
+    public ShapeFunction getShapeFunction() {
+        return shapeFunction;
+    }
+
+    public void setShapeFunction(ShapeFunction shapeFunction) {
+        this.shapeFunction = shapeFunction;
+        shapeFunction.setDiffOrder(0);
+    }
+
+    public IntIdentityMap<Node, ProcessNodeData> getNodesProcessDatasMap() {
+        return nodesProcessDatasMap;
+    }
+
+    public void setNodesProcessDatasMap(IntIdentityMap<Node, ProcessNodeData> nodesProcessDatasMap) {
+        this.nodesProcessDatasMap = nodesProcessDatasMap;
+        this.maxInfluenceRad = getMaxInfluenceRadius(nodesProcessDatasMap);
+    }
+
+    public double getMaxInfluenceRad() {
+        return maxInfluenceRad;
     }
 
     public static class MixResult {
