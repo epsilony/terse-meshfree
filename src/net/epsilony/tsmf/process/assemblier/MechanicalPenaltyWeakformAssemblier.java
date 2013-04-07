@@ -2,6 +2,7 @@
 package net.epsilony.tsmf.process.assemblier;
 
 import gnu.trove.list.array.TDoubleArrayList;
+import net.epsilony.tsmf.util.MiscellaneousUtils;
 import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
@@ -194,5 +195,19 @@ public class MechanicalPenaltyWeakformAssemblier extends AbstractWeakformAssembl
     @Override
     public int getNodeValueDimension() {
         return 2;
+    }
+
+    @Override
+    public String toString() {
+        return MiscellaneousUtils.simpleToString(this)
+                + String.format("{nodes*val: %d*%d, diff V/N/D:%d/%d/%d, mat dense/sym: %b/%b, penalty %f}",
+                getNodesNum(),
+                getNodeValueDimension(),
+                getVolumeDiffOrder(),
+                getNeumannDiffOrder(),
+                getDirichletDiffOrder(),
+                isMatrixDense(),
+                isUpperSymmertric(),
+                getPenalty());
     }
 }

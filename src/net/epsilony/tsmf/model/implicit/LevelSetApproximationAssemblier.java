@@ -6,6 +6,7 @@ package net.epsilony.tsmf.model.implicit;
 import gnu.trove.list.array.TDoubleArrayList;
 import net.epsilony.tsmf.process.assemblier.AbstractWeakformLagrangeAssemblier;
 import net.epsilony.tsmf.shape_func.RadialFunctionCore;
+import net.epsilony.tsmf.util.MiscellaneousUtils;
 
 /**
  *
@@ -102,5 +103,21 @@ public class LevelSetApproximationAssemblier extends AbstractWeakformLagrangeAss
         result.setDirichletNodesNum(dirichletNodesNum);
         result.prepare();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return MiscellaneousUtils.simpleToString(this)
+                + String.format("{nodes*val: %d*%d, diff V/N/D: %d/%d/%d, "
+                + "mat dense/sym: %b/%b, dirichlet lagrangian nodes: %d  weight function: %s}",
+                getNodesNum(),
+                getNodeValueDimension(),
+                getVolumeDiffOrder(),
+                getNeumannDiffOrder(),
+                getDirichletDiffOrder(),
+                isMatrixDense(),
+                isUpperSymmertric(),
+                getDirichletNodesNum(),
+                weightFunction);
     }
 }

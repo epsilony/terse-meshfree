@@ -6,6 +6,7 @@ package net.epsilony.tsmf.process.assemblier;
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
 import net.epsilony.tsmf.cons_law.ConstitutiveLaw;
+import net.epsilony.tsmf.util.MiscellaneousUtils;
 import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;

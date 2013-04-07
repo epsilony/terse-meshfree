@@ -3,6 +3,7 @@ package net.epsilony.tsmf.process.assemblier;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
+import net.epsilony.tsmf.util.MiscellaneousUtils;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
 
@@ -88,5 +89,19 @@ public class MechanicalLagrangeWeakformAssemblier extends MechanicalPenaltyWeakf
         result.setNodesNum(nodesNum);
         result.prepare();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return MiscellaneousUtils.simpleToString(this)
+                + String.format("{nodes*val: %d*%d, diff V/N/D:%d/%d/%d, mat dense/sym: %b/%b, dirichlet lagrangian nodes: %d}",
+                getNodesNum(),
+                getNodeValueDimension(),
+                getVolumeDiffOrder(),
+                getNeumannDiffOrder(),
+                getDirichletDiffOrder(),
+                isMatrixDense(),
+                isUpperSymmertric(),
+                getDirichletNodesNum());
     }
 }

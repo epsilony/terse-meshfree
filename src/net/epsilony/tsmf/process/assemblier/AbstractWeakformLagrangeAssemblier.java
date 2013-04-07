@@ -5,6 +5,7 @@ package net.epsilony.tsmf.process.assemblier;
 
 import gnu.trove.list.array.TDoubleArrayList;
 import gnu.trove.list.array.TIntArrayList;
+import net.epsilony.tsmf.util.MiscellaneousUtils;
 
 /**
  *
@@ -37,5 +38,19 @@ public abstract class AbstractWeakformLagrangeAssemblier extends AbstractWeakfor
     @Override
     public void setDirichletNodesNum(int dirichletNodesNum) {
         this.dirichletNodesNum = dirichletNodesNum;
+    }
+
+    @Override
+    public String toString() {
+        return MiscellaneousUtils.simpleToString(this)
+                + String.format("{nodes*val: %d*%d, diff V/N/D:%d/%d/%d, mat dense/sym: %b/%b, dirichlet lagrangian nodes: %d}",
+                getNodesNum(),
+                getNodeValueDimension(),
+                getVolumeDiffOrder(),
+                getNeumannDiffOrder(),
+                getDirichletDiffOrder(),
+                isMatrixDense(),
+                isUpperSymmertric(),
+                getDirichletNodesNum());
     }
 }
