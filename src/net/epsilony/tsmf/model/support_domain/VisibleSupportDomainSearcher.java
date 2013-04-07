@@ -13,6 +13,7 @@ import net.epsilony.tsmf.util.pair.PairPack;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
+@Deprecated
 public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
 
     public static final boolean DEFAULT_IGNORE_INVISIBLE_NODES_INFORMATION = true;
