@@ -5,6 +5,7 @@ package net.epsilony.tsmf.util.common_func;
 
 import net.epsilony.tsmf.shape_func.RadialFunctionCore;
 import static java.lang.Math.*;
+import net.epsilony.tsmf.util.MiscellaneousUtils;
 
 /**
  *
@@ -57,5 +58,10 @@ public class NormalFunction implements RadialFunctionCore {
         result.setDiffOrder(diffOrder);
         result.setSigma(sigma);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return MiscellaneousUtils.simpleToString(this) + '{' + "sigma=" + sigma + '}';
     }
 }

@@ -2,6 +2,7 @@
 package net.epsilony.tsmf.shape_func;
 
 import gnu.trove.list.array.TDoubleArrayList;
+import net.epsilony.tsmf.util.MiscellaneousUtils;
 import net.epsilony.tsmf.util.WithDiffOrder;
 import net.epsilony.tsmf.util.WithDiffOrderUtil;
 import net.epsilony.tsmf.util.common_func.TripleSpline;
@@ -64,5 +65,10 @@ public class RadialFunction2D implements WithDiffOrder, SynchronizedClonable<Rad
     @Override
     public RadialFunction2D synchronizeClone() {
         return new RadialFunction2D(coreFunc.synchronizeClone());
+    }
+
+    @Override
+    public String toString() {
+        return MiscellaneousUtils.simpleToString(this) + '{' + "coreFunc=" + coreFunc + '}';
     }
 }

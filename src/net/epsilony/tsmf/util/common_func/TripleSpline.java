@@ -3,6 +3,7 @@ package net.epsilony.tsmf.util.common_func;
 
 import java.util.Arrays;
 import net.epsilony.tsmf.shape_func.RadialFunctionCore;
+import net.epsilony.tsmf.util.MiscellaneousUtils;
 
 /**
  *
@@ -56,5 +57,10 @@ public class TripleSpline implements RadialFunctionCore {
         TripleSpline result = new TripleSpline();
         result.setDiffOrder(getDiffOrder());
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return MiscellaneousUtils.simpleToString(this);
     }
 }

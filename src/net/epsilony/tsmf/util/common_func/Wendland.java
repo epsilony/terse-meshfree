@@ -3,6 +3,7 @@ package net.epsilony.tsmf.util.common_func;
 
 import java.util.Arrays;
 import net.epsilony.tsmf.shape_func.RadialFunctionCore;
+import net.epsilony.tsmf.util.MiscellaneousUtils;
 import org.apache.commons.math3.analysis.polynomials.PolynomialFunction;
 
 /**
@@ -24,7 +25,7 @@ public class Wendland implements RadialFunctionCore {
     private final int continuous;
 
     public Wendland(int continuous) {
-        this.continuous=continuous;
+        this.continuous = continuous;
         initWendland(continuous);
     }
 
@@ -96,5 +97,10 @@ public class Wendland implements RadialFunctionCore {
         Wendland result = new Wendland(continuous);
         result.setDiffOrder(getDiffOrder());
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return MiscellaneousUtils.simpleToString(this) + '{' + "continuous=" + continuous + '}';
     }
 }
