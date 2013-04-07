@@ -22,6 +22,8 @@ import net.epsilony.tsmf.util.matrix.ReverseCuthillMcKeeSolver;
 import net.epsilony.tsmf.util.synchron.SynchronizedIteratorWrapper;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -29,6 +31,7 @@ import no.uib.cipr.matrix.Matrix;
  */
 public class WeakformProcessor implements NeedPreparation {
 
+    public static final Logger logger = LogManager.getLogger(WeakformProcessor.class);
     public static final int DENSE_MATRIC_SIZE_THRESHOLD = 200;
     public static final boolean SUPPORT_COMPLEX_CRITERION = false;
     public static final boolean DEFAULT_ENABLE_MULTITHREAD = true;
@@ -63,6 +66,7 @@ public class WeakformProcessor implements NeedPreparation {
         if (!enableMultiThread) {
             coreNum = 1;
         }
+
         ArrayList<WeakformAssemblier> assemblierAvators = new ArrayList<>(coreNum);
         assemblierAvators.add(assemblier);
         for (int i = 1; i < coreNum; i++) {
@@ -82,16 +86,20 @@ public class WeakformProcessor implements NeedPreparation {
             runnable.setDirichletSynchronizedIterator(dirichletIteratorWrapper);
             runnable.setNeumannSynchronizedIterator(neumannIteratorWrapper);
             executor.execute(runnable);
+            logger.info("execute {}", runnable);
         }
+        logger.info("Processing with {} threads", coreNum);
 
         executor.shutdown();
         while (!executor.isTerminated()) {
             try {
                 executor.awaitTermination(1000, TimeUnit.MICROSECONDS);
             } catch (InterruptedException ex) {
+                logger.error("Processing interrupted {}", ex);
                 break;
             }
         }
+
         for (int i = 1; i < assemblierAvators.size(); i++) {
             assemblier.mergeWithBrother(assemblierAvators.get(i));
         }
@@ -210,6 +218,9 @@ public class WeakformProcessor implements NeedPreparation {
             sL.setDirichletNodesNum(lagProcessor.getDirichletNodesSize());
         }
         assemblier.prepare();
+        logger.info(
+                "prepared assemblier: {}",
+                assemblier);
     }
 
     public boolean isAssemblyDirichletByLagrange() {
@@ -220,7 +231,12 @@ public class WeakformProcessor implements NeedPreparation {
         Matrix mainMatrix = assemblier.getMainMatrix();
         DenseVector mainVector = assemblier.getMainVector();
         ReverseCuthillMcKeeSolver rcm = new ReverseCuthillMcKeeSolver(mainMatrix, assemblier.isUpperSymmertric());
+        logger.info("solving main matrix:{}, bandwidth ori/opt: {}/{}",
+                rcm,
+                rcm.getOriginalBandWidth(),
+                rcm.getOptimizedBandWidth());
         DenseVector nodesValue = rcm.solve(mainVector);
+        logger.info("solved main matrix");
         int nodeValueDimension = getNodeValueDimension();
         for (ProcessNodeData nodeData : nodesProcessDataMap) {
 
