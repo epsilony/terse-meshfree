@@ -11,6 +11,7 @@ import net.epsilony.tsmf.model.support_domain.SupportDomainData;
 import net.epsilony.tsmf.model.support_domain.SupportDomainSearcher;
 import net.epsilony.tsmf.shape_func.ShapeFunction;
 import net.epsilony.tsmf.util.IntIdentityMap;
+import net.epsilony.tsmf.util.MiscellaneousUtils;
 import net.epsilony.tsmf.util.WithDiffOrder;
 
 /**
@@ -117,5 +118,14 @@ public class Mixer implements WithDiffOrder {
             this.shapeFunctionValueLists = shapeFunctionValueLists;
             this.nodesAssemblyIndes = nodeIds;
         }
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s{influ rad: %f, shape function: %s, support domain searcher: %s}",
+                MiscellaneousUtils.simpleToString(this),
+                getMaxInfluenceRad(),
+                getShapeFunction(),
+                getSupportDomainSearcher());
     }
 }
