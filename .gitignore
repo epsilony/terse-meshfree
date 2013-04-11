@@ -1,9 +1,1 @@
-*.class
-# nbproject private files
-nbproject/private/
-/dist/
-/build/
-# Package Files #
-*.jar
-*.war
-*.ear
+/target/
