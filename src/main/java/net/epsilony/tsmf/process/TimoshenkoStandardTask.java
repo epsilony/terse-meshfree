@@ -41,7 +41,11 @@ public class TimoshenkoStandardTask implements WeakformQuadratureTask {
         return timoBeam;
     }
 
-    public TimoshenkoStandardTask(TimoshenkoAnalyticalBeam2D timoBeam, double segLengthUpBnd, double quadDomainSize, int quadDegree) {
+    public TimoshenkoStandardTask(
+            TimoshenkoAnalyticalBeam2D timoBeam,
+            double segLengthUpBnd,
+            double quadDomainSize,
+            int quadDegree) {
 
         this.timoBeam = timoBeam;
         double w = timoBeam.getWidth();

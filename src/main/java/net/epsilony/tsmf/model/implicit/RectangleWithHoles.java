@@ -136,7 +136,8 @@ public class RectangleWithHoles implements ArrvarFunction, GenericFunction<doubl
     }
 
     private void genRectanglePolygon() {
-        List<LinearSegment2D> polygonChainsHeads = UIUtils.pathIteratorToSegment2DChains(rectangle.getPathIterator(null));
+        List<LinearSegment2D> polygonChainsHeads =
+                UIUtils.pathIteratorToSegment2DChains(rectangle.getPathIterator(null));
         rectanglePolygon = new Polygon2D();
         rectanglePolygon.setChainsHeads(polygonChainsHeads);
     }
@@ -272,7 +273,8 @@ public class RectangleWithHoles implements ArrvarFunction, GenericFunction<doubl
         public List<WeakformQuadraturePoint> volumeTasks() {
             List<WeakformQuadraturePoint> result = new LinkedList<>();
             for (QuadraturePoint qp : volumeQuadraturePoints) {
-                WeakformQuadraturePoint taskPoint = new WeakformQuadraturePoint(qp, new double[]{value(qp.coord)}, null);
+                WeakformQuadraturePoint taskPoint =
+                        new WeakformQuadraturePoint(qp, new double[]{value(qp.coord)}, null);
                 result.add(taskPoint);
             }
             return result;

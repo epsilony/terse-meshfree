@@ -20,7 +20,9 @@ public class VisibleSupportDomainSearcher implements SupportDomainSearcher {
     SupportDomainSearcher supportDomainSearcher;
     boolean ignoreInvisibleNodesInformation;
 
-    public VisibleSupportDomainSearcher(SupportDomainSearcher supportDomainSearcher, boolean ignoreInvisibleNodesInformation) {
+    public VisibleSupportDomainSearcher(
+            SupportDomainSearcher supportDomainSearcher,
+            boolean ignoreInvisibleNodesInformation) {
         this.supportDomainSearcher = supportDomainSearcher;
         this.ignoreInvisibleNodesInformation = ignoreInvisibleNodesInformation;
     }

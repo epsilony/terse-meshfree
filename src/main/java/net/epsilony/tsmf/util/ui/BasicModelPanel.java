@@ -84,7 +84,8 @@ public class BasicModelPanel extends JPanel {
                     Rectangle2D bounds = md.getBoundsInModelSpace();
                     if (null != bounds) {
                         if (null == boundsOnComponent) {
-                            boundsOnComponent = new Rectangle2D.Double(bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
+                            boundsOnComponent = new Rectangle2D.Double(
+                                    bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight());
                         } else {
                             Rectangle2D.union(boundsOnComponent, bounds, boundsOnComponent);
                         }

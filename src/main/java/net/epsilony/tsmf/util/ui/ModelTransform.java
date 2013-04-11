@@ -13,7 +13,7 @@ public class ModelTransform extends AffineTransform {
     public static final double SCALE_LOWER_LIMITE = Double.MIN_VALUE;
     /**
      *
- * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
+     * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
      */
     public static int DEFAULT_ZOOM_ALL_MARGIN = 10;
     private double defaultOriginX;
@@ -61,8 +61,12 @@ public class ModelTransform extends AffineTransform {
         if (0 == modelWidth && 0 == modelHeight) {
             setDefaultOriginAndScale(zoomAllMargin, componentHeight - zoomAllMargin, 1);
         } else {
-            double scaleX = modelWidth > 0 ? (componentWidth - 2 * zoomAllMargin) / modelWidth : Double.POSITIVE_INFINITY;
-            double scaleY = modelHeight > 0 ? (componentHeight - 2 * zoomAllMargin) / modelHeight : Double.POSITIVE_INFINITY;
+            double scaleX = modelWidth > 0
+                    ? (componentWidth - 2 * zoomAllMargin) / modelWidth
+                    : Double.POSITIVE_INFINITY;
+            double scaleY = modelHeight > 0
+                    ? (componentHeight - 2 * zoomAllMargin) / modelHeight
+                    : Double.POSITIVE_INFINITY;
             double scale = Math.min(scaleX, scaleY);
             if (scale < ModelTransform.SCALE_LOWER_LIMITE) {
                 scale = ModelTransform.SCALE_LOWER_LIMITE;

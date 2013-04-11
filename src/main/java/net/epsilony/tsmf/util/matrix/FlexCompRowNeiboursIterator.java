@@ -42,10 +42,6 @@ public class FlexCompRowNeiboursIterator implements TIntIterator {
             throw new IllegalArgumentException("node " + node + " is absent!");
         }
 
-//        if (upperSymmetric && nodeSparseIndex > 0) {
-//            logger.warn("mat is not strictly upper symmetric\nthere is a lower element " + row.get(rowIndes[0]) + " at (" + node + ", " + rowIndes[0] + ")");
-//        }
-
         findNext();
     }
 

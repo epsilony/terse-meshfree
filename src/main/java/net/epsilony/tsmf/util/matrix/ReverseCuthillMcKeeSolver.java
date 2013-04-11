@@ -198,7 +198,9 @@ public class ReverseCuthillMcKeeSolver {
 
         if (upperSymmetric) {
 
-            if (mat instanceof UpperSPDBandMatrix || mat instanceof UpperSPDDenseMatrix || mat instanceof UpperSPDPackMatrix) {
+            if (mat instanceof UpperSPDBandMatrix
+                    || mat instanceof UpperSPDDenseMatrix
+                    || mat instanceof UpperSPDPackMatrix) {
                 optMatrix = new UpperSPDBandMatrix(size(), optBandWidth);
             } else {
                 optMatrix = new UpperSymmBandMatrix(size(), optBandWidth);

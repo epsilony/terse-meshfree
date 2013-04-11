@@ -10,7 +10,9 @@ import javax.swing.Timer;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public abstract class AnimateModelDrawerAdapter extends ModelDrawerAdapter implements AnimateModelDrawer, ActionListener {
+public abstract class AnimateModelDrawerAdapter
+        extends ModelDrawerAdapter
+        implements AnimateModelDrawer, ActionListener {
 
     public static final int DEFAULT_FRAME_GAP = 33;
     protected AnimationStatus status = AnimationStatus.INITIATE;

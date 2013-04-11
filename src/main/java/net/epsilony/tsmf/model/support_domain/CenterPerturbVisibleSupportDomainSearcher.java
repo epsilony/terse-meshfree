@@ -25,7 +25,9 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
     // Note that the angle of a crack tip is nearly 2pi which is very large.
     private static double DEFAULT_ALLOWABLE_ANGLE = Math.PI / 1800 * 0.95;
 
-    public CenterPerturbVisibleSupportDomainSearcher(SupportDomainSearcher supportDomainSearcher, boolean ignoreInvisibleNodesInformation) {
+    public CenterPerturbVisibleSupportDomainSearcher(
+            SupportDomainSearcher supportDomainSearcher,
+            boolean ignoreInvisibleNodesInformation) {
         super(supportDomainSearcher, ignoreInvisibleNodesInformation);
         perterbDistanceRatio = DEFAULT_PERTURB_DISTANCE_RATIO;
         double minAngle = DEFAULT_ALLOWABLE_ANGLE;
@@ -44,7 +46,8 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
             searchResult.visibleNodes.addAll(searchResult.allNodes);
             return searchResult;
         }
-        double[] searchCenter = (null == bndOfCenter) ? center : perturbCenter(center, bndOfCenter, searchResult.segments);
+        double[] searchCenter = (null == bndOfCenter)
+                ? center : perturbCenter(center, bndOfCenter, searchResult.segments);
         filetAllNodesToVisibleNodesByBndOfCenter(null, searchResult);
         filetVisibleNodeBySegments(searchCenter, null, searchResult);
         return searchResult;
@@ -74,7 +77,11 @@ public class CenterPerturbVisibleSupportDomainSearcher extends VisibleSupportDom
         return pertCenter;
     }
 
-    void checkPerturbCenter(double[] center, double[] perturbedCenter, Segment2D bnd, Collection<? extends Segment2D> segs) {
+    void checkPerturbCenter(
+            double[] center,
+            double[] perturbedCenter,
+            Segment2D bnd,
+            Collection<? extends Segment2D> segs) {
         LinearSegment2D bndNeighbor = null;
         double[] bndNeighborFurtherPoint = null;
         if (center == bnd.getHeadCoord()) {

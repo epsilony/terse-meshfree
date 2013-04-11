@@ -24,8 +24,12 @@ public class LRTreeSegmentChordIntersectingSphereSearcher implements SphereSearc
         if (radius < 0) {
             throw new IllegalArgumentException("Illegal negative Radius!");
         }
-        double[] from = new double[]{center[0] - radius - maxSegmentLength / 2, center[1] - radius - maxSegmentLength / 2};
-        double[] to = new double[]{center[0] + radius + maxSegmentLength / 2, center[1] + radius + maxSegmentLength / 2};
+        double[] from = new double[]{
+            center[0] - radius - maxSegmentLength / 2,
+            center[1] - radius - maxSegmentLength / 2};
+        double[] to = new double[]{
+            center[0] + radius + maxSegmentLength / 2,
+            center[1] + radius + maxSegmentLength / 2};
 
         List<Segment2D> segments = segmentsRangeSearcher.rangeSearch(from, to);
         Iterator<Segment2D> segIter = segments.iterator();

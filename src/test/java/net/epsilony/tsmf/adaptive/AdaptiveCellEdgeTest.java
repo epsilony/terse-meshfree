@@ -196,8 +196,10 @@ public class AdaptiveCellEdgeTest {
         for (int i = 0; i < coords.length; i++) {
             nodes[i] = new Node(coords[i]);
         }
-        List<AdaptiveCellEdge> sampleSideEdges = genSequentEdgesFromNodesAndHeadNodesIndes(nodes, sampleEdgesNodesIndes);
-        List<AdaptiveCellEdge> oppositeSideEdges = genSequentEdgesFromNodesAndHeadNodesIndes(nodes, oppositesEdgesNodesIndes);
+        List<AdaptiveCellEdge> sampleSideEdges =
+                genSequentEdgesFromNodesAndHeadNodesIndes(nodes, sampleEdgesNodesIndes);
+        List<AdaptiveCellEdge> oppositeSideEdges =
+                genSequentEdgesFromNodesAndHeadNodesIndes(nodes, oppositesEdgesNodesIndes);
         fillOpposites(sampleSideEdges, oppositeSideEdges, sampleSideOppsitesIndes);
         fillOpposites(oppositeSideEdges, sampleSideEdges, oppositeSideOppositedIndes);
         SampleData result = new SampleData();
@@ -218,7 +220,10 @@ public class AdaptiveCellEdgeTest {
         return edges;
     }
 
-    private void fillOpposites(List<AdaptiveCellEdge> thisSideEdges, List<AdaptiveCellEdge> oppositeSideEdges, int[][] oppsiteSideEdgesIndes) {
+    private void fillOpposites(
+            List<AdaptiveCellEdge> thisSideEdges,
+            List<AdaptiveCellEdge> oppositeSideEdges,
+            int[][] oppsiteSideEdgesIndes) {
         for (int i = 0; i < oppsiteSideEdgesIndes.length; i++) {
             int[] oppsiteIndes = oppsiteSideEdgesIndes[i];
             for (int j = 0; j < oppsiteIndes.length; j++) {

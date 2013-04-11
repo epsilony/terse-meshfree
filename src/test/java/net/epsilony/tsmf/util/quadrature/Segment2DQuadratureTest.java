@@ -95,7 +95,10 @@ public class Segment2DQuadratureTest {
         ArcSegment2D arc = new ArcSegment2D();
         arc.setHead(new Node(xTrans + radius * Math.cos(startAngle), yTrans + radius * Math.sin(startAngle)));
         arc.setRadius(radius);
-        arc.setSucc(new LinearSegment2D(new Node(xTrans + radius * Math.cos(endAngle), yTrans + radius * Math.sin(endAngle))));
+        arc.setSucc(new LinearSegment2D(
+                new Node(
+                xTrans + radius * Math.cos(endAngle),
+                yTrans + radius * Math.sin(endAngle))));
         Segment2DQuadrature sq = new Segment2DQuadrature(1);
         boolean beenHere = false;
         for (int deg = 3; deg < GaussLegendre.MAXPOINTS * 2 - 1; deg++) {

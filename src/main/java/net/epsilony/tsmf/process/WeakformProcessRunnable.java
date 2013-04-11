@@ -7,7 +7,6 @@ import net.epsilony.tsmf.util.synchron.SynchronizedIteratorWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
@@ -145,7 +144,8 @@ public class WeakformProcessRunnable implements Runnable {
         return volumeSynchronizedIterator;
     }
 
-    public void setVolumeSynchronizedIterator(SynchronizedIteratorWrapper<WeakformQuadraturePoint> volumeSynchronizedIterator) {
+    public void setVolumeSynchronizedIterator(
+            SynchronizedIteratorWrapper<WeakformQuadraturePoint> volumeSynchronizedIterator) {
         this.volumeSynchronizedIterator = volumeSynchronizedIterator;
     }
 
@@ -153,7 +153,8 @@ public class WeakformProcessRunnable implements Runnable {
         return neumannSynchronizedIterator;
     }
 
-    public void setNeumannSynchronizedIterator(SynchronizedIteratorWrapper<WeakformQuadraturePoint> neumannSynchronizedIterator) {
+    public void setNeumannSynchronizedIterator(
+            SynchronizedIteratorWrapper<WeakformQuadraturePoint> neumannSynchronizedIterator) {
         this.neumannSynchronizedIterator = neumannSynchronizedIterator;
     }
 
@@ -161,7 +162,8 @@ public class WeakformProcessRunnable implements Runnable {
         return dirichletSynchronizedIterator;
     }
 
-    public void setDirichletSynchronizedIterator(SynchronizedIteratorWrapper<WeakformQuadraturePoint> dirichletSynchronizedIterator) {
+    public void setDirichletSynchronizedIterator(
+            SynchronizedIteratorWrapper<WeakformQuadraturePoint> dirichletSynchronizedIterator) {
         this.dirichletSynchronizedIterator = dirichletSynchronizedIterator;
     }
 }

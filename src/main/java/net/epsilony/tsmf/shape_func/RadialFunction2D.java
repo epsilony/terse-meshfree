@@ -38,7 +38,10 @@ public class RadialFunction2D implements WithDiffOrder, SynchronizedClonable<Rad
         this.coreFunc = new TripleSpline();
     }
 
-    public TDoubleArrayList[] values(TDoubleArrayList[] dists, TDoubleArrayList influenceRads, TDoubleArrayList[] outputs) {
+    public TDoubleArrayList[] values(
+            TDoubleArrayList[] dists,
+            TDoubleArrayList influenceRads,
+            TDoubleArrayList[] outputs) {
         TDoubleArrayList[] results = initOutput(dists[0].size(), outputs);
         boolean isUniRad = true;
         double uniRad = influenceRads.getQuick(0);

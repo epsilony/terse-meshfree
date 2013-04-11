@@ -11,7 +11,9 @@ import no.uib.cipr.matrix.Matrix;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public class MechanicalLagrangeWeakformAssemblier extends MechanicalPenaltyWeakformAssemblier implements WeakformLagrangeAssemblier {
+public class MechanicalLagrangeWeakformAssemblier
+        extends MechanicalPenaltyWeakformAssemblier
+        implements WeakformLagrangeAssemblier {
 
     int dirichletNodesNum;
     TIntArrayList lagrangeAssemblyIndes;
@@ -94,7 +96,9 @@ public class MechanicalLagrangeWeakformAssemblier extends MechanicalPenaltyWeakf
     @Override
     public String toString() {
         return MiscellaneousUtils.simpleToString(this)
-                + String.format("{nodes*val: %d*%d, diff V/N/D:%d/%d/%d, mat dense/sym: %b/%b, dirichlet lagrangian nodes: %d}",
+                + String.format("{nodes*val: %d*%d, diff V/N/D:%d/%d/%d,"
+                + " mat dense/sym: %b/%b,"
+                + " dirichlet lagrangian nodes: %d}",
                 getNodesNum(),
                 getNodeValueDimension(),
                 getVolumeDiffOrder(),

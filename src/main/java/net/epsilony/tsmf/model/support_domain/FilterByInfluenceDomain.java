@@ -18,7 +18,9 @@ public class FilterByInfluenceDomain implements SupportDomainSearcher {
     SupportDomainSearcher upperSearcher;
     IntIdentityMap<Node, ProcessNodeData> processNodesDatas;
 
-    public FilterByInfluenceDomain(SupportDomainSearcher supportDomainSearcher, IntIdentityMap<Node, ProcessNodeData> processNodesDatas) {
+    public FilterByInfluenceDomain(
+            SupportDomainSearcher supportDomainSearcher,
+            IntIdentityMap<Node, ProcessNodeData> processNodesDatas) {
         this.upperSearcher = supportDomainSearcher;
         this.processNodesDatas = processNodesDatas;
     }

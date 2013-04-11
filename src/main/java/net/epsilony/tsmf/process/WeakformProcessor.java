@@ -319,11 +319,13 @@ public class WeakformProcessor implements NeedPreparation {
     }
 
     public static WeakformProcessor genTimoshenkoProjectProcess() {
-        TimoshenkoAnalyticalBeam2D timoBeam = new TimoshenkoAnalyticalBeam2D(48, 12, 3e7, 0.3, -1000);
+        TimoshenkoAnalyticalBeam2D timoBeam =
+                new TimoshenkoAnalyticalBeam2D(48, 12, 3e7, 0.3, -1000);
         int quadDomainSize = 2;
         int quadDegree = 4;
         double inflRads = quadDomainSize * 4.1;
-        TimoshenkoStandardTask task = new TimoshenkoStandardTask(timoBeam, quadDomainSize, quadDomainSize, quadDegree);
+        TimoshenkoStandardTask task =
+                new TimoshenkoStandardTask(timoBeam, quadDomainSize, quadDomainSize, quadDegree);
         WeakformProcessor res = new WeakformProcessor();
         res.setup(task.processPackage(quadDomainSize, inflRads));
         return res;

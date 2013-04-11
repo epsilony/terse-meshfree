@@ -34,7 +34,11 @@ public class Polygon2D implements Iterable<LinearSegment2D> {
         chainsHeads = new ArrayList<>(nodeChains.size());
         for (List< ? extends Node> nds : nodeChains) {
             if (nds.size() < 3) {
-                throw new IllegalArgumentException(String.format("Each chain in a polygon must contain at least 3 nodes as vertes!%n nodesChain[%d] has only %d nodes", nodeChains.indexOf(nds), nds.size()));
+                throw new IllegalArgumentException(
+                        String.format(
+                        "Each chain in a polygon must contain at least 3 nodes as vertes! "
+                        + "nodesChain[%d] has only %d nodes",
+                        nodeChains.indexOf(nds), nds.size()));
             }
             LinearSegment2D chainHead = new LinearSegment2D();
             LinearSegment2D seg = chainHead;

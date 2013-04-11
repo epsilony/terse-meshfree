@@ -74,7 +74,11 @@ public class MLS implements ShapeFunction, SynchronizedClonable<ShapeFunction> {
                 matB[j] = new TDoubleArrayList(DEFAULT_CAPACITY_OF_INPUT_COORDS);
             }
         }
-        shapeFunctionValueLists = WithDiffOrderUtil.initOutput(null, DEFAULT_CAPACITY_OF_INPUT_COORDS, DIMENSION, getDiffOrder());
+        shapeFunctionValueLists = WithDiffOrderUtil.initOutput(
+                null,
+                DEFAULT_CAPACITY_OF_INPUT_COORDS,
+                DIMENSION,
+                getDiffOrder());
     }
 
     private void resetCaches(int capacity) {
@@ -90,7 +94,11 @@ public class MLS implements ShapeFunction, SynchronizedClonable<ShapeFunction> {
         }
         commonCache.resetQuick();
         commonCache.ensureCapacity(capacity);
-        shapeFunctionValueLists = WithDiffOrderUtil.initOutput(shapeFunctionValueLists, capacity, DIMENSION, getDiffOrder());
+        shapeFunctionValueLists = WithDiffOrderUtil.initOutput(
+                shapeFunctionValueLists,
+                capacity,
+                DIMENSION,
+                getDiffOrder());
     }
 
     public MLS(RadialFunction2D weightFunc, BasisFunction basisFunc) {
@@ -115,7 +123,11 @@ public class MLS implements ShapeFunction, SynchronizedClonable<ShapeFunction> {
     }
 
     @Override
-    public TDoubleArrayList[] values(double[] xy, List<double[]> coords, TDoubleArrayList influcenceRads, TDoubleArrayList[] dists) {
+    public TDoubleArrayList[] values(
+            double[] xy,
+            List<double[]> coords,
+            TDoubleArrayList influcenceRads,
+            TDoubleArrayList[] dists) {
         resetCaches(coords.size());
         if (null == dists) {
             dists = ordinaryDistances(xy, coords);
@@ -147,7 +159,11 @@ public class MLS implements ShapeFunction, SynchronizedClonable<ShapeFunction> {
         return shapeFunctionValueLists;
     }
 
-    private void calcMatAB(double[] xy, List<double[]> coords, TDoubleArrayList influcenceRads, TDoubleArrayList[] dists) {
+    private void calcMatAB(
+            double[] xy,
+            List<double[]> coords,
+            TDoubleArrayList influcenceRads,
+            TDoubleArrayList[] dists) {
         TDoubleArrayList[] weightsByDiffs = weightFunc.values(dists, influcenceRads, weightsCache);
         basisFunc.setDiffOrder(0);
         double[] tds = new double[2];

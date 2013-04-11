@@ -20,7 +20,13 @@ public class SimpleWeakformProject implements WeakformProject {
     public ShapeFunction shapeFunction;
     public ConstitutiveLaw constitutiveLaw;
 
-    public SimpleWeakformProject(WeakformQuadratureTask project, Model2D model, InfluenceRadiusCalculator influenceRadCalc, WeakformAssemblier assemblier, ShapeFunction shapeFunc, ConstitutiveLaw constitutiveLaw) {
+    public SimpleWeakformProject(
+            WeakformQuadratureTask project,
+            Model2D model,
+            InfluenceRadiusCalculator influenceRadCalc,
+            WeakformAssemblier assemblier,
+            ShapeFunction shapeFunc,
+            ConstitutiveLaw constitutiveLaw) {
         this.weakformQuadratureTask = project;
         this.model = model;
         this.influenceRadiusCalculator = influenceRadCalc;

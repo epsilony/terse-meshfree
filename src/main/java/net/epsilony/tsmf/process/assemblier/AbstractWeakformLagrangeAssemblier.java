@@ -11,7 +11,9 @@ import net.epsilony.tsmf.util.MiscellaneousUtils;
  *
  * @author <a href="mailto:epsilonyuan@gmail.com">Man YUAN</a>
  */
-public abstract class AbstractWeakformLagrangeAssemblier extends AbstractWeakformAssemblier implements WeakformLagrangeAssemblier {
+public abstract class AbstractWeakformLagrangeAssemblier
+        extends AbstractWeakformAssemblier
+        implements WeakformLagrangeAssemblier {
 
     protected int dirichletNodesNum;
     protected TIntArrayList lagrangeAssemblyIndes;
@@ -43,7 +45,9 @@ public abstract class AbstractWeakformLagrangeAssemblier extends AbstractWeakfor
     @Override
     public String toString() {
         return MiscellaneousUtils.simpleToString(this)
-                + String.format("{nodes*val: %d*%d, diff V/N/D:%d/%d/%d, mat dense/sym: %b/%b, dirichlet lagrangian nodes: %d}",
+                + String.format("{nodes*val: %d*%d, diff V/N/D:%d/%d/%d, "
+                + "mat dense/sym: %b/%b, "
+                + "dirichlet lagrangian nodes: %d}",
                 getNodesNum(),
                 getNodeValueDimension(),
                 getVolumeDiffOrder(),

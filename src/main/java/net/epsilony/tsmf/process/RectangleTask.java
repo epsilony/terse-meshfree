@@ -32,12 +32,16 @@ public class RectangleTask extends PolygonTask2D {
         this.down = down;
         this.right = right;
         this.up = up;
-        Polygon2D poly = Polygon2D.byCoordChains(new double[][][]{{{left, down}, {right, down}, {right, up}, {left, up}}});
+        Polygon2D poly = Polygon2D.byCoordChains(
+                new double[][][]{{{left, down}, {right, down}, {right, up}, {left, up}}});
         poly = poly.fractionize(segLengthUpBnd);
         initPolygonProject2D(poly);
     }
 
-    public void setVolumeSpecification(GenericFunction<double[], double[]> volumnForceFunc, double quadDomainSizeUpBnd, int quadratureDegree) {
+    public void setVolumeSpecification(
+            GenericFunction<double[], double[]> volumnForceFunc,
+            double quadDomainSizeUpBnd,
+            int quadratureDegree) {
         QuadrangleQuadrature qQuad = new QuadrangleQuadrature();
         qQuad.setDegree(quadratureDegree);
         LinkedList<QuadraturePoint> qPoints = new LinkedList<>();
@@ -64,7 +68,10 @@ public class RectangleTask extends PolygonTask2D {
         setVolumeSpecification(volumnForceFunc, qPoints);
     }
 
-    public void addBoundaryConditionOnEdge(String edge, GenericFunction<double[], double[]> value, GenericFunction<double[], boolean[]> diriMark) {
+    public void addBoundaryConditionOnEdge(
+            String edge,
+            GenericFunction<double[], double[]> value,
+            GenericFunction<double[], boolean[]> diriMark) {
         edge = edge.toLowerCase();
         double l, d, r, u;
         double t = polygon.getMinSegmentLength() / 3;

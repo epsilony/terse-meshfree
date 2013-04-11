@@ -33,7 +33,8 @@ public class MLSLevelSetDemo implements NeedPreparation {
     public static Rectangle2D DEFAULT_RECTANGLE = new Rectangle2D.Double(10, 10, 100, 60);
     public static double DEFAULT_HOLE_RADIUS = 4;
     public static double DEFAULT_HOLE_DISTANCE = 2;
-    public static InfluenceRadiusCalculator DEFAULT_INFLUENCE_RADIUS_CALCULATOR = new ConstantInfluenceRadiusCalculator(8);
+    public static InfluenceRadiusCalculator DEFAULT_INFLUENCE_RADIUS_CALCULATOR =
+            new ConstantInfluenceRadiusCalculator(8);
     public static int DEFAULT_QUADRATURE_POWER = 2;
     public static double DEFAULT_TRIANGLE_SIZE = 2;
     public static double DEFAULT_SEGMENT_SIZE = 2;
@@ -42,7 +43,8 @@ public class MLSLevelSetDemo implements NeedPreparation {
     LevelSetApproximationAssemblier assemblier = new LevelSetApproximationAssemblier();
     MLS mls = new MLS();
     WeakformProcessor weakformProcessor = new WeakformProcessor();
-    RectangleWithHoles rectangleWithHoles = new RectangleWithHoles(DEFAULT_RECTANGLE, DEFAULT_HOLE_RADIUS, DEFAULT_HOLE_DISTANCE);
+    RectangleWithHoles rectangleWithHoles = new RectangleWithHoles(
+            DEFAULT_RECTANGLE, DEFAULT_HOLE_RADIUS, DEFAULT_HOLE_DISTANCE);
     double triangleSize = DEFAULT_TRIANGLE_SIZE;
     double segmentSize = DEFAULT_SEGMENT_SIZE;
     int quadraturePower = DEFAULT_QUADRATURE_POWER;

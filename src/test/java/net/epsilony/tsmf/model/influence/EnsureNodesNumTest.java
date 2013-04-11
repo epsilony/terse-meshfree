@@ -43,7 +43,9 @@ public class EnsureNodesNumTest {
         nodesSearcher.setAll(sampleModel.getAllNodes());
         SphereSearcher<Segment2D> segmentsSearcher = new LRTreeSegmentChordIntersectingSphereSearcher();
         segmentsSearcher.setAll(sampleModel.getPolygon().getSegments());
-        //SupportDomainSearcherFactory factory = SupportDomainSearcherFactory.layeredRangeTreeBasedFactory(sampleModel.getAllNodes(), sampleModel.getPolygon());
+//        SupportDomainSearcherFactory factory =
+//                SupportDomainSearcherFactory.layeredRangeTreeBasedFactory(
+//                sampleModel.getAllNodes(), sampleModel.getPolygon());
 
         SupportDomainSearcherFactory factory = new SupportDomainSearcherFactory(nodesSearcher, segmentsSearcher);
         SupportDomainSearcher searcher = factory.produce();

@@ -16,18 +16,25 @@ public class GaussLegendre {
         {0},
         {-sqrt(3) / 3, sqrt(3) / 3},
         {-sqrt(15) / 5, 0, sqrt(15) / 5},
-        {-sqrt(525 + 70 * sqrt(30)) / 35, -sqrt(525 - 70 * sqrt(30)) / 35, sqrt(525 - 70 * sqrt(30)) / 35, sqrt(525 + 70 * sqrt(30)) / 35},
-        {-sqrt(245 + 14 * sqrt(70)) / 21, -sqrt(245 - 14 * sqrt(70)) / 21, 0, sqrt(245 - 14 * sqrt(70)) / 21, sqrt(245 + 14 * sqrt(70)) / 21}};
+        {-sqrt(525 + 70 * sqrt(30)) / 35, -sqrt(525 - 70 * sqrt(30)) / 35,
+            sqrt(525 - 70 * sqrt(30)) / 35, sqrt(525 + 70 * sqrt(30)) / 35},
+        {-sqrt(245 + 14 * sqrt(70)) / 21, -sqrt(245 - 14 * sqrt(70)) / 21,
+            0,
+            sqrt(245 - 14 * sqrt(70)) / 21, sqrt(245 + 14 * sqrt(70)) / 21}};
     private static final double[][] weights = new double[][]{
         {2},
         {1, 1},
         {5 / 9d, 8 / 9d, 5 / 9d},
-        {(18 - sqrt(30)) / 36, (18 + sqrt(30)) / 36, (18 + sqrt(30)) / 36, (18 - sqrt(30)) / 36},
-        {(322 - 13 * sqrt(70)) / 900, (322 + 13 * sqrt(70)) / 900, 128 / 225d, (322 + 13 * sqrt(70)) / 900, (322 - 13 * sqrt(70)) / 900}};
+        {(18 - sqrt(30)) / 36, (18 + sqrt(30)) / 36,
+            (18 + sqrt(30)) / 36, (18 - sqrt(30)) / 36},
+        {(322 - 13 * sqrt(70)) / 900, (322 + 13 * sqrt(70)) / 900,
+            128 / 225d,
+            (322 + 13 * sqrt(70)) / 900, (322 - 13 * sqrt(70)) / 900}};
 
     public static boolean isNumInDomain(int n) {
         if (n < MINPOINTS || n > MAXPOINTS) {
-            throw new UnsupportedOperationException("The quadrature points number:" + n + " is not supported yet");
+            throw new UnsupportedOperationException(
+                    "The quadrature points number:" + n + " is not supported yet");
         }
 
         return true;

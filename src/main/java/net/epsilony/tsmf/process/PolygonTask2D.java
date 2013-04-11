@@ -43,7 +43,9 @@ public class PolygonTask2D implements WeakformQuadratureTask {
         this.segQuadDegree = segQuadDegree;
     }
 
-    public void setVolumeSpecification(GenericFunction<double[], double[]> volumnForceFunc, Collection<? extends QuadraturePoint> quadraturePoints) {
+    public void setVolumeSpecification(
+            GenericFunction<double[], double[]> volumnForceFunc,
+            Collection<? extends QuadraturePoint> quadraturePoints) {
         this.volumeForceFunc = volumnForceFunc;
         volumeQuadraturePoints = quadraturePoints;
     }
@@ -100,11 +102,16 @@ public class PolygonTask2D implements WeakformQuadratureTask {
         neumannBCs.add(spec);
     }
 
-    public void addNeumannBoundaryCondition(double[] from, double[] to, GenericFunction<double[], double[]> valueFunc) {
+    public void addNeumannBoundaryCondition(
+            double[] from, double[] to,
+            GenericFunction<double[], double[]> valueFunc) {
         addNeumannBoundaryCondition(new BCSpecification(from, to, valueFunc, null));
     }
 
-    public void addDirichletBoundaryCondition(double[] from, double[] to, GenericFunction<double[], double[]> valueFunc, GenericFunction<double[], boolean[]> markFunc) {
+    public void addDirichletBoundaryCondition(
+            double[] from, double[] to,
+            GenericFunction<double[], double[]> valueFunc,
+            GenericFunction<double[], boolean[]> markFunc) {
         addDirichletBoundaryCondition(new BCSpecification(from, to, valueFunc, markFunc));
     }
 
@@ -118,7 +125,10 @@ public class PolygonTask2D implements WeakformQuadratureTask {
         GenericFunction<double[], double[]> valueFunc;
         GenericFunction<double[], boolean[]> markFunc;
 
-        public BCSpecification(double[] from, double[] to, GenericFunction<double[], double[]> valueFunc, GenericFunction<double[], boolean[]> markFunc) {
+        public BCSpecification(
+                double[] from, double[] to,
+                GenericFunction<double[], double[]> valueFunc,
+                GenericFunction<double[], boolean[]> markFunc) {
             this.from = from;
             this.to = to;
             this.valueFunc = valueFunc;

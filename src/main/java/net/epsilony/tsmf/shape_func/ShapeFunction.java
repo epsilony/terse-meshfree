@@ -12,5 +12,9 @@ import net.epsilony.tsmf.util.synchron.SynchronizedClonable;
  */
 public interface ShapeFunction extends WithDiffOrder, SynchronizedClonable<ShapeFunction> {
 
-    TDoubleArrayList[] values(double[] xy, List<double[]> coords, TDoubleArrayList influcenceRads, TDoubleArrayList[] dists);
+    TDoubleArrayList[] values(
+            double[] xy,
+            List<double[]> coords,
+            TDoubleArrayList influcenceRads,
+            TDoubleArrayList[] dists);
 }

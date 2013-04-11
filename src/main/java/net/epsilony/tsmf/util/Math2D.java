@@ -101,7 +101,11 @@ public class Math2D {
         return isSegmentsIntersecting(head1[0], head1[1], rear1[0], rear1[1], head2[0], head2[1], rear2[0], rear2[1]);
     }
 
-    public static boolean isSegmentsIntersecting(double h1x, double h1y, double r1x, double r1y, double h2x, double h2y, double r2x, double r2y) {
+    public static boolean isSegmentsIntersecting(
+            double h1x, double h1y,
+            double r1x, double r1y,
+            double h2x, double h2y,
+            double r2x, double r2y) {
         double u1 = r1x - h1x;
         double u2 = r1y - h1y;
         double v1 = r2x - h2x;
@@ -152,7 +156,10 @@ public class Math2D {
         return result;
     }
 
-    public static double[] intersectionPoint(double[] headA, double[] rearA, double[] headB, double[] rearB, double[] result) {
+    public static double[] intersectionPoint(
+            double[] headA, double[] rearA,
+            double[] headB, double[] rearB,
+            double[] result) {
         double deltaAx = rearA[0] - headA[0];
         double deltaAy = rearA[1] - headA[1];
         double deltaBx = rearB[0] - headB[0];
@@ -160,8 +167,9 @@ public class Math2D {
 
         double crossDelta = cross(deltaAx, deltaAy, deltaBx, deltaBy);
         if (crossDelta == 0) {
-            throw new IllegalArgumentException("the two segments are colinear or parrallel or one of them has zero length:\n\t"
-                    + "SegA :" + Arrays.toString(headA) + "-" + Arrays.toString(rearA) + "\n\t"
+            throw new IllegalArgumentException(
+                    "the two segments are colinear or parrallel or one of them has zero length: "
+                    + "SegA :" + Arrays.toString(headA) + "-" + Arrays.toString(rearA) + " "
                     + "SegB :" + Arrays.toString(headB) + "-" + Arrays.toString(rearB));
         }
 

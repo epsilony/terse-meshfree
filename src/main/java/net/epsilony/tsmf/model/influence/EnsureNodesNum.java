@@ -71,7 +71,11 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
         return adaptiveInitSearchRad;
     }
 
-    public EnsureNodesNum(double initSearchRad, int nodesNumLowerBound, boolean onlyCountSpaceNodes, boolean adaptiveInitSearchRad) {
+    public EnsureNodesNum(
+            double initSearchRad,
+            int nodesNumLowerBound,
+            boolean onlyCountSpaceNodes,
+            boolean adaptiveInitSearchRad) {
         if (initSearchRad <= 0) {
             throw new IllegalArgumentException("initSearchRad should be positive!");
         }
@@ -130,10 +134,12 @@ public class EnsureNodesNum implements InfluenceRadiusCalculator {
     public double calcInflucenceRadius(Node node, Segment2D seg) {
         double searchRad = initSearchRad;
         do {
-            SupportDomainData searchResult = supportDomainSearcher.searchSupportDomain(node.getCoord(), seg, searchRad);
+            SupportDomainData searchResult =
+                    supportDomainSearcher.searchSupportDomain(node.getCoord(), seg, searchRad);
             if (searchResult.visibleNodes.size() >= nodesNumLowerBound) {
                 List<Node> cadidateNodes = onlyCountSpaceNodes
-                        ? filterNodesOnSegments(searchResult.visibleNodes, searchResult.segments) : searchResult.visibleNodes;
+                        ? filterNodesOnSegments(
+                        searchResult.visibleNodes, searchResult.segments) : searchResult.visibleNodes;
                 if (cadidateNodes.size() >= nodesNumLowerBound) {
                     double result = shortestRadiusWithEnoughNodes(node.getCoord(), cadidateNodes) * resultEnlargeRatio;
                     if (adaptiveInitSearchRad) {

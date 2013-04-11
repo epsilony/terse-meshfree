@@ -60,8 +60,10 @@ public class ArcSegment2DTest {
             double[][] exps = new double[][]{
                 {arc.getHeadCoord()[0], arc.getHeadCoord()[1]},
                 {arc.getRearCoord()[0], arc.getRearCoord()[1]},
-                {radius * cos((headAngle + rearAngle) / 2) + xTrans, radius * sin((headAngle + rearAngle) / 2) + yTrans},
-                {radius * cos(headAngle * (1 - 0.35) + rearAngle * 0.35) + xTrans, radius * sin(headAngle * (1 - 0.35) + rearAngle * 0.35) + yTrans}
+                {radius * cos((headAngle + rearAngle) / 2) + xTrans,
+                    radius * sin((headAngle + rearAngle) / 2) + yTrans},
+                {radius * cos(headAngle * (1 - 0.35) + rearAngle * 0.35) + xTrans,
+                    radius * sin(headAngle * (1 - 0.35) + rearAngle * 0.35) + yTrans}
             };
 
             for (int i = 0; i < samples.length; i++) {

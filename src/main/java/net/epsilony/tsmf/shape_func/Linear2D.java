@@ -14,7 +14,11 @@ public class Linear2D implements ShapeFunction {
     TDoubleArrayList[] shapeFunctionValueLists = null;
 
     @Override
-    public TDoubleArrayList[] values(double[] xy, List<double[]> coords, TDoubleArrayList influcenceRads, TDoubleArrayList[] dists) {
+    public TDoubleArrayList[] values(
+            double[] xy,
+            List<double[]> coords,
+            TDoubleArrayList influcenceRads,
+            TDoubleArrayList[] dists) {
         if (null != shapeFunctionValueLists) {
             shapeFunctionValueLists[0].resetQuick();
         } else {

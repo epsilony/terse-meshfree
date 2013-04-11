@@ -94,12 +94,16 @@ public class MLSTest {
         mls.setDiffOrder(1);
         LinkedList<double[]> coords = genSampleCoords(numPerDim);
         LinkedList<double[]> testPts = genSampleCoords(testPerDim);
-        TDoubleArrayList[] radss = new TDoubleArrayList[]{new TDoubleArrayList(new double[]{rad_avg}), new TDoubleArrayList(randomRads(rad_avg, range, coords.size()))};
+        TDoubleArrayList[] radss = new TDoubleArrayList[]{
+            new TDoubleArrayList(new double[]{rad_avg}),
+            new TDoubleArrayList(randomRads(rad_avg, range, coords.size()))};
         double[] exp = new double[]{1, 0, 0};
         for (TDoubleArrayList rads : radss) {
             for (double[] pt : testPts) {
                 Object[] searchRes = searchCoords(pt, coords, rads);
-                TDoubleArrayList[] vals = mls.values(pt, (List<double[]>) searchRes[0], (TDoubleArrayList) searchRes[1], null);
+                TDoubleArrayList[] vals = mls.values(
+                        pt, (List<double[]>) searchRes[0],
+                        (TDoubleArrayList) searchRes[1], null);
                 double[] acts = new double[]{vals[0].sum(), vals[1].sum(), vals[2].sum()};
                 assertArrayEquals(exp, acts, 1e-12);
 
@@ -119,7 +123,9 @@ public class MLSTest {
         mls.setDiffOrder(1);
         LinkedList<double[]> coords = genSampleCoords(numPerDim);
         LinkedList<double[]> testPts = genSampleCoords(testPerDim);
-        TDoubleArrayList[] radss = new TDoubleArrayList[]{new TDoubleArrayList(new double[]{rad_avg}), new TDoubleArrayList(randomRads(rad_avg, range, coords.size()))};
+        TDoubleArrayList[] radss = new TDoubleArrayList[]{
+            new TDoubleArrayList(new double[]{rad_avg}),
+            new TDoubleArrayList(randomRads(rad_avg, range, coords.size()))};
         double[] errs = new double[]{1e-10, 1e-5};
         for (TDoubleArrayList rads : radss) {
             for (double[] pt : testPts) {

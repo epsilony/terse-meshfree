@@ -62,7 +62,8 @@ public abstract class AdaptiveCellAdapter<T extends AdaptiveCellAdapter> impleme
             int child_edge_index = i;
             int succ_child_index = (i + 1) % children.length;
             int succ_child_edge_index = i;
-            if (!children[child_index].edges[child_edge_index].isAbleToMerge(children[succ_child_index].edges[succ_child_edge_index])) {
+            if (!children[child_index].edges[child_edge_index].
+                    isAbleToMerge(children[succ_child_index].edges[succ_child_edge_index])) {
                 return false;
             }
         }

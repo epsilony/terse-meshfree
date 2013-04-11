@@ -42,7 +42,9 @@ public class Wendland implements RadialFunctionCore {
             }
         }
         if (!legal) {
-            throw new IllegalArgumentException("The legal continuous order should be one of " + Arrays.toString(LEGAL_CONTINUOUS_ORDERS) + " , not " + c);
+            throw new IllegalArgumentException(
+                    "The legal continuous order should be one of "
+                    + Arrays.toString(LEGAL_CONTINUOUS_ORDERS) + " , not " + c);
         }
         int index = c / 2 - 1;
         PolynomialFunction p1 = new PolynomialFunction(COEFS_1);

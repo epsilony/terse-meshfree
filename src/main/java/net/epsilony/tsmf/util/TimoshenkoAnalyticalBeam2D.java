@@ -60,7 +60,10 @@ public class TimoshenkoAnalyticalBeam2D {
             results = new double[resDim];
         } else {
             if (results.length < resDim) {
-                throw new IllegalArgumentException("When partDiffOrder is " + partDiffOrder + ", the results.lenght should >= " + resDim + ". Try to give a longer results all just give a null reference.");
+                throw new IllegalArgumentException(
+                        "When partDiffOrder is " + partDiffOrder
+                        + ", the results.lenght should >= " + resDim
+                        + ". Try to give a longer results all just give a null reference.");
             }
         }
         double D = height, L = width;
