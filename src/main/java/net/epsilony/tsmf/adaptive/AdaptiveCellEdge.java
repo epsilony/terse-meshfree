@@ -15,8 +15,9 @@ import net.epsilony.tsmf.util.Math2D;
  */
 public class AdaptiveCellEdge extends LinearSegment2D {
 
-    public static int MAX_SIZE_RATIO_TO_OPPOSITES = 2;
-    protected List<AdaptiveCellEdge> opposites = new ArrayList<>(MAX_SIZE_RATIO_TO_OPPOSITES);
+    public static int DEFAULT_MAX_SIZE_RATIO_TO_OPPOSITES = 2;
+    protected int maxSizeRatioToOpposites = DEFAULT_MAX_SIZE_RATIO_TO_OPPOSITES;
+    protected List<AdaptiveCellEdge> opposites = new ArrayList<>(maxSizeRatioToOpposites);
     protected AdaptiveCell owner;
 
     public AdaptiveCellEdge() {
@@ -35,7 +36,7 @@ public class AdaptiveCellEdge extends LinearSegment2D {
         if (!isAbleToBisection()) {
             throw new IllegalStateException();
         }
-        if (MAX_SIZE_RATIO_TO_OPPOSITES > 2) {
+        if (maxSizeRatioToOpposites > 2) {
             return bisectionAndReturnNewSuccessorWithHighSizeRatioLimit();
         }
 
@@ -61,7 +62,7 @@ public class AdaptiveCellEdge extends LinearSegment2D {
             newSucc.addOpposite(0, getOpposite(0));
         } else {
             List<AdaptiveCellEdge> oppositesBak = opposites;
-            opposites = new ArrayList<>(MAX_SIZE_RATIO_TO_OPPOSITES);
+            opposites = new ArrayList<>(maxSizeRatioToOpposites);
             boolean succOpposite = false;
             Node newMidNode = getRear();
             for (AdaptiveCellEdge oppEdge : oppositesBak) {
@@ -84,12 +85,12 @@ public class AdaptiveCellEdge extends LinearSegment2D {
     protected Node bisectionNode() {
         if (numOpposites() <= 1) {
             return super.bisectionNode();
-        } else if (numOpposites() == MAX_SIZE_RATIO_TO_OPPOSITES) {
-            return getOpposite(MAX_SIZE_RATIO_TO_OPPOSITES / 2 - 1).getHead();
+        } else if (numOpposites() == maxSizeRatioToOpposites) {
+            return getOpposite(maxSizeRatioToOpposites / 2 - 1).getHead();
         } else {
             double[] midPoint = Math2D.pointOnSegment(head.getCoord(), getRear().getCoord(), 0.5, null);
             Node midNode = null;
-            double lengthErr = length() / (1 + MAX_SIZE_RATIO_TO_OPPOSITES);
+            double lengthErr = length() / (1 + maxSizeRatioToOpposites);
             for (int i = 0; i < numOpposites() - 1; i++) {
                 if (Math2D.distance(midPoint, opposites.get(i).getHead().getCoord()) < lengthErr) {
                     midNode = opposites.get(i).getHead();
@@ -103,11 +104,11 @@ public class AdaptiveCellEdge extends LinearSegment2D {
     public boolean isAbleToBisection() {
         if (numOpposites() == 1) {
             AdaptiveCellEdge opposite = getOpposite(0);
-            if (opposite.numOpposites() >= MAX_SIZE_RATIO_TO_OPPOSITES) {
+            if (opposite.numOpposites() >= maxSizeRatioToOpposites) {
                 return false;
-            } else if (MAX_SIZE_RATIO_TO_OPPOSITES == 2) {
+            } else if (maxSizeRatioToOpposites == 2) {
                 return true;
-            } else if (opposite.length() / length() > MAX_SIZE_RATIO_TO_OPPOSITES - 0.1) {
+            } else if (opposite.length() / length() > maxSizeRatioToOpposites - 0.1) {
                 return false;
             }
         }
@@ -194,5 +195,13 @@ public class AdaptiveCellEdge extends LinearSegment2D {
 
     public void addOppositesTo(Collection<? super AdaptiveCellEdge> output) {
         output.addAll(opposites);
+    }
+
+    public int getMaxSizeRatioToOpposites() {
+        return maxSizeRatioToOpposites;
+    }
+
+    public void setMaxSizeRatioToOpposites(int maxSizeRatioToOpposites) {
+        this.maxSizeRatioToOpposites = maxSizeRatioToOpposites;
     }
 }

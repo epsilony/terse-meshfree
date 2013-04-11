@@ -190,7 +190,7 @@ public abstract class AbstractAdaptiveCellTest {
         }
         System.out.println(this.getClass() + "test fission");
         for (int maxRatio : new int[]{2, 4}) {
-            AdaptiveCellEdge.MAX_SIZE_RATIO_TO_OPPOSITES = maxRatio;
+            AdaptiveCellEdge.DEFAULT_MAX_SIZE_RATIO_TO_OPPOSITES = maxRatio;
             testArea();
             testDuplicatedNode();
             testOppositeLength();

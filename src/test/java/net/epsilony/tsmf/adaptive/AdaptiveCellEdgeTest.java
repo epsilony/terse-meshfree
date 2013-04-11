@@ -82,11 +82,13 @@ public class AdaptiveCellEdgeTest {
         int[] oppositesEdgesHeadsIndes = new int[]{2, 0};
         int[][] sampleSideOppsitesIndes = new int[][]{{0}, {0}};
         int[][] oppositeSideOppositedIndes = new int[][]{{1, 0}};
-
+        AdaptiveCellEdge.DEFAULT_MAX_SIZE_RATIO_TO_OPPOSITES = 2;
         SampleData sampleData = genSample(coords,
                 sampleEdgesHeadsIndes, oppositesEdgesHeadsIndes,
                 sampleSideOppsitesIndes, oppositeSideOppositedIndes);
         AdaptiveCellEdge sampleEdge = sampleData.sampleSideEdges.get(0);
+        System.out.println("sampleEdge.isAbleToBisection() = " + sampleEdge.isAbleToBisection());
+
         assertTrue(!sampleEdge.isAbleToBisection());
         boolean catched = false;
         try {
