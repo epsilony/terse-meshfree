@@ -22,8 +22,8 @@ import net.epsilony.tsmf.util.matrix.ReverseCuthillMcKeeSolver;
 import net.epsilony.tsmf.util.synchron.SynchronizedIteratorWrapper;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -31,7 +31,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class WeakformProcessor implements NeedPreparation {
 
-    public static final Logger logger = LogManager.getLogger(WeakformProcessor.class);
+    public static final Logger logger = LoggerFactory.getLogger(WeakformProcessor.class);
     public static final int DENSE_MATRIC_SIZE_THRESHOLD = 200;
     public static final boolean SUPPORT_COMPLEX_CRITERION = false;
     public static final boolean DEFAULT_ENABLE_MULTITHREAD = true;
