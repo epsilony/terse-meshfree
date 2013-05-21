@@ -54,7 +54,7 @@
     <dependency>
       <groupId>com.googlecode.efficient-java-matrix-library</groupId>
       <artifactId>ejml</artifactId>
-      <version>0.21</version>
+      <version>0.22</version>
     </dependency>
     <dependency>
       <groupId>com.googlecode.matrix-toolkits-java</groupId>
